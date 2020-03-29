@@ -1,0 +1,9 @@
+The database should have the following information:
+Id number
+Date (in mm/dd/yyyy xx:yy)
+Current precipitation level
+Float Sensor Status (OFFLINE/ONLINE)
+Rain Sensor Status (OFFLINE/ONLINE)
+Additional comments
+
+

@@ -1,0 +1,36 @@
+/*
+ * -----------------------------------------------------------------------------
+ * Created by Ulysses Carlos on 03/13/2020
+ * 
+ * csc4110_project
+ * This contains the information needed to structure the database
+ * used for the project. 
+ *
+ *
+ * -----------------------------------------------------------------------------
+ */
+
+
+create database csc4110_project;
+use csc4110_project;
+
+
+/*
+ * For the rain level column, we need to determine whether the units are in 
+ * inches/centimeters, and if so, the ability to convert between them should
+ * be done by the program. The battery level can be null
+ */
+ 
+create table if not exists log(
+    id int(8) not null auto_increment,
+    log_date date
+    float_sensor_connected boolean not null,
+    rain_sensor_connected boolean not null,
+    solar_panel_functional boolean not null,
+    battery_connected boolean not null,
+    battery_level real null,
+    rain_level real not null,
+    log_comment varchar(1024) not null,
+    primary key (id)
+);
+	
