@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData">
+    <serverData>
+      <paths name="Raspberry Pi 4 (6ceeb482-f9e3-4838-b7a8-ffec181e1a88)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.zqunjGMkYe" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-pi4" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-zero" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="Raspberry Pi Zero W (86429d43-00a3-4046-80b0-20fe78dad1ea)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.E7RbWztojg" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-zero" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
