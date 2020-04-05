@@ -57,6 +57,9 @@ int main(void) {
         std::cout << std::endl;
     }
 
+    pqxx::row row1 = r.begin();
+    Log l{row1};
+
     cout << connection.connection_string() << endl;
     connection.close();
 
