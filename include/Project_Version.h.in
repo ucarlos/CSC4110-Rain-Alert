@@ -1,0 +1,4 @@
+
+// the configured options and settings for This Project
+#define CSC4110_Project_VERSION_MAJOR @CSC4110_Project_VERSION_MAJOR@
+#define CSC4110_Project_VERSION_MINOR @CSC4110_Project_VERSION_MINOR@
