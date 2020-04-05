@@ -40,16 +40,21 @@ int main(void) {
     pqxx::work transaction{connection};
     pqxx::result r = transaction.exec("SELECT * FROM log");
 
+/*
     for (auto const &row: r)
     {
         for (auto const &field: row) std::cout << field.c_str() << '\t';
         std::cout << std::endl;
     }
-
+*/
     pqxx::row row1 = r.begin();
     Log l{row1};
 
     cout << connection.connection_string() << endl;
+    cout << "Output of Log: " <<  endl << l << "\n";
+    cout << "Check Output:\n";
+    l.comment = "This should be the second log in the table. Please ignore it.";
+    //add_log(transaction, l);
     connection.close();
 
 }

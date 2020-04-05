@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.11)
+project(CSC4110_Project VERSION 0.12)
 
 
 # Add version number to program
@@ -32,7 +32,7 @@ add_library(SMTP ./smtp/SMTPMail.cpp)
 
 #add_executable(CSC4110_Project main.cpp)
 
-add_executable(CSC4110_Project main.cpp ./sensors/Float_Sensor.cc)
+add_executable(CSC4110_Project main.cpp ./sensors/Float_Sensor.cc log/log.cpp)
 
 target_link_libraries(CSC4110_Project PUBLIC SMTP m pqxx pq)
 target_include_directories(CSC4110_Project PUBLIC

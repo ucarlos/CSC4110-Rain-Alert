@@ -4,6 +4,7 @@
     <data-source source="LOCAL" name="csc4110_project@192.168.1.93" uuid="a68772c1-9d78-4df9-827a-da1feff3b1ad">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <schema-control>AUTOMATIC</schema-control>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://192.168.1.93:5432/csc4110_project</jdbc-url>
     </data-source>

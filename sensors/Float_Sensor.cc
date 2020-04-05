@@ -5,8 +5,3 @@
  * 
  * -----------------------------------------------------------------------------
  */
-#include <iostream>
-void foo_float(void){
-    std::cout << "Hello, this is float.\n";
-
-}
