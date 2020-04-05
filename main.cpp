@@ -30,17 +30,6 @@ void options(void){
 
 
 }
-void menu(void){
-    char input = ' ';
-    do {
-	
-
-
-    } while (input != 'q');
-
-
-
-}
 
 int main(void) {
     info();

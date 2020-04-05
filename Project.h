@@ -91,7 +91,7 @@ public:
     bool extract_row();
     
 private:
-    std::unique_ptr<pqxx::row> raw_data {nullptr};
+    pqxx::row *raw_data {nullptr};
 };
 
 Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm){
@@ -110,13 +110,7 @@ Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm){
 }
 
 Log::Log(pqxx::row &row){ // Extract the contents of row and fill the log.
-    if (raw_data)
-        raw_data.reset(&row);
-    else{
-        unique_ptr<pqxx::row> up{&row};
-        raw_data = static_cast<unique_ptr<pqxx::row> &&>(up);
-    }
-
+    raw_data = &row;
     this->extract_row();
 }
 
