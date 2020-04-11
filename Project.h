@@ -30,6 +30,7 @@ using namespace std;
 #include <pqxx/field>
 
 // SMTP Library (C++ Wrapper)
+// Requires Openssl to be to the system; Usually installed on Linux
 #include "./smtp/SMTPMail.h"
 
 // Project version number
@@ -39,6 +40,18 @@ using namespace std;
 // Macro and inline functions
 
 inline static double inches_to_cm(double in) { return in * 2.54; }
+
+// SMTP information
+// const string smtp_username = "csc4110.project@gmail.com";
+// const string smtp_port = "587"; // Using TLS?
+// const string smtp_address = "smtp.gmail.com";
+// const string smtp_password = "A password for our project.";
+
+const string smtp_username = "ucarlos1@student.gsu.edu";
+const string smtp_port = "587";
+const string smtp_address = "smtp.office365.com";
+const string smtp_password = "Terminus est 2";
+
 //------------------------------------------------------------------------------
 // Database Variables 
 //------------------------------------------------------------------------------
@@ -51,6 +64,8 @@ const string database_table = "csc4110_project";
 
 const string database_path = "postgresql://" + database_name + "@"
     + database_address + "/" + database_table;
+
+
 
 //------------------------------------------------------------------------------
 // Log class
@@ -88,10 +103,12 @@ public:
     // double rain_level{NAN};
     string comment;
     string time_stamp{"[NOT SPECIFIED]"};
+    string date{"[NOT SPECIFIED]"};
     pqxx::row& row(){ return *raw_data; }
     [[nodiscard]] const pqxx::row& row() const { return *raw_data; }
 
     bool extract_row();
+    void write_to_file(ofstream &ofs) { ofs << this; }
     friend ostream& operator<<(ostream &os, const Log &l);
     
 private:
@@ -99,9 +116,15 @@ private:
 };
 
 void add_log(pqxx::transaction_base &trans, const Log &l);
+void send_log_as_SMTP_body(const Log &l, ifstream &ifs);
+void send_log_as_SMTP_attachment(const Log &l, ifstream &ifs);
+bool check_smtp_connection(SMTPMail &mail);
 
+//------------------------------------------------------------------------------
+// Connection functions -- Defined in Connection.cc
+//------------------------------------------------------------------------------
 
-
-
+void open_connection(pqxx::connection &c);
+pqxx::result search_database(pqxx::connection &c, std::string date, std::string time);
 // Any templates/ Classes?
 #endif

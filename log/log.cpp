@@ -39,18 +39,19 @@ bool Log::extract_row() {
     if (!raw_data) // Prevent access of empty raw_data
         return false;
 
-    // First, added the booleans
+    // First, fill the date and timestamp.
+    date = (raw_data->begin() + 1)->as(string{});
     auto it = raw_data->begin() + (log_offset - 1);
     time_stamp = it->as(string{});
 
     it++;
 
     // pqxx::field f; // Uses field
-    // Bool
+    // Now traverse through the boolean sensor_check
     for (auto i = sensor_check.begin(); (i != sensor_check.end() && it != raw_data->end()); i++, it++){
         i->second = it->as(bool{});
     }
-
+    // Then the double level
     for (auto i = level.begin(); (i != level.end() && it != raw_data->end()); i++, it++){
         i->second = it->as(double{});
     }
@@ -83,7 +84,7 @@ void extract_row_to_log(Log &l, pqxx::row &row){
 //------------------------------------------------------------------------------
 ostream& operator<<(ostream &os, const Log &l){
     ostringstream o;
-
+    o << "Date: " << l.date << endl;
     o << "Timestamp: " << l.time_stamp << endl;
 
     for (auto & i : l.sensor_check){
@@ -134,4 +135,44 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     
     // Now update the database.
     trans.commit();
+}
+
+//------------------------------------------------------------------------------
+// Send log to SMTP() -- Arguments: const Log &l, ifstream &if:
+// End result: If anything is written to if, open a new file, append l to it,
+// and then pass it as the body or attachment, depending 
+// 
+//------------------------------------------------------------------------------
+void send_log_as_SMTP_body(const Log &l, ifstream &ifs){
+    SMTPMail smtpMail;
+    // Enable TLS support
+    auto security_option = smtp_connection_security{static_cast<smtp_connection_security>(0)};
+    smtpMail.open(smtp_address.c_str(), smtp_port.c_str(), security_option, SMTP_DEBUG, NULL);
+
+    ostringstream os;
+    os << l;
+    smtpMail.auth(SMTP_AUTH_LOGIN, smtp_username.c_str(), smtp_password.c_str());
+    smtpMail.address_add(SMTP_ADDRESS_FROM, "ulycarlos@gmail.com", "Ulysses Carlos");
+    smtpMail.address_add(SMTP_ADDRESS_TO, smtp_username.c_str(), "CSC 4110 Project");
+    smtpMail.header_add("Subject", "Test");
+    smtpMail.header_add("Content-Type", "text/html");
+    smtpMail.mail(os.str().c_str());
+
+
+    //smtpMail.open(smtp_address, smtp_port, SMTP_AUTH_NONE)
+    // First, check if you can make a connection
+    // if not, return an error: cannot make a connection to the server.
+    // Do not shut the program down, wait until you can do a connection / or max three tries.
+
+    // If everything goes well, open the connection
+    // Create an ostringstream containing contents of if and operator<<(Log)
+    // Then send that as the body for an email
+    // Now send email.
+    smtpMail.close();
+}
+
+void send_log_as_SMTP_attachment(const Log &l, ifstream &ifs){
+
+
+
 }

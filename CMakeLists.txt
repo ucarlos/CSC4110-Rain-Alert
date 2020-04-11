@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.12)
+project(CSC4110_Project VERSION 0.13)
 
 
 # Add version number to program
@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_C_STANDARD 11)
 
 # Add SMTP Library
-add_library(SMTP ./smtp/SMTPMail.cpp)
+add_library(SMTP ./smtp/SMTPMail.cpp ./smtp/smtp.c)
 #add_library(Sensors ./sensors/Float_Sensor.cc)
 #Add Subdirectories
 
@@ -32,8 +32,8 @@ add_library(SMTP ./smtp/SMTPMail.cpp)
 
 #add_executable(CSC4110_Project main.cpp)
 
-add_executable(CSC4110_Project main.cpp ./sensors/Float_Sensor.cc log/log.cpp)
+add_executable(CSC4110_Project main.cpp ./sensors/Float_Sensor.cc log/log.cpp sql/Connection.cc)
 
-target_link_libraries(CSC4110_Project PUBLIC SMTP m pqxx pq)
+target_link_libraries(CSC4110_Project PUBLIC SMTP m pqxx pq ssl crypto)
 target_include_directories(CSC4110_Project PUBLIC
         "${PROJECT_BINARY_DIR}")

@@ -23,7 +23,7 @@ create database csc4110_project;
 create table if not exists log(
     id bigserial not null,
     log_date date default current_date,
-    log_time time default current_time,
+    log_time time(0) with time zone default current_time,
     log_timestamp timestamp with time zone default current_timestamp,
     float_sensor_connected boolean not null,
     rain_sensor_connected boolean not null,

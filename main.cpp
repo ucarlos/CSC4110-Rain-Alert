@@ -31,12 +31,14 @@ void options(void){
 
 }
 
-int main(void) {
-    info();
+
+
+void test_connection(void){
     cout << "Testing connection:" << endl;
     // Make connection to postgresql
     //pqxx::connection connection("postgresql://project:Pi_Project@192.168.1.93/csc4110_project");
     pqxx::connection connection(database_path);
+
     pqxx::work transaction{connection};
     pqxx::result r = transaction.exec("SELECT * FROM log");
 
@@ -52,9 +54,19 @@ int main(void) {
 
     cout << connection.connection_string() << endl;
     cout << "Output of Log: " <<  endl << l << "\n";
-    cout << "Check Output:\n";
+    //cout << "Check Output:\n";
     l.comment = "This should be the second log in the table. Please ignore it.";
+    ifstream is;
+    send_log_as_SMTP_body(l, is);
     //add_log(transaction, l);
     connection.close();
+
+
+
+}
+
+int main(void) {
+    info();
+    test_connection();
 
 }
