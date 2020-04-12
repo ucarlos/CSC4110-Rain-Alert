@@ -78,7 +78,7 @@ void test_smtp(void){
 int main(void) {
     info();
     get_smtp_credentials();
-    test_connection();
+    //test_connection();
     //test_smtp();
 
 }

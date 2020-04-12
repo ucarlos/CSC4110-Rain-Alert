@@ -35,7 +35,7 @@ Since this is a CLion Project, you can try installing it on your system and open
     brew install libpqxx
     ```
 
-2.  Cmake (If CLion cannot be installed on your system)
+2.  CMake >= 3.15 (If CLion cannot be installed on your system)
 
     If on Debian/Ubuntu/Raspbian, use the following command:
     
@@ -43,7 +43,29 @@ Since this is a CLion Project, you can try installing it on your system and open
     sudo apt-get install cmake
     ```
     
-    On other Linux or UNIX Systems, you may need to use your package manager or [compile from source.](https://cmake.org/download/)
+    On other Linux or UNIX Systems, you may need to use your package manager or [compile from source.](https://cmake.org/download/) You may also have to compile from source if your CMake version is less than 3.15.
+
+3.  libcurl-dev >= 7.50.0 with SSL.
+
+    To install libcurl-dev on Debian/Ubuntu/Raspbian, do
+    
+    ```bash
+    sudo apt-get install libcurl-dev
+    ```
+    
+    Or use whatever package manager you have to install it.
+    
+    In order to know if SSL is enabled within curl, do the following command:
+    
+    ```bash
+    curl-config --feature
+    ```
+    
+    You should see a list that should contain "SSL".
+
+4.  NCurses Library
+
+    In order to display the text-based UI, NCurses must be installed on your system.
 
 
 ## Explanation
@@ -56,15 +78,19 @@ If you can get CLion running on your machine, simply execute the program by pres
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
-./CSC4110_Project
+
 ```
 
 
 ## Example Usage
 
-```sh
+To run the program, do
 
+```sh
+./CSC4110_Project
 ```
 
 
 ## References
+
+-   I used this [SMTP Library for the project.](https://github.com/somnisoft/smtp-client)

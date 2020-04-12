@@ -20,6 +20,7 @@ void initialize_connection(pqxx::connection &c){
 }
 
 
+
 //------------------------------------------------------------------------------
 // open_connections() : Handles opening a pqxx::connection to the database
 // specified in database_path.
@@ -35,6 +36,16 @@ void open_connection(pqxx::connection &c){
         throw runtime_error(error);
     }
     c = pqxx::connection(database_path);
+}
+
+//------------------------------------------------------------------------------
+// close_connection(): Thin wrapper around connection.close().
+// 
+//------------------------------------------------------------------------------
+
+void close_connection(pqxx::connection &c){
+    c.close();
+    // Anything else?
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +67,11 @@ pqxx::result search_database(pqxx::connection &c, const std::string& date, std::
 
 }
 
-//
+//------------------------------------------------------------------------------
+// get_database_info_from_file() : Read the credentials into the database.
+// The credentials are contained the path specified by database_info_path.
+// TODO: Create an encryption/decryption function
+//------------------------------------------------------------------------------
 void get_database_info_from_file(void){
     // Read the data from
     ifstream file{database_info_path};

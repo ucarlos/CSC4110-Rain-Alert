@@ -21,8 +21,5 @@ using namespace std;
 // Project version number
 #include "./include/Project_Version.h"
 
-
-
-
 // Any templates/ Classes?
 #endif

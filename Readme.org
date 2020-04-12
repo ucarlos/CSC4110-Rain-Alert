@@ -34,6 +34,21 @@ sudo apt-get install cmake
 #+END_SRC
 On other Linux or UNIX Systems, you may need to use your package manager or [[https://cmake.org/download/][compile from source.]] You may also have to compile from source if your CMake version is less than 3.15.
 
+**** libcurl-dev >= 7.50.0 with SSL.
+To install libcurl-dev on Debian/Ubuntu/Raspbian, do
+#+BEGIN_SRC bash
+sudo apt-get install libcurl-dev
+#+END_SRC
+Or use whatever package manager you have to install it.
+
+In order to know if SSL is enabled within curl, do the following command:
+#+BEGIN_SRC bash
+curl-config --feature
+#+END_SRC
+
+You should see a list that should contain "SSL". If not, install a more recent version of libcurl or compile from source.
+**** NCurses Library
+In order to display the text-based UI, NCurses must be installed on your system.
 ** Explanation 
 ** How to compile
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
