@@ -8,6 +8,7 @@
  */
 
 #include "./Project.h"
+#include "sql/Connection.h"
 
 void info(){
     cout << "CSC 4110 Project Menu (Version " << CSC4110_Project_VERSION_MAJOR
@@ -57,16 +58,26 @@ void test_connection(void){
     //cout << "Check Output:\n";
     l.comment = "This should be the second log in the table. Please ignore it.";
     ifstream is;
-    send_log_as_SMTP_body(l, is);
-    //add_log(transaction, l);
+    string type = "Daily Report";
+    send_log_as_HTML(l, type);
     connection.close();
 
 
 
 }
+void test_smtp(void){
+    Log l;
+    ifstream ifs;
+    //send_html_through_SMTP(l, ifs);
+    string type = "Daily Report";
+    send_log_as_HTML(l, type);
+    //send_log_as_text(l);
+
+}
 
 int main(void) {
     info();
-    test_connection();
+    //test_connection();
+    //test_smtp();
 
 }

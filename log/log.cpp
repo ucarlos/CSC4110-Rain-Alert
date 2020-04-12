@@ -7,7 +7,7 @@
  * -----------------------------------------------------------------------------
  */
 
-#include "../Project.h"
+#include "./Log.h"
 
 Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm, string time_stamp) {
     // Maps should be the same size as default. Error otherwise.
@@ -83,21 +83,24 @@ void extract_row_to_log(Log &l, pqxx::row &row){
 // operator<< - outputs all fields from log(except raw_data) to a ostream.
 //------------------------------------------------------------------------------
 ostream& operator<<(ostream &os, const Log &l){
+    string html_break = "<br>";
     ostringstream o;
-    o << "Date: " << l.date << endl;
-    o << "Timestamp: " << l.time_stamp << endl;
+    o << "Date: " << l.date << html_break << endl;
+    o << "Timestamp: " << l.time_stamp << html_break << endl;
 
     for (auto & i : l.sensor_check){
         o << i.first << ": ";
-        o << ((i.second) ? "Online\n" : "Offline\n");
+        o << ((i.second) ? "Online" : "Offline");
+        o << html_break << endl;
     }
 
     // Battery level (In Percentage)
     double d = l.level.at("battery_level");
-    o << "Battery Level: " << d << "%\n";
+    o << "Battery Level: " << d << "%" << html_break << endl;
     d = l.level.at("rain_level");
-    o << "Rain level: " << d << " in (" << inches_to_cm(d) << " cm)\n";
-    o << "Comment: " << l.comment << endl;
+    o << "Rain level: " << d << " in (" << inches_to_cm(d) << " cm)"
+      << html_break << endl;
+    o << "Comment: " << l.comment << html_break << endl;
     return os << o.str();
 
 }
@@ -138,41 +141,314 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
 }
 
 //------------------------------------------------------------------------------
-// Send log to SMTP() -- Arguments: const Log &l, ifstream &if:
-// End result: If anything is written to if, open a new file, append l to it,
-// and then pass it as the body or attachment, depending 
-// 
+// system_all_to_string(const char * cmd):
+// This function takes the result of a system call and stores it into a
+// string. Shamelessly taken from Stackoverflow.
 //------------------------------------------------------------------------------
-void send_log_as_SMTP_body(const Log &l, ifstream &ifs){
-    SMTPMail smtpMail;
-    // Enable TLS support
-    auto security_option = smtp_connection_security{static_cast<smtp_connection_security>(0)};
-    smtpMail.open(smtp_address.c_str(), smtp_port.c_str(), security_option, SMTP_DEBUG, NULL);
+std::string system_call_to_string(const char* cmd) {
+    std::array<char, 128> buffer{};
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
 
-    ostringstream os;
-    os << l;
-    smtpMail.auth(SMTP_AUTH_LOGIN, smtp_username.c_str(), smtp_password.c_str());
-    smtpMail.address_add(SMTP_ADDRESS_FROM, "ulycarlos@gmail.com", "Ulysses Carlos");
-    smtpMail.address_add(SMTP_ADDRESS_TO, smtp_username.c_str(), "CSC 4110 Project");
-    smtpMail.header_add("Subject", "Test");
-    smtpMail.header_add("Content-Type", "text/html");
-    smtpMail.mail(os.str().c_str());
-
-
-    //smtpMail.open(smtp_address, smtp_port, SMTP_AUTH_NONE)
-    // First, check if you can make a connection
-    // if not, return an error: cannot make a connection to the server.
-    // Do not shut the program down, wait until you can do a connection / or max three tries.
-
-    // If everything goes well, open the connection
-    // Create an ostringstream containing contents of if and operator<<(Log)
-    // Then send that as the body for an email
-    // Now send email.
-    smtpMail.close();
+    // Strip the newline.
+    result.pop_back();
+    return result;
 }
 
-void send_log_as_SMTP_attachment(const Log &l, ifstream &ifs){
 
 
+
+//------------------------------------------------------------------------------
+// string create_stmp_header(void)
+// Creates the appropriate smtp header in preparation of sending an email.
+// STMP Headers are structured as so:
+// Date: \r\n
+// To: \r\n
+// From: \r\n
+// Message-ID:
+// Subject:
+// \r\n
+//------------------------------------------------------------------------------
+
+std::string create_date(void){
+    string date_str = system_call_to_string("date \"+%a, %d %b %Y %k:%M:%S -0500\"");
+
+    if (date_str.back() == '\r')
+        date_str += '\n';
+
+    return date_str;
+}
+
+vector<std::string> create_html_header(string &message_type) {
+
+    ostringstream os;
+    // find the newline:
+    std::string date_str = create_date();
+    vector<std::string> header_data;
+    header_data.push_back(std::string{"Date: " + date_str});
+    header_data.push_back(std::string{"To: " + smtp_receiver_address});
+    header_data.push_back(std::string{"From: " + smtp_username});
+    header_data.push_back(std::string{"Subject: Rain Alert Report: " + message_type});
+
+    return header_data;
+}
+
+std::string create_smtp_text_header(string &message_type) {
+    const std::string end_line = "\r\n";
+    std::string date_str = create_date();
+
+    ostringstream os;
+
+    os << "Date: " << ""
+       << date_str << end_line
+       << "To: " << smtp_receiver_address << end_line
+       << "From: " << smtp_username << end_line
+       << "Subject: " << "Rain Alert Report: " << message_type <<  end_line
+       << "Mime-Version: 1.0;"
+       << "Content-Type: " << "text/html;" << end_line
+       << "Content-Transfer-Encoding: 7bit;" << end_line
+       << end_line;
+
+    return os.str();
+}
+
+
+void set_up_stmp_connection(CURL *curl) {
+    // Set up username and password:
+    curl_easy_setopt(curl, CURLOPT_USERNAME, smtp_username.c_str());
+    curl_easy_setopt(curl, CURLOPT_PASSWORD, smtp_password.c_str());
+
+    // Set URL of mailserver.
+    string url = "smtp://" + smtp_address + ":" + smtp_port;
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+    // Use TLS
+    curl_easy_setopt(curl, CURLOPT_USE_SSL, (long) CURLUSESSL_ALL);
+
+    // Don't have certificate, so disable some protection.
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
+    // Mail FROM:
+    curl_easy_setopt(curl, CURLOPT_MAIL_FROM, smtp_username.c_str());
+
+
+
+}
+//------------------------------------------------------------------------------
+// send_html_through_SMTP():
+// Send the file opened by ifs, 
+//------------------------------------------------------------------------------
+
+void send_text_through_SMTP(ostringstream &oss, string &message_type) {
+
+    ofstream ofs{text_file_path, ios_base::trunc};
+    ofs << create_smtp_text_header(message_type);
+    ofs << oss.str();
+
+    // Now close and reopen file as FILE
+    ofs.close();
+    FILE *fs = fopen(text_file_path.c_str(), "r");
+
+    if (!fs){
+        throw runtime_error("Could not open " + text_file_path);
+    }
+
+    CURL *curl = curl_easy_init();
+
+    CURLcode result = CURLE_OK;
+
+    if (curl) {
+        struct curl_slist *recipients = nullptr;
+
+        set_up_stmp_connection(curl);
+
+        // Mail TO:
+        recipients = curl_slist_append(recipients, smtp_receiver_address.c_str());
+        curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+
+        // Read from file.
+        curl_easy_setopt(curl, CURLOPT_READDATA, fs);
+        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+
+        // Enable debug info:
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+        // Now send the message:
+        result = curl_easy_perform(curl);
+
+        // Now check for errors:
+        if (result != CURLE_OK)
+            cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
+                 << endl;
+
+        curl_slist_free_all(recipients);
+
+        // Always cleanup:
+        curl_easy_cleanup(curl);
+        fclose(fs);
+
+    }
+}
+
+
+void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_type) {
+    
+    struct curl_slist *recipients = nullptr;
+    struct curl_slist *headers = nullptr;
+    struct curl_slist *slist = nullptr;
+    curl_mime *mime;
+    curl_mime *alt;
+    curl_mimepart *part;
+
+    CURL *curl = curl_easy_init();
+    
+    CURLcode result = CURLE_OK;
+
+    if (curl) {
+        // Set up username and password:
+        set_up_stmp_connection(curl);
+
+        // Mail TO:
+        recipients = curl_slist_append(recipients, smtp_receiver_address.c_str());
+        curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+
+        vector<std::string> header_list = create_html_header(message_type);
+        // Create Header
+        for (auto &i : header_list)
+            headers = curl_slist_append(headers,i.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // Set up the mime message:
+        mime = curl_mime_init(curl);
+        alt = curl_mime_init(curl);
+
+        /* The inline part is an alternative proposing the html and the text
+       versions of the e-mail. */
+        alt = curl_mime_init(curl);
+
+        /* HTML message. */
+        part = curl_mime_addpart(alt);
+        string inline_html = oss.str();
+        curl_mime_data(part, inline_html.c_str(), CURL_ZERO_TERMINATED);
+        curl_mime_type(part, "text/html");
+
+        /* Text message. */
+        part = curl_mime_addpart(alt);
+        ostringstream text_section;
+        text_section << "In case the inline html does not display correctly,"
+		     << "the text is displayed below:" << endl
+		     << l << endl;
+
+        curl_mime_data(part, text_section.str().c_str(), CURL_ZERO_TERMINATED);
+
+        /* Create the inline part. */
+        part = curl_mime_addpart(mime);
+        curl_mime_subparts(part, alt);
+        curl_mime_type(part, "multipart/alternative");
+        slist = curl_slist_append(nullptr, "Content-Disposition: inline");
+        curl_mime_headers(part, slist, 1);
+
+
+        /* Add the current source program as an attachment. */
+        curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
+
+        // Enable debug info:
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+        // Now send the message:
+        result = curl_easy_perform(curl);
+
+        // Now check for errors:
+        if (result != CURLE_OK)
+            cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
+                 << endl;
+
+	    curl_slist_free_all(recipients);
+        curl_slist_free_all(headers);
+
+        // Always cleanup:
+        curl_easy_cleanup(curl);
+        //fclose(fs);
+
+        /* Free multipart message. */
+        curl_mime_free(mime);
+    }
+    
+
+
+}
+
+void send_log_as_HTML(const Log &l, string &message_type){
+    // Open the html template, append the log in it
+    // and then pass it to the header.
+    string smtp_endl = "\r\n";
+    ifstream ifs{html_template_path};
+    //fstream new_file{html_file_path, ios_base::trunc | ios_base::out };
+    ostringstream new_file{};
+    string check = "                <!--- INSERT MESSAGE :) -->";
+    string temp;
+    // Copy all data from html template to new file until the check is true.
+    do{
+        getline(ifs, temp);
+        new_file << temp << smtp_endl;
+    } while ((ifs.good() && temp != check));
+
+    if (temp != check){
+        throw runtime_error("Could not insert log into the HTML Document.\n");
+    }
+    // <!--- INSERT MESSAGE :) -->
+    // Insert header
+    new_file << "<h1> Pi Rain Alert: " << message_type << " for "
+             << system_call_to_string("date \"+%d %b %Y\"") << "</h1>" << endl;
+    new_file << "<p>" << smtp_endl;
+
+    // Make sure to
+
+    new_file << l << smtp_endl;
+    new_file << "</p>" << smtp_endl;
+
+    // Now continue the rest of the file:
+    ifs.clear();
+    while (ifs.good()){
+        getline(ifs, temp);
+        new_file << temp << smtp_endl;
+    }
+    // close file
+    //new_file.close();
+    // Now prepare to send
+    //ifstream send_file{html_file_path, ios_base::in};
+    send_html_through_SMTP(l, new_file, message_type);
+}
+
+void send_log_as_text(const Log &l, string &message_type) {
+    ostringstream new_file{};
+    new_file << l;
+    send_text_through_SMTP(new_file, message_type);
+
+}
+
+
+//------------------------------------------------------------------------------
+// get_smtp_credentials(): Read the smtp credentials from log/smtp_info.txt
+// Please place your info in that file. For security reasons, I won't provide
+// mine. 
+//------------------------------------------------------------------------------
+
+void get_smtp_credentials(void){
+    // Read the data from
+    ifstream file{"../log/smtp_info.txt"};
+    if (!file){
+	throw runtime_error("Cannot retrieve the SMTP credentials. Aborting.");
+    }
+    string temp;
+    file >> temp;
+    //smtp_username = const_cast<string>(temp);
 
 }

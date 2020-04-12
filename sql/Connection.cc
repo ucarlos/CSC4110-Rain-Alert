@@ -7,7 +7,9 @@
  * -----------------------------------------------------------------------------
  */
 
-#include "../Project.h"
+#include "./Connection.h"
+
+
 
 
 //------------------------------------------------------------------------------
@@ -26,7 +28,7 @@ void open_connection(pqxx::connection &c){
 // the specified date and time of a query. The returned pqxx::result may
 // contain no rows at all.
 //------------------------------------------------------------------------------
-pqxx::result search_database(pqxx::connection &c, std::string date, std::string time){
+pqxx::result search_database(pqxx::connection &c, const std::string& date, std::string time){
     // Time format should be default (yyyy/mm/dd)
     // Some form of checking for time
 
