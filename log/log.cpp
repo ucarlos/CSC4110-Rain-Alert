@@ -433,22 +433,92 @@ void send_log_as_text(const Log &l, string &message_type) {
     send_text_through_SMTP(new_file, message_type);
 
 }
+//------------------------------------------------------------------------------
+// verify_user_name() : Very basic function to determine if a
+// user_name is valid by using regex expression.
+// Username should follow name@domain_name.domain.
+//------------------------------------------------------------------------------
 
+bool verify_username(const string &user_name){
+    string regex_str = R"(^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$)";
+    // Use regex expressions to check for valid user_name.
+    // ^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$
+    std::basic_regex test(regex_str.c_str());
+    return regex_match(user_name,test);
+
+}
+
+
+//------------------------------------------------------------------------------
+// verify_password(): Very basic function to verify a password.
+// The minimum size of the password is 6 characters, but the user can
+// specify the minimum amount (up to a max of 128 characters)
+//------------------------------------------------------------------------------
+
+bool verify_password(const string &password){
+    // Password should at least be 6 characters.
+    string regex_str = "^[\\w | \\.]{6,}$";
+    std::basic_regex test(regex_str.c_str());
+    return regex_match(password, test);
+}
+
+bool verify_password(const string &password, int8_t &size){
+    ostringstream os;
+    os << R"("^[\\w | \\.]{)" << size << ",}$";
+    std::basic_regex test(os.str());
+    return regex_match(password, test);
+}
 
 //------------------------------------------------------------------------------
 // get_smtp_credentials(): Read the smtp credentials from log/smtp_info.txt
 // Please place your info in that file. For security reasons, I won't provide
-// mine. 
+// mine. The file should have exactly three lines:
+// Line 1: sender email address
+// Line 2: sender email password
+// Line 3: recipient email address
 //------------------------------------------------------------------------------
 
 void get_smtp_credentials(void){
     // Read the data from
     ifstream file{"../log/smtp_info.txt"};
     if (!file){
-	throw runtime_error("Cannot retrieve the SMTP credentials. Aborting.");
+	    throw runtime_error("Cannot retrieve the SMTP credentials. Aborting.");
     }
-    string temp;
-    file >> temp;
-    //smtp_username = const_cast<string>(temp);
+
+    // Now check if the file is empty.
+    if (file.peek() == std::ifstream::traits_type::eof()){
+        throw runtime_error("smtp_info.txt is emtpy.");
+    }
+
+    // Retrieve the credentials and assign them
+    string smtp_us, smtp_pass, reciv_us;
+    getline(file, smtp_us);
+    getline(file, smtp_pass);
+    getline(file, reciv_us);
+
+    auto file_status = file.rdstate();
+
+    // The file should only have the eof flag enabled after reading the file to the end.
+    // If it doesn't meet those requirements, throw an error.
+    if (file_status != ios_base::eofbit){
+        string error = "Could not populate all variables from smtp_info.txt.";
+        error += " Please make sure that smtp_info.txt is EXACTLY 3 lines.\n";
+        throw runtime_error(error);
+    }
+
+
+    bool check_info = verify_username(smtp_us);
+    check_info &= verify_password(smtp_pass);
+    check_info &= verify_username(reciv_us);
+
+    if (!check_info){
+        string error = "A variable in smtp_info.txt is not a valid email";
+        error += " or has a password length less than 6.";
+        throw runtime_error(error);
+    }
+    smtp_username = smtp_us;
+    smtp_password = smtp_pass;
+    smtp_receiver_address = reciv_us;
+
 
 }

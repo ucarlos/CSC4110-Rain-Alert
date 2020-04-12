@@ -38,7 +38,8 @@ void test_connection(void){
     cout << "Testing connection:" << endl;
     // Make connection to postgresql
     //pqxx::connection connection("postgresql://project:Pi_Project@192.168.1.93/csc4110_project");
-    pqxx::connection connection(database_path);
+    pqxx::connection connection;
+    initialize_connection(connection);
 
     pqxx::work transaction{connection};
     pqxx::result r = transaction.exec("SELECT * FROM log");
@@ -57,9 +58,7 @@ void test_connection(void){
     cout << "Output of Log: " <<  endl << l << "\n";
     //cout << "Check Output:\n";
     l.comment = "This should be the second log in the table. Please ignore it.";
-    ifstream is;
-    string type = "Daily Report";
-    send_log_as_HTML(l, type);
+
     connection.close();
 
 
@@ -69,15 +68,17 @@ void test_smtp(void){
     Log l;
     ifstream ifs;
     //send_html_through_SMTP(l, ifs);
+    get_smtp_credentials();
     string type = "Daily Report";
-    send_log_as_HTML(l, type);
+//    send_log_as_HTML(l, type);
     //send_log_as_text(l);
 
 }
 
 int main(void) {
     info();
-    //test_connection();
+    get_smtp_credentials();
+    test_connection();
     //test_smtp();
 
 }

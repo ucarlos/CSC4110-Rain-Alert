@@ -10,17 +10,18 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <utility>
+//#include <utility>
 #include <vector>
 #include <string>
-#include <new>
+//#include <new>
 #include <cmath>
-#include <memory>
+//#include <memory>
 #include <cstdint>
 #include <map>
-#include <algorithm>
+// #include <algorithm>
 #include <stdexcept>
 #include <cstdio>
+#include <regex>
 
 // Postgresql library headers
 #include <pqxx/pqxx>
@@ -33,16 +34,16 @@ using namespace std;
 inline static double inches_to_cm(double in) { return in * 2.54; }
 
 // SMTP information
-const string smtp_username = "csc4110.project@gmail.com";
-const string smtp_port = "587"; // Using TLS?
-const string smtp_address = "smtp.gmail.com";
-const string smtp_password = "A password for our project.";
 
-const string smtp_receiver_address = "ulysses_carlos@protonmail.com";
-// const string smtp_username = "ucarlos1@student.gsu.edu";
-// const string smtp_port = "587";
-// const string smtp_address = "smtp.office365.com";
-// const string smtp_password = "Terminus est 2";
+const string smtp_address = "smtp.gmail.com";
+const string smtp_port = "587"; // Using TLS?
+
+
+
+static string smtp_username;
+static string smtp_password;
+static string smtp_receiver_address;
+
 
 void get_smtp_credentials(void);
 
@@ -84,7 +85,7 @@ public:
                                       {"Solar Panel", false},
                                       {"Battery", false}};
 
-    map<string, double> level = {{"battery_level", 100}, {"rain_level", 4.2}};
+    map<string, double> level = {{"battery_level", NAN}, {"rain_level", NAN}};
 
     // double battery_level{NAN};
     // double rain_level{NAN};
@@ -111,5 +112,8 @@ std::string system_call_to_string(const char* cmd);
 std::string create_smtp_text_header(string &message_type);
 void send_text_through_SMTP(ostringstream &oss, string &message_type);
 
+bool verify_username(const string &user_name);
+bool verify_password(const string &password);
+bool verify_password(const string &password, int8_t &size);
 
 #endif //CSC4110_PROJECT_LOG_H
