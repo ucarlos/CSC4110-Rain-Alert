@@ -53,7 +53,8 @@ void close_connection(pqxx::connection &c){
 // the specified date and time of a query. The returned pqxx::result may
 // contain no rows at all.
 //------------------------------------------------------------------------------
-pqxx::result search_database(pqxx::connection &c, const std::string& date, std::string time){
+
+pqxx::result search_database(pqxx::connection &c, const std::string& date, string &time){
     // Time format should be default (yyyy/mm/dd)
     // Some form of checking for time
 
@@ -108,8 +109,5 @@ void get_database_info_from_file(void){
     database_path = "postgresql://" + db_name + "@" + db_address +
 	"/" + db_table;
     
-    /*
-    database_path = "postgresql://" + database_name + "@"
-                    + database_address + "/" + database_table;
-                    */
+
 }

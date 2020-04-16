@@ -21,5 +21,23 @@ using namespace std;
 // Project version number
 #include "./include/Project_Version.h"
 
+//------------------------------------------------------------------------------
+// Menu Functions:
+//------------------------------------------------------------------------------
+void show_status(void);
+void search_logs(void);
+void test_sensors(void);
+void database_options(void);
+void email_options(void);
+
+
+//------------------------------------------------------------------------------
+// Testing Functions: For debugging purposes.
+//------------------------------------------------------------------------------
+void test_smtp(void);
+
+
 // Any templates/ Classes?
+
+
 #endif

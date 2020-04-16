@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 //#include <utility>
 #include <vector>
 #include <string>
@@ -37,7 +38,6 @@ inline static double inches_to_cm(double in) { return in * 2.54; }
 
 const string smtp_address = "smtp.gmail.com";
 const string smtp_port = "587"; // Using TLS?
-
 
 
 static string smtp_username;

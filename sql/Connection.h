@@ -27,7 +27,7 @@ void get_database_info_from_file(void);
 void initialize_connection(pqxx::connection &c);
 void close_connection(pqxx::connection &c);
 void open_connection(pqxx::connection &c);
-pqxx::result search_database(pqxx::connection &c, const std::string& date, std::string time);
+pqxx::result search_database(pqxx::connection &c, const std::string& date, string &time);
 
 
 #endif
