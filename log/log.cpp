@@ -210,9 +210,6 @@ std::string create_smtp_text_header(string &message_type) {
        << "To: " << smtp_receiver_address << end_line
        << "From: " << smtp_username << end_line
        << "Subject: " << "Rain Alert Report: " << message_type <<  end_line
-       << "Mime-Version: 1.0;"
-       << "Content-Type: " << "text/html;" << end_line
-       << "Content-Transfer-Encoding: 7bit;" << end_line
        << end_line;
 
     return os.str();

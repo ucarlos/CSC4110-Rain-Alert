@@ -122,6 +122,7 @@ void menu(void){
     list_menu();
     // Function Pointer to each option.
     void (*function_pointer)(void);
+
     cout << endl;
     cout << "Please choose a selection. To quit, press \"q\"."
 	 << endl;
@@ -169,7 +170,8 @@ int main(void){
     // Get the credentials for the SMTP and the database first.
     get_smtp_credentials();
     get_database_info_from_file();
-    menu();
+    test_smtp();
+    //menu();
 
 
 }

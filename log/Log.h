@@ -23,6 +23,7 @@
 #include <stdexcept>
 #include <cstdio>
 #include <regex>
+#include <unistd.h>
 
 // Postgresql library headers
 #include <pqxx/pqxx>

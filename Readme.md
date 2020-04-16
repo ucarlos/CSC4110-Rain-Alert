@@ -13,9 +13,22 @@ This project required the following hardware in order to work:
 -   Rain Sensor
 -   Float Sensor
 -   Graduated Cylinder
+-   Raspberry Pi Zero W
 
 
 ## Necessary Software
+
+
+### TLDR;
+
+If on Debian/Ubuntu/Raspbian, execute this command:
+
+```bash
+sudo apt-get install postgresql libpq-dev libpqxx-dev cmake libcurl-dev ncurses dialog
+```
+
+
+### Long Explanation
 
 Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you may need to install the following:
 
@@ -61,11 +74,15 @@ Since this is a CLion Project, you can try installing it on your system and open
     curl-config --feature
     ```
     
-    You should see a list that should contain "SSL".
+    You should see a list that should contain "SSL". If not, install a more recent version of libcurl or compile from source.
 
-4.  NCurses Library
+4.  NCurses and Dialog Libraries
 
-    In order to display the text-based UI, NCurses must be installed on your system.
+    In order to display the text-based UI, NCurses and dialog must be installed on your system. To do so, do
+    
+    ```bash
+    sudo apt-get install ncurses dialog
+    ```
 
 
 ## Explanation
@@ -92,5 +109,3 @@ To run the program, do
 
 
 ## References
-
--   I used this [SMTP Library for the project.](https://github.com/somnisoft/smtp-client)

@@ -75,13 +75,19 @@ void test_connection(void){
 void test_smtp(void){
     Log l;
     ifstream ifs;
-    l.comment = "This is intended to be a test of the SMTP client."
-                "Please disregard it.";
+    l.comment = "<b>This is intended to be a test of the SMTP client."
+                "Please disregard it.</b>";
 
+    cout << "Testing SMTP HTML.." << endl;
+    sleep(2);
     string type = "SMTP HTML TEST";
     send_log_as_HTML(l, type);
-    
+
     type = "SMTP TEXT TEST";
+    l.comment = "This is intended to be a test of the SMTP client."
+                "Please disregard it.";
+    cout << "Testing SMTP TEXT.." << endl;
+    sleep(2);
     send_log_as_text(l, type);
 
 }
