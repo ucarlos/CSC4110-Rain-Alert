@@ -19,6 +19,7 @@ If on Debian/Ubuntu/Raspbian, execute this command:
 #+BEGIN_SRC bash
 sudo apt-get install postgresql libpq-dev libpqxx-dev cmake libcurl-dev ncurses dialog
 #+END_SRC
+Those should be all the libraries needed to compile and run this project.
 *** Long Explanation
 Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you may need to install the following:
 

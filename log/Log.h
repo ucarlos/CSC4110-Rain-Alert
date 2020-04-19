@@ -27,13 +27,22 @@
 
 // Postgresql library headers
 #include <pqxx/pqxx>
-#include <pqxx/field>
+//#include <pqxx/field>
 
 // SMTP Library (C++ Wrapper)
 // Requires Openssl to be to the system; Usually installed on Linux
 #include <curl/curl.h>
 using namespace std;
+
+//------------------------------------------------------------------------------
+// Static variables
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Inline Functions
+//------------------------------------------------------------------------------
 inline static double inches_to_cm(double in) { return in * 2.54; }
+
 
 // SMTP information
 
@@ -51,6 +60,7 @@ void get_smtp_credentials(void);
 //------------------------------------------------------------------------------
 // Filepaths
 //------------------------------------------------------------------------------
+const string smtp_file_path = "../log/smtp_info.txt";
 const string text_file_path = "../log/Report.txt";
 const string html_template_path = "../log/html_template.html";
 const string html_file_path = "../log/Report.html";
@@ -113,8 +123,8 @@ std::string system_call_to_string(const char* cmd);
 std::string create_smtp_text_header(string &message_type);
 void send_text_through_SMTP(ostringstream &oss, string &message_type);
 
-bool verify_username(const string &user_name);
-bool verify_password(const string &password);
-bool verify_password(const string &password, int8_t &size);
+bool verify_username(std::regex &test, const string &user_name);
+bool verify_password(std::regex &test, const string &password);
+bool verify_password(std::regex &test, int8_t &size, const string &password);
 
 #endif //CSC4110_PROJECT_LOG_H

@@ -9,6 +9,11 @@
 
 #include "./Log.h"
 
+
+//------------------------------------------------------------------------------
+// Log Class definitions
+//------------------------------------------------------------------------------
+
 Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm, string time_stamp) {
     // Maps should be the same size as default. Error otherwise.
     if ((this->sensor_check.size() != sensor.size()) ||
@@ -21,7 +26,7 @@ Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm, stri
     this->sensor_check = sensor;
     this->level = levl;
     this->comment = std::move(comm);
-    this->time_stamp = time_stamp;
+    this->time_stamp = std::move(time_stamp);
 
 }
 
@@ -36,8 +41,10 @@ Log::Log(pqxx::row &row){ // Extract the contents of row and fill the log.
 // extract_row() -- extracts the appropriate fields from raw_data.
 //------------------------------------------------------------------------------
 bool Log::extract_row() {
-    if (!raw_data) // Prevent access of empty raw_data
+    if (!raw_data){ // Prevent access of empty raw_data
+	cerr << "Warning: Log does not point to any row.\n";
         return false;
+    }
 
     // First, fill the date and timestamp.
     date = (raw_data->begin() + 1)->as(string{});
@@ -125,10 +132,7 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     advance(check, 1);
 
     for (auto i = l.level.begin(); i != l.level.end(); i++){
-        if (check == l.level.end())
-            os << trans.quote(i->second) << ")";
-	    else
-	        os << trans.quote(i->second) << ", ";
+        os << trans.quote(i->second) << (check == l.level.end() ? ")" : ", ");
     }
     os << trans.quote(l.comment) << ")";
 
@@ -436,11 +440,11 @@ void send_log_as_text(const Log &l, string &message_type) {
 // Username should follow name@domain_name.domain.
 //------------------------------------------------------------------------------
 
-bool verify_username(const string &user_name){
+bool verify_username(std::regex &test, const string &user_name) {
     string regex_str = R"(^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$)";
     // Use regex expressions to check for valid user_name.
     // ^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$
-    std::basic_regex test(regex_str.c_str());
+    test = std::regex{regex_str};
     return regex_match(user_name,test);
 
 }
@@ -452,18 +456,27 @@ bool verify_username(const string &user_name){
 // specify the minimum amount (up to a max of 128 characters)
 //------------------------------------------------------------------------------
 
-bool verify_password(const string &password){
+bool verify_password(std::regex &test, const string &password) {
     // Password should at least be 6 characters.
     string regex_str = "^[\\w | \\.]{6,}$";
-    std::basic_regex test(regex_str.c_str());
+    test = std::regex{regex_str};
     return regex_match(password, test);
 }
 
-bool verify_password(const string &password, int8_t &size){
+bool verify_password(std::regex &test, int8_t &size, const string &password) {
     ostringstream os;
     os << R"("^[\\w | \\.]{)" << size << ",}$";
-    std::basic_regex test(os.str());
+    test = std::regex{os.str()};
     return regex_match(password, test);
+}
+//------------------------------------------------------------------------------
+// Creck_credentials : Quick check of booleans for SMTP reading
+// This mainly exists in order to make get_smtp_credentials() shorter and
+// to better describe error messages.
+//------------------------------------------------------------------------------
+inline void check_credentials(bool check, string error) {
+    if (!check)
+        throw runtime_error(error);
 }
 
 //------------------------------------------------------------------------------
@@ -477,9 +490,9 @@ bool verify_password(const string &password, int8_t &size){
 
 void get_smtp_credentials(void){
     // Read the data from
-    ifstream file{"../log/smtp_info.txt"};
+    ifstream file{smtp_file_path};
     if (!file){
-	    throw runtime_error("Cannot retrieve the SMTP credentials. Aborting.");
+	    throw runtime_error("Cannot retrieve the SMTP credentials from " + smtp_file_path);
     }
 
     // Now check if the file is empty.
@@ -503,16 +516,21 @@ void get_smtp_credentials(void){
         throw runtime_error(error);
     }
 
+    // Handle any issues regarding invalid email addresses/password.
+    // This doesn't make sure if the email address even exists, so
+    // its up to you to do so.
+    std::regex test;
+    bool check_info = verify_username(test, smtp_us);
+    check_credentials(check_info, "The email address you're using "
+                                  "to send email to is not valid.");
 
-    bool check_info = verify_username(smtp_us);
-    check_info &= verify_password(smtp_pass);
-    check_info &= verify_username(reciv_us);
+    check_info &= verify_password(test, smtp_pass);
+    check_credentials(check_info, "The password is not valid for some reason.");
 
-    if (!check_info){
-        string error = "A variable in smtp_info.txt is not a valid email";
-        error += " or has a password length less than 6.";
-        throw runtime_error(error);
-    }
+    check_info &= verify_username(test, reciv_us);
+    check_credentials(check_info, "The email address you're using "
+                                  "to receive email from is not valid.");
+
     smtp_username = smtp_us;
     smtp_password = smtp_pass;
     smtp_receiver_address = reciv_us;
