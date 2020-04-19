@@ -14,8 +14,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_library(PSQL_CXX pqxx)
 if(NOT PSQL_CXX)
     message(FATAL_ERROR "\"libpqxx\" could not be found on your system."
-            " If on Linux, please install libpqxx through your package manager"
-            " (apt, yum, etc). If on macOS, use homebrew to install \"libpqxx\"."
+            " If on Linux, please install libpqxx through your package manager."
             "You must also have postgresql installed on your system.")
 endif()
 

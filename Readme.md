@@ -24,15 +24,17 @@ This project required the following hardware in order to work:
 If on Debian/Ubuntu/Raspbian, execute this command:
 
 ```bash
-sudo apt-get install postgresql libpq-dev libpqxx-dev cmake libcurl-dev ncurses dialog
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev
 ```
 
 
 ### Long Explanation
 
-Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you may need to install the following:
+Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you need to install the following regardless:
 
-1.  PostgreSQL with libpq and libpqxx >= 6
+1.  Git
+
+2.  PostgreSQL with libpq and libpqxx >= 6
 
     You can install all three on an Debian/Ubuntu/Raspbian using the following command:
     
@@ -40,7 +42,7 @@ Since this is a CLion Project, you can try installing it on your system and open
     sudo apt-get install postgresql libpq-dev libpqxx-dev
     ```
     
-    If on macOS, you can install the packages using homebrew:
+    Please be aware that libpqxx-dev included with your package manager may be an older version, so you may have to [compile from source](https://github.com/jtv/libpqxx) to get the latest version. If on macOS, you can install the packages using homebrew:
     
     ```bash
     brew install postgresql
@@ -48,7 +50,7 @@ Since this is a CLion Project, you can try installing it on your system and open
     brew install libpqxx
     ```
 
-2.  CMake >= 3.15 (If CLion cannot be installed on your system)
+3.  CMake >= 3.15 (If CLion cannot be installed on your system)
 
     If on Debian/Ubuntu/Raspbian, use the following command:
     
@@ -58,12 +60,12 @@ Since this is a CLion Project, you can try installing it on your system and open
     
     On other Linux or UNIX Systems, you may need to use your package manager or [compile from source.](https://cmake.org/download/) You may also have to compile from source if your CMake version is less than 3.15.
 
-3.  libcurl-dev >= 7.50.0 with SSL.
+4.  libcurl-dev >= 7.50.0 with SSL.
 
     To install libcurl-dev on Debian/Ubuntu/Raspbian, do
     
     ```bash
-    sudo apt-get install libcurl-dev
+    sudo apt-get install libcurl4-openssl-dev libssl-dev
     ```
     
     Or use whatever package manager you have to install it.
@@ -74,9 +76,9 @@ Since this is a CLion Project, you can try installing it on your system and open
     curl-config --feature
     ```
     
-    You should see a list that should contain "SSL". If not, install a more recent version of libcurl or compile from source.
+    You should see a list that should contain "SSL". If not, install a more recent version of libcurl through your package manager or [compile from source.](https://curl.haxx.se/download.html)
 
-4.  NCurses and Dialog Libraries
+5.  NCurses and Dialog Libraries
 
     In order to display the text-based UI, NCurses and dialog must be installed on your system. To do so, do
     

@@ -17,18 +17,17 @@ This project required the following hardware in order to work:
 *** TLDR;
 If on Debian/Ubuntu/Raspbian, execute this command:
 #+BEGIN_SRC bash
-sudo apt-get install postgresql libpq-dev libpqxx-dev cmake libcurl-dev ncurses dialog
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev
 #+END_SRC
-Those should be all the libraries needed to compile and run this project.
 *** Long Explanation
-Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you may need to install the following:
-
+Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you need to install the following regardless:
+**** Git
 **** PostgreSQL with libpq and libpqxx >= 6
 You can install all three on an Debian/Ubuntu/Raspbian using the following command:
 #+BEGIN_SRC bash
 sudo apt-get install postgresql libpq-dev libpqxx-dev
 #+END_SRC
-
+Please be aware that libpqxx-dev included with your package manager may be an older version, so you may have to [[https://github.com/jtv/libpqxx][compile from source]] to get the latest version.
 If on macOS, you can install the packages using homebrew:
 #+BEGIN_SRC bash
 brew install postgresql
@@ -45,7 +44,7 @@ On other Linux or UNIX Systems, you may need to use your package manager or [[ht
 **** libcurl-dev >= 7.50.0 with SSL.
 To install libcurl-dev on Debian/Ubuntu/Raspbian, do
 #+BEGIN_SRC bash
-sudo apt-get install libcurl-dev
+sudo apt-get install libcurl4-openssl-dev libssl-dev
 #+END_SRC
 Or use whatever package manager you have to install it.
 
@@ -54,7 +53,7 @@ In order to know if SSL is enabled within curl, do the following command:
 curl-config --feature
 #+END_SRC
 
-You should see a list that should contain "SSL". If not, install a more recent version of libcurl or compile from source.
+You should see a list that should contain "SSL". If not, install a more recent version of libcurl through your package manager or [[https://curl.haxx.se/download.html][compile from source.]]
 **** NCurses and Dialog Libraries
 In order to display the text-based UI, NCurses and dialog must be installed on your system.
 To do so, do
