@@ -75,6 +75,10 @@ To run the program, do
 ./CSC4110_Project
 #+END_SRC
 ** References
-# - I used this [[https://github.com/somnisoft/smtp-client][SMTP Library for the project.]]
+- [[https://computing.llnl.gov/tutorials/pthreads/][POSIX Thread Introduction]]
+- [[https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html][POSIX Thread on C++]]
+- [[https://curl.haxx.se/libcurl/c/][libcurl Documentation]]
+- [[https://libpqxx.readthedocs.io/en/latest/][libpqxx Documentation]]
+
 
 
