@@ -1,0 +1,3 @@
+[IP Address of the PostgreSQL Database]
+[USER_NAME_THAT_YOU_ARE_USING:PASSWORD_OF_THAT_USERNAME]
+[Name of the database that you will use for this project]

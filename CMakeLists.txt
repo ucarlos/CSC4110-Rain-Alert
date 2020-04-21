@@ -27,6 +27,7 @@ endif()
 
 # Set C and C++ Standards
 set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_CXX_FLAGS "-g -O1 -Wall -fprofile-arcs -ftest-coverage")
 #set(CMAKE_C_STANDARD 11)
 
 # Add SMTP Library
@@ -40,6 +41,10 @@ add_library(Log log/Log.cc)
 
 #add_executable(CSC4110_Project main.cpp)
 #add_executable(Basic_Menu Basic_Menu.cc ./sensors/Float_Sensor.cc log/log.cpp sql/Connection.cc)
+
+#Test with coverage:
+
+
 add_executable(CSC4110_Project Basic_Menu.cc Test.cc ./sensors/Float_Sensor.cc log/Log.cc sql/Connection.cc)
 
 target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto Log Connection)

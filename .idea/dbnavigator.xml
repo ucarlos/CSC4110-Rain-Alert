@@ -25,9 +25,8 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216">
-        <schema name="information_schema" object-types="view, table" />
-        <schema name="pg_catalog" object-types="view, table" />
-        <schema name="public" object-types="column, view, table" />
+        <schema name="pg_catalog" object-types="table, view" />
+        <schema name="public" object-types="column, table, view" />
       </connection>
     </loaded-nodes>
   </component>
@@ -284,7 +283,10 @@
           <content-type name="SQL" enabled="true" />
           <content-type name="PL/SQL" enabled="true" />
           <content-type name="JavaScript" enabled="true" />
+          <content-type name="JSON" enabled="true" />
+          <content-type name="JSON5" enabled="true" />
           <content-type name="YAML" enabled="true" />
+          <content-type name="Bash" enabled="true" />
         </content-types>
       </qualified-text-editor>
       <record-navigation>
