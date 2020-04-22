@@ -22,6 +22,10 @@ using namespace std;
 // Project version number
 #include "./include/Project_Version.h"
 
+// Macros
+#define MAX_SECONDS_IN_DAY (86400)
+const string time_path = "../Settings.txt";
+
 //------------------------------------------------------------------------------
 // Menu Functions:
 //------------------------------------------------------------------------------
@@ -52,27 +56,41 @@ void test_smtp(void);
 class Sensor_Date{
 public:
     Sensor_Date(){
-	user_time{default_time};
+		user_time = default_time;
+		set_email_time(email_seconds);
     }
-    explicit Sensor_Date(string default_t, string set_t) : default_time{d_t},
-						   set_time{s_t} { }
+
+    explicit Sensor_Date(string d_t, string u_t) :
+    	default_time{d_t}, user_time{u_t} {
+	    // Set seconds:
+	    
+
+	}
     
     explicit Sensor_Date(string defined_user_time){
-	this->user_time = defined_user_time;
+    	this->user_time = defined_user_time;
     }
     
-    void change_user_time(string n_t) { user_time = n_t; }
-    void reset_user_time() { user_time = default_time; }
+    void change_user_time(string &n_t);
+    void reset_user_time();
 
     // Handle reading from ifstreams
-    friend ifstream& operator>>(Sensor_Date &sd);
+    friend istream& operator>>(ifstream &ifs, Sensor_Date &sd);
 private:
-    string default_time;
+    string default_time{"00:00"};
     string user_time{};
-    string time_in_seconds{};
+    std::chrono::seconds email_time;
+    uint32_t email_seconds{MAX_SECONDS_IN_DAY};
+    void set_email_time(uint32_t &seconds);
     
     
 };
+
+//------------------------------------------------------------------------------
+// Sensor_Date functions
+//------------------------------------------------------------------------------
+uint32_t return_time_in_seconds(string &time);
+void get_time_from_file(void);
 
 //------------------------------------------------------------------------------
 // PThread functions

@@ -45,7 +45,8 @@ add_library(Log log/Log.cc)
 #Test with coverage:
 
 
-add_executable(CSC4110_Project Basic_Menu.cc Test.cc ./sensors/Float_Sensor.cc log/Log.cc sql/Connection.cc)
+add_executable(CSC4110_Project Basic_Menu.cc Test.cc
+        ./Sensor_Date.cc ./sensors/Float_Sensor.cc log/Log.cc sql/Connection.cc)
 
 target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto Log Connection)
 #target_link_libraries(Basic_Menu PUBLIC curl m pqxx pq ssl crypto Log Connection dialog)
