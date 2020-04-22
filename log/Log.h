@@ -3,7 +3,7 @@
  * Created by Ulysses Carlos on 04/12/2020
  * 
  * Log.h
- * 
+ * Header.
  * -----------------------------------------------------------------------------
  */
 
@@ -52,7 +52,7 @@ inline static double inches_to_cm(double in) { return in * 2.54; }
 // SMTP information
 
 const string smtp_address = "smtp.gmail.com";
-const string smtp_port = "587"; // Using TLS?
+const string smtp_port = "587"; // We're using TLS.
 
 
 static string smtp_username;

@@ -11,7 +11,9 @@
 
 
 //------------------------------------------------------------------------------
-// Log Class definitions
+// Log Class Definitions
+//
+//
 //------------------------------------------------------------------------------
 
 Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm, string time_stamp) {
@@ -111,6 +113,15 @@ ostream& operator<<(ostream &os, const Log &l){
     return os << o.str();
 
 }
+
+//------------------------------------------------------------------------------
+// Database log functions
+//
+//
+//------------------------------------------------------------------------------
+
+
+
 //------------------------------------------------------------------------------
 // add_log(): Add a Log to a database.
 //------------------------------------------------------------------------------
@@ -144,6 +155,14 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     trans.commit();
 }
 
+
+//------------------------------------------------------------------------------
+// SMTP Log Functions
+//
+//
+//------------------------------------------------------------------------------
+
+
 //------------------------------------------------------------------------------
 // system_all_to_string(const char * cmd):
 // This function takes the result of a system call and stores it into a
@@ -166,20 +185,10 @@ std::string system_call_to_string(const char* cmd) {
 }
 
 
-
-
 //------------------------------------------------------------------------------
-// string create_stmp_header(void)
-// Creates the appropriate smtp header in preparation of sending an email.
-// STMP Headers are structured as so:
-// Date: \r\n
-// To: \r\n
-// From: \r\n
-// Message-ID:
-// Subject:
-// \r\n
+// create_date() : Do a system call to get the current date in
+// month day year hh::mm:ss 
 //------------------------------------------------------------------------------
-
 std::string create_date(void){
     string date_str = system_call_to_string("date \"+%a, %d %b %Y %k:%M:%S -0500\"");
 
@@ -189,6 +198,12 @@ std::string create_date(void){
     return date_str;
 }
 
+//------------------------------------------------------------------------------
+// create_smtp_html_header():
+// Populates a vector of std::string containing a smtp header.
+// I can't use create_smtp_text_header to send a html email, so this method
+// has to be used instead.
+//------------------------------------------------------------------------------
 vector<std::string> create_html_header(string &message_type) {
 
     ostringstream os;
@@ -202,6 +217,18 @@ vector<std::string> create_html_header(string &message_type) {
 
     return header_data;
 }
+
+//------------------------------------------------------------------------------
+// string create_stmp_text_header(void)
+// Creates the appropriate smtp header in preparation of sending an email.
+// STMP Headers are structured as so:
+// Date: \r\n
+// To: \r\n
+// From: \r\n
+// Message-ID:
+// Subject:
+// \r\n
+//------------------------------------------------------------------------------
 
 std::string create_smtp_text_header(string &message_type) {
     const std::string end_line = "\r\n";
@@ -244,7 +271,10 @@ void set_up_stmp_connection(CURL *curl) {
 }
 //------------------------------------------------------------------------------
 // send_html_through_SMTP():
-// Send the file opened by ifs, 
+// Write the following to the file in text_file_path:
+// * SMTP Header Specifying the appropriate information
+// * Output of Log
+// This is then sent to the recipient address in smtp_recipient_address.
 //------------------------------------------------------------------------------
 
 void send_text_through_SMTP(ostringstream &oss, string &message_type) {
@@ -299,6 +329,11 @@ void send_text_through_SMTP(ostringstream &oss, string &message_type) {
 }
 
 
+//------------------------------------------------------------------------------
+// send_html_through_SMTP():
+// Send inline html email to the recipient address specified in
+// smtp_receiver_address.
+//------------------------------------------------------------------------------
 void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_type) {
     
     struct curl_slist *recipients = nullptr;

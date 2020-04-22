@@ -92,10 +92,10 @@ void test_smtp(void){
 
 }
 
-// int main(void) {
-//     info();
-//     // Enable Email
-//     get_smtp_credentials();
-//     //test_connection();
+//------------------------------------------------------------------------------
+// test_pthread() : Tests creating a pthread and joining it.
+//------------------------------------------------------------------------------
+void test_pthread(void){
 
-// }
+
+}

@@ -34,9 +34,19 @@ const static vector<string> options = {"Enable/Disable Tracking",
 // Of the Float Sensor/Rain Sensor. When an error occurs or when it is time
 // To send a daily report, send an email.
 // When Tracking is disabled, close the pthread.
+// TODO: Allow both threads to run in the background.
 //------------------------------------------------------------------------------
-void tracking(void) {
+void sensor_tracking(void) {
     cout << options[0] << endl;
+    
+    /*
+     * Create two pthreads:
+     * One to handle reading from sensor
+     * One to handle sending mail at a specfic rate.
+     */
+
+
+    
     return_to_menu();
 }
 
