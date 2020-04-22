@@ -1,0 +1,57 @@
+So the idea is this, the function that handles enabling and disabling sensors
+will be different depending on the GUI system but will use the same functions
+that handle actually creating/handle sensor output.
+
+two threads used:
+pthread sensor_read
+pthread email
+
+New class:
+my_date handles settings from a file containing the following data
+class my_date{
+      public:
+	change current_time function
+	reset current_time to default_time function
+	constructor
+	
+      private:
+	default_time = midnight	(12:00am)
+	current_time = read from configuration file if possible, otherwise blank
+
+}
+
+
+First function for pthread()
+handle_sensor_input(){
+	double result
+	bool check
+	
+	while sensor can be accessed and read to -- Through check
+	      check = read_sensor(result)
+	      if (!check)
+	      	 break
+
+	if (!check) 
+	   write a error mesagage stating that sensor can't be connected to
+	   send email with an error
+	   leave function.
+		
+}
+
+
+handle_email(){
+	the time may change, so account for that.
+	
+	get the time when the email is supposed to be sent in seconds:
+	get the current time in seconds:
+	
+	while true:
+	      if the current time is equal to the specified time:
+	      	 send email with daily report
+
+	      if the time has been changed through user means:
+	      	 change current date
+	      	 send email stating that the date has changed.
+		 
+	
+}
