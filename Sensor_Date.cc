@@ -27,8 +27,8 @@ bool verify_time(const string &time){
     if (!check) return false;
 
     // Shitty hack to get values of hour and min
-    int hour = 10 * (time[0] - '0') + (time[1] - '0');
-    int min = 10 * (time[3] - '0') + (time[4] - '0');
+    uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
+    uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
     // Check if date is valid
     return ((0 <= hour && hour <= 23) || (0 <= min && min <= 59));
@@ -46,9 +46,7 @@ uint32_t return_time_in_seconds(string &time){
     uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
     uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
-    // In order to prevent division by 0, the default time
-    // of 00:00 will be set as 86400, the maxiumum seconds in a day.
-	return !hour && !min ? MAX_SECONDS_IN_DAY :
+	return !hour && !min ? 0 :
 	    (unit * unit * hour) + (unit * min);
 
 }
@@ -67,8 +65,9 @@ void Sensor_Date::change_user_time(string &n_t){
     if (!check)
 	reset_user_time();
     else {
-	email_seconds = return_time_in_seconds(n_t);
-	set_email_time(email_seconds);
+    	user_time = n_t;
+		email_seconds = return_time_in_seconds(n_t);
+		set_email_time(email_seconds);
     }
 
 }

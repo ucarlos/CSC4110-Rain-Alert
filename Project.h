@@ -57,18 +57,17 @@ class Sensor_Date{
 public:
     Sensor_Date(){
 		user_time = default_time;
-		set_email_time(email_seconds);
     }
 
     explicit Sensor_Date(string d_t, string u_t) :
-    	default_time{d_t}, user_time{u_t} {
+    	default_time{d_t}{
 	    // Set seconds:
-	    
+	    change_user_time(u_t);
 
 	}
     
     explicit Sensor_Date(string defined_user_time){
-    	this->user_time = defined_user_time;
+    	change_user_time(defined_user_time);
     }
     
     void change_user_time(string &n_t);
@@ -79,7 +78,7 @@ public:
 private:
     string default_time{"00:00"};
     string user_time{};
-    std::chrono::seconds email_time;
+    std::chrono::seconds email_time{MAX_SECONDS_IN_DAY};
     uint32_t email_seconds{MAX_SECONDS_IN_DAY};
     void set_email_time(uint32_t &seconds);
     
