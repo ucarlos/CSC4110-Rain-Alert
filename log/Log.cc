@@ -16,7 +16,8 @@
 //
 //------------------------------------------------------------------------------
 
-Log::Log(map<string, bool> &sensor, map<string, double> &levl, string comm, string time_stamp) {
+Log::Log(map<string, bool> &sensor, map<string, double> &levl,
+	 string comm, string time_stamp) {
     // Maps should be the same size as default. Error otherwise.
     if ((this->sensor_check.size() != sensor.size()) ||
         (this->level.size() != levl.size())){
@@ -57,11 +58,13 @@ bool Log::extract_row() {
 
     // pqxx::field f; // Uses field
     // Now traverse through the boolean sensor_check
-    for (auto i = sensor_check.begin(); (i != sensor_check.end() && it != raw_data->end()); i++, it++){
+    for (auto i = sensor_check.begin();
+	 (i != sensor_check.end() && it != raw_data->end()); i++, it++){
         i->second = it->as(bool{});
     }
     // Then the double level
-    for (auto i = level.begin(); (i != level.end() && it != raw_data->end()); i++, it++){
+    for (auto i = level.begin();
+	 (i != level.end() && it != raw_data->end()); i++, it++){
         i->second = it->as(double{});
     }
 
@@ -143,7 +146,8 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     advance(check, 1);
 
     for (auto i = l.level.begin(); i != l.level.end(); i++){
-        os << trans.quote(i->second) << (check == l.level.end() ? ")" : ", ");
+        os << trans.quote(i->second)
+	   << (check == l.level.end() ? ")" : ", ");
     }
     os << trans.quote(l.comment) << ")";
 
@@ -406,7 +410,7 @@ void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_ty
             cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
                  << endl;
 
-	    curl_slist_free_all(recipients);
+	curl_slist_free_all(recipients);
         curl_slist_free_all(headers);
 
         // Always cleanup:
@@ -437,8 +441,11 @@ void send_log_as_HTML(const Log &l, string &message_type){
     } while ((ifs.good() && temp != check));
 
     if (temp != check){
-        throw runtime_error("Could not insert log into the HTML Document.\n");
+	string error = "I couldn't insert the log into " + html_template_path;
+	error += "Make sure that the check comment is included in the file.\n";
+        throw runtime_error(error);
     }
+    
     // <!--- INSERT MESSAGE :) -->
     // Insert header
     new_file << "<h1> Pi Rain Alert: " << message_type << " for "
@@ -498,7 +505,7 @@ bool verify_password(std::regex &test, const string &password) {
     return regex_match(password, test);
 }
 
-bool verify_password(std::regex &test, int8_t &size, const string &password) {
+[[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const string &password) {
     ostringstream os;
     os << R"("^[\\w | \\.]{)" << size << ",}$";
     test = std::regex{os.str()};
@@ -532,7 +539,7 @@ void get_smtp_credentials(void){
 
     // Now check if the file is empty.
     if (file.peek() == std::ifstream::traits_type::eof()){
-        throw runtime_error("smtp_info.txt is emtpy.");
+        throw runtime_error("smtp_info.txt is emtpy. Change that.");
     }
 
     // Retrieve the credentials and assign them
@@ -543,7 +550,7 @@ void get_smtp_credentials(void){
 
     auto file_status = file.rdstate();
 
-    // The file should only have the eof flag enabled after reading the file to the end.
+    // The file should ONLY have the eof flag enabled after reading the file to the end.
     // If it doesn't meet those requirements, throw an error.
     if (file_status != ios_base::eofbit){
         string error = "Could not populate all variables from smtp_info.txt.";
@@ -564,7 +571,7 @@ void get_smtp_credentials(void){
 
     check_info &= verify_username(test, reciv_us);
     check_credentials(check_info, "The email address you're using "
-                                  "to receive email from is not valid.");
+                                  "to receive email from the project is not valid.");
 
     smtp_username = smtp_us;
     smtp_password = smtp_pass;

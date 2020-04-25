@@ -26,7 +26,7 @@ bool verify_time(const string &time){
     check = regex_match(time, test);
     if (!check) return false;
 
-    // Shitty hack to get values of hour and min
+    //  hack to get values of hour and min
     uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
     uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
@@ -46,13 +46,13 @@ uint32_t return_time_in_seconds(string &time){
     uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
     uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
-	return !hour && !min ? 0 :
-	    (unit * unit * hour) + (unit * min);
+	return (!hour && !min) ? 0 :
+		   ((unit * unit * hour) + (unit * min));
 
 }
 
 //------------------------------------------------------------------------------
-// Sensor_Date class defintions
+// Sensor_Date class definitions
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 void Sensor_Date::set_email_time(uint32_t &seconds){
@@ -63,7 +63,7 @@ void Sensor_Date::change_user_time(string &n_t){
     // First check is n_t is valid;
     bool check = verify_time(n_t);
     if (!check)
-	reset_user_time();
+		reset_user_time();
     else {
     	user_time = n_t;
 		email_seconds = return_time_in_seconds(n_t);

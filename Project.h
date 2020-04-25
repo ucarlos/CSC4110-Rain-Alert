@@ -16,7 +16,8 @@ using namespace std;
 
 // Log Library
 #include "./log/Log.h"
-
+// Sensor Library
+#include "./sensors/Sensor.h"
 // Connection Library
 #include "./sql/Connection.h"
 // Project version number
@@ -27,15 +28,23 @@ using namespace std;
 const string time_path = "../Settings.txt";
 
 //------------------------------------------------------------------------------
-// Menu Functions:
+// Menu Functions and variables
 //------------------------------------------------------------------------------
 void sensor_tracking(void);
-
+inline void return_to_menu(void);
 void show_status(void);
 void search_logs(void);
 void test_sensors(void);
 void database_options(void);
 void email_options(void);
+
+const static vector<string> options = {"Enable/Disable Tracking",
+									   "Status",
+									   "Search Logs",
+									   "Test Sensors",
+									   "Database Options",
+									   "Email Options",
+									   "Quit"};
 
 
 //------------------------------------------------------------------------------
@@ -44,7 +53,17 @@ void email_options(void);
 void test_smtp(void);
 
 
-// Any templates/ Classes?
+//------------------------------------------------------------------------------
+// Global Pthreads:
+// They are only to be used for the Sensor Tracking and Emailing Sending
+// Functions.
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+// Sensor Tracking functions
+//------------------------------------------------------------------------------
+
 
 //------------------------------------------------------------------------------
 // Date class
@@ -91,9 +110,6 @@ private:
 uint32_t return_time_in_seconds(string &time);
 void get_time_from_file(void);
 
-//------------------------------------------------------------------------------
-// PThread functions
-//------------------------------------------------------------------------------
 
 
 #endif

@@ -127,9 +127,9 @@ vector<std::string> create_html_header(string &message_type);
 std::string system_call_to_string(const char* cmd);
 std::string create_smtp_text_header(string &message_type);
 void send_text_through_SMTP(ostringstream &oss, string &message_type);
-
 bool verify_username(std::regex &test, const string &user_name);
 bool verify_password(std::regex &test, const string &password);
-bool verify_password(std::regex &test, int8_t &size, const string &password);
+
+[[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const string &password);
 
 #endif //CSC4110_PROJECT_LOG_H
