@@ -36,11 +36,13 @@ inline std::string get_tracking_status(){
     return (tracking_status)? "Enabled" : "Disabled";
 }
 
-void toggle_sensor_tracking(void) {
+void toggle_sensor_tracking(const Sensor_Date &s_d) {
     cout << options[0] << endl;
-
+	string time = s_d.get_user_time();
     cout << "Current Sensor Status: " << get_tracking_status() << endl;
-    
+    cout << "Daily reports will be sent every day at "
+    	 << time << " (" << twelve_hour_clock(time) <<")" << endl;
+
     cout << "Input \"Enable\" to enable Sensor Checking."
 	 << endl
 	 << "Input \"Disable\" to disable Sensor Checking."
@@ -196,15 +198,11 @@ std::chrono::system_clock::duration time_since_midnight() {
 }
 
 //------------------------------------------------------------------------------
-// send_email(): Pthread function that handles sending email at the specified
+// send_email_thread(): Pthread function that handles sending email at the specified
 // time 
 //------------------------------------------------------------------------------
-void* send_email(void *sensor_date){
-	Sensor_Date *sdate = static_cast<Sensor_Date *>(sensor_date);
-
-	// Thank god I have auto. Have you seen the actual types of these objects?
-	// It's too damn long!
-	auto midnight_time = time_since_midnight();
+void* send_email_thread(void *s_d){
+	Sensor_Date *sdate = static_cast<Sensor_Date*>(s_d);
 
 	string message = "Daily Report.";
 	time_t current_time;
@@ -238,9 +236,9 @@ void* send_email(void *sensor_date){
 			pthread_mutex_unlock(&log_mutex);
 		}
 		// If the other thread is closed, close this one too.
-		if (end_all_threads){
+		if (end_all_threads)
 			break;
-		}
+
 	}
 
     
@@ -259,7 +257,10 @@ void* send_email(void *sensor_date){
 // TODO: Allow both threads to run in the background.
 //------------------------------------------------------------------------------
 void sensor_tracking(void){
-    toggle_sensor_tracking();
+	Sensor_Date sd;
+	get_time_from_file(sd);
+
+	toggle_sensor_tracking(sd);
     
     if (!tracking_status){
 	cerr << "Tracking is currently disabled. Return back to the"
@@ -287,11 +288,10 @@ void sensor_tracking(void){
     check_pthread_creation(pthread_check, error_msg);
     
     // Now create the pthread for email sending.
-    Sensor_Date sd;
-    get_time_from_file(sd);
+
     pthread_check = pthread_create(&email, nullptr,
-				   send_email,
-				   static_cast<void*>(&sd));
+								   send_email_thread,
+								   static_cast<void *>(&sd));
     
     error_msg = "Could not create a pthread for sending email.";
     check_pthread_creation(pthread_check, error_msg);
@@ -304,4 +304,5 @@ void sensor_tracking(void){
     mutex_check = pthread_mutex_destroy(&log_mutex);
     error_msg = "Could not destroy the mutex for some reason.";
     check_pthread_creation(mutex_check, error_msg);
+    return_to_menu();
 }

@@ -12,6 +12,24 @@
 
 
 //------------------------------------------------------------------------------
+// twelve_hour_clock(): Quick and unsafe function to get an 12-hour clock.
+// string time should be a 24-hour clock in the form hh::mm. Other time
+// formats won't work.
+//------------------------------------------------------------------------------
+
+std::string twelve_hour_clock(string &time){
+	ostringstream os;
+	uint32_t hour_val = (10 * (time[0] - '0')) + (time[1] - '0');
+	if (!hour_val)
+		os << "12:" << time[3] << time[4] << " AM";
+	else if (hour_val >= 12)
+		os << hour_val << ":" << time[3] << time[4] << " PM";
+	else os << hour_val << ":" << time[3] << time[4] << " AM";
+
+	return os.str();
+
+}
+//------------------------------------------------------------------------------
 // verify_time() : Checks whether the time is valid by first using a regex
 // test and then determine whether hours are in [0 : 23] and minutes are in
 // [0 : 59]
@@ -57,6 +75,15 @@ uint32_t return_time_in_seconds(string &time){
 // Sensor_Date class definitions
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
+
+// Copy Constructor:
+Sensor_Date::Sensor_Date(const Sensor_Date &s_d) {
+	user_time = s_d.user_time;
+	default_time = s_d.default_time;
+	email_time = s_d.email_time;
+	email_seconds = s_d.email_seconds;
+}
+
 void Sensor_Date::set_email_time(uint32_t &seconds){
     email_time = std::chrono::seconds{seconds};
 }
@@ -96,12 +123,8 @@ istream& operator>>(ifstream &ifs, Sensor_Date &sd){
 
     return ifs;
 }
-Sensor_Date& Sensor_Date::operator=(const Sensor_Date &sd){
-	default_time = sd.default_time;
-	user_time = sd.user_time;
-	email_time = sd.email_time;
-	email_seconds = sd.email_seconds;
-}
+// Copy Assignment
+Sensor_Date& Sensor_Date::operator=(const Sensor_Date &sd)= default;
 
 void get_time_from_file(Sensor_Date &sd) {
 	ifstream ifs{time_path};

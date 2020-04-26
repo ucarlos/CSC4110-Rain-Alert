@@ -28,6 +28,14 @@ inline void return_to_menu(void){
 //------------------------------------------------------------------------------
 void show_status(void){
     cout << options[1] << endl;
+    char ch;
+    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+    cout << "Current Status: " << endl;
+    cout << "Press any key to return to main menu." << endl;
+	pthread_mutex_lock(&temp_mutex);
+	cout << project_log << endl;
+	pthread_mutex_unlock(&temp_mutex);
+	cin >> ch;
     return_to_menu();
 }
 

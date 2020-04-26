@@ -90,28 +90,34 @@ static bool tracking_status = false;
 //------------------------------------------------------------------------------
 class Sensor_Date{
 public:
+	// Default Constructor
     Sensor_Date(){
 		user_time = default_time;
     }
 
-    explicit Sensor_Date(string d_t, string u_t) :
+    explicit Sensor_Date(string &d_t, string &u_t) :
     	default_time{d_t}{
 	    // Set seconds:
 	    change_user_time(u_t);
 
 	}
-    
-    explicit Sensor_Date(string defined_user_time){
+    // String constructor
+    explicit Sensor_Date(string &defined_user_time){
     	change_user_time(defined_user_time);
     }
-    
+
+    // Copy Constructor:
+    Sensor_Date(const Sensor_Date &s_d);
+
     void change_user_time(string &n_t);
     void reset_user_time();
 
     // Handle reading from ifstreams
     friend istream& operator>>(ifstream &ifs, Sensor_Date &sd);
     Sensor_Date& operator=(const Sensor_Date &sd); // Copy Assignment
+
     std::chrono::seconds& get_email_time() { return email_time; }
+    [[nodiscard]] string get_user_time() const { return user_time; }
 private:
     string default_time{"00:00"};
     string user_time{};
@@ -129,9 +135,12 @@ private:
 // HEY! YOU NEED TO MAKE SURE THAT THE TIME ZONE IS SET BEFORE
 // DOING ANYTHING WITH THE SENSOR DATE! OTHERWISE, THE EMAIL WON'T BE
 // SENT AT THE RIGHT TIME!
-static 	int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
+
+static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
 uint32_t return_time_in_seconds(string &time);
 void get_time_from_file(Sensor_Date &sd);
+
+std::string twelve_hour_clock(string &time);
 
 
 
