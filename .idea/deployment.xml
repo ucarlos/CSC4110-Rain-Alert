@@ -9,6 +9,7 @@
           </mappings>
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-pi4" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-default-c20" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-zero" />
           </excludedPaths>

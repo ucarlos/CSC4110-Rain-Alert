@@ -12,7 +12,9 @@
 // Standard Library Headers
 #include <iostream>
 #include <pthread.h>
+
 #include <chrono>
+#include <ctime>
 using namespace std;
 
 // Log Library
@@ -71,6 +73,7 @@ static pthread_t sensor, email;
 
 // This mutex is used to prevent reading/writing to a log class
 static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
+static bool end_all_threads = false;
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
@@ -107,6 +110,8 @@ public:
 
     // Handle reading from ifstreams
     friend istream& operator>>(ifstream &ifs, Sensor_Date &sd);
+    Sensor_Date& operator=(const Sensor_Date &sd); // Copy Assignment
+    std::chrono::seconds& get_email_time() { return email_time; }
 private:
     string default_time{"00:00"};
     string user_time{};
@@ -117,11 +122,16 @@ private:
     
 };
 
+static Sensor_Date project_date;
 //------------------------------------------------------------------------------
 // Sensor_Date functions
 //------------------------------------------------------------------------------
+// HEY! YOU NEED TO MAKE SURE THAT THE TIME ZONE IS SET BEFORE
+// DOING ANYTHING WITH THE SENSOR DATE! OTHERWISE, THE EMAIL WON'T BE
+// SENT AT THE RIGHT TIME!
+static 	int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
 uint32_t return_time_in_seconds(string &time);
-void get_time_from_file(void);
+void get_time_from_file(Sensor_Date &sd);
 
 
 

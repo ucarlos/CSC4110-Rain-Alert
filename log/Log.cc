@@ -175,8 +175,7 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     advance(check, 1);
 
     for (auto i = l.level.begin(); i != l.level.end(); i++){
-        os << trans.quote(i->second)
-	   << (check == l.level.end() ? ")" : ", ");
+        os << trans.quote(i->second) << ", ";
     }
     os << trans.quote(l.comment) << ")";
 

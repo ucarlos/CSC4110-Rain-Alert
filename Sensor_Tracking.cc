@@ -90,7 +90,7 @@ void* handle_sensor_thread(void *temp_log){
     // Now convert the temp_log back to a Log
     Log *log = static_cast<Log*>(temp_log);
     // Block access to mutex
-    
+    string error_message;
     bool check_rain_sensor;
     int check_float_sensor;
     bool check_all;
@@ -98,7 +98,8 @@ void* handle_sensor_thread(void *temp_log){
     std::mt19937 merse;
     std::uniform_real_distribution<double> rain_values;
     initialize_rain_sensor(merse, rain_values);
-    int stop = 1;
+
+    
     do {
 	check_rain_sensor = check_rain_connection();
 	check_float_sensor = get_float_sensor_readings();
@@ -108,19 +109,42 @@ void* handle_sensor_thread(void *temp_log){
 	// Read anyway.
 	log->sensor_check["Rain Sensor"] = check_rain_sensor;
 	log->sensor_check["Float Sensor"] = static_cast<bool>(check_float_sensor);
-	if (check_all && stop < 1000){
+	if (check_all){
 	    // Read the temperature values
 	    log->level["rain_level"] = get_rain_sensor_readings(merse,
 								rain_values);
+	    pthread_mutex_lock(&log_mutex);
 	    project_log = *log;
-	    stop++;
+	    pthread_mutex_unlock(&log_mutex);
+	    
+	    if (log->level["rain_level"] >= rain_limit){
+		log->comment = "<strong>Rain levels have exceeded the maximum limit. "
+		    "Please contact a technician to inspect the device.</strong>";
+		error_message = "<strong>Exceeded Rain Levels</strong>";
+		cerr << "Current rain level has exceeded the rain limit of "
+		     << rain_limit
+		     << endl;
+		
+		break;
+	    }
+	    
+
+	    
+	    
 	}
 	else { 
 	    // Can't read values from rain_sensor, so stop the program
 	    // and set a comment detailing the problem.
 	    log->comment = "<strong>Critical Error: Cannot read from the rain sensor. "
-					"Please send an technician to readjust the system.</strong>";
-	    project_log = *log;
+		"Please send an technician to readjust the system.</strong>";
+	    error_message = "<strong>CRITICAL ERROR!</strong>";
+	    
+	    cerr << "Cannot read from the rain sensor."
+		 << "I will send an email detailing this problem to"
+		 << smtp_receiver_address
+		 << ". This has also been added to the database."
+		 << endl;
+	    
 	    break;
 		
 	}
@@ -128,23 +152,102 @@ void* handle_sensor_thread(void *temp_log){
 
     } while (true);
 
-    cerr << "Cannot read from the rain sensor."
-	 << "I will send an email detailing this problem to"
-	 << smtp_receiver_address
-	 << ". This has also been added to the database."
-	 << endl;
+
+    
+    // Update project log:
+
     
     // Note this in the database.
+    pthread_mutex_lock(&log_mutex); // Set up Mutex
+    project_log = *log;
     open_connection(db_connect);
     pqxx::work transaction{db_connect};
     add_log(transaction, *log);
     close_connection(db_connect);
-
-    // Now send an email:
-    string error_message = "<strong>CRITICAL ERROR!</strong>";
+    // Now send an email and close the thread.:
     send_log_as_HTML(project_log, error_message);
+	// Also cancel the other thread.
+    end_all_threads = true;
+    pthread_mutex_unlock(&log_mutex); // Unlock Mutex
+
+
+
     return nullptr;
     
+}
+
+//------------------------------------------------------------------------------
+// time_since_midnight(): Obnoxious function that returns a
+// chrono::system_clock object with
+// the amount of time since midnight(of any date). Used for sending email at
+// the appropriate time. 
+//------------------------------------------------------------------------------
+std::chrono::system_clock::duration time_since_midnight() {
+	auto now = std::chrono::system_clock::now();
+
+	time_t tnow = std::chrono::system_clock::to_time_t(now);
+	tm *date = std::localtime(&tnow);
+	date->tm_hour = 0;
+	date->tm_min = 0;
+	date->tm_sec = 0;
+	auto midnight = std::chrono::system_clock::from_time_t(std::mktime(date));
+
+	return now-midnight;
+}
+
+//------------------------------------------------------------------------------
+// send_email(): Pthread function that handles sending email at the specified
+// time 
+//------------------------------------------------------------------------------
+void* send_email(void *sensor_date){
+	Sensor_Date *sdate = static_cast<Sensor_Date *>(sensor_date);
+
+	// Thank god I have auto. Have you seen the actual types of these objects?
+	// It's too damn long!
+	auto midnight_time = time_since_midnight();
+
+	string message = "Daily Report.";
+	time_t current_time;
+	uint64_t check;
+
+	// Place mutex here
+	pthread_mutex_lock(&log_mutex);
+	open_connection(db_connect);
+	pthread_mutex_unlock(&log_mutex);
+	//end mutex
+
+
+	// First, get the current time.
+	// If the clock % Seconds ==
+	while (true){
+		// Convert all the dates
+		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		check = current_time % MAX_SECONDS_IN_DAY;
+
+		if (check == sdate->get_email_time().count()){
+			// First lock the resources
+			pthread_mutex_lock(&log_mutex);
+			open_connection(db_connect);
+			pqxx::work transaction{db_connect};
+
+			// Update database
+			add_log(transaction, project_log);
+			// Now send email
+			send_log_as_HTML(project_log, message);
+			// Unlock the resources.
+			pthread_mutex_unlock(&log_mutex);
+		}
+		// If the other thread is closed, close this one too.
+		if (end_all_threads){
+			break;
+		}
+	}
+
+    
+
+	return nullptr;
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -165,19 +268,40 @@ void sensor_tracking(void){
 
     }
 
+	//Initalize the mutex first
+	int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
+
+    string error_msg = "Could not initalize the mutex for some reason.";
+    check_pthread_creation(mutex_check, error_msg);
 
     Log temp_log;
     int pthread_check;
     pthread_check = pthread_create(&sensor, nullptr,
-				   handle_sensor_thread,
-				   static_cast<void*>(&temp_log));
+    				   handle_sensor_thread,
+    				   static_cast<void*>(&temp_log));
 
 
 
-    string error_msg = "Could not create pthread for sensor tracking.";
+    error_msg = "Could not create pthread for sensor tracking.";
     
     check_pthread_creation(pthread_check, error_msg);
     
     // Now create the pthread for email sending.
-    pthread_join(sensor, nullptr);
+    Sensor_Date sd;
+    get_time_from_file(sd);
+    pthread_check = pthread_create(&email, nullptr,
+				   send_email,
+				   static_cast<void*>(&sd));
+    
+    error_msg = "Could not create a pthread for sending email.";
+    check_pthread_creation(pthread_check, error_msg);
+
+
+    //Now join them at the end.
+    pthread_join(email, nullptr);
+//    pthread_join(sensor, nullptr);
+
+    mutex_check = pthread_mutex_destroy(&log_mutex);
+    error_msg = "Could not destroy the mutex for some reason.";
+    check_pthread_creation(mutex_check, error_msg);
 }

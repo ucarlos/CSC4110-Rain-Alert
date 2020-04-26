@@ -46,8 +46,10 @@ uint32_t return_time_in_seconds(string &time){
     uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
     uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
+    // Don't remove the - time_zone. It accounts for UTC - x time.
+    // So, since we're in UTC - 4 (EST), it will add 4 hours.
 	return (!hour && !min) ? 0 :
-		   ((unit * unit * hour) + (unit * min));
+		   ((unit * unit * (hour - time_zone)) + (unit * min));
 
 }
 
@@ -63,11 +65,11 @@ void Sensor_Date::change_user_time(string &n_t){
     // First check is n_t is valid;
     bool check = verify_time(n_t);
     if (!check)
-		reset_user_time();
+	reset_user_time();
     else {
     	user_time = n_t;
-		email_seconds = return_time_in_seconds(n_t);
-		set_email_time(email_seconds);
+	email_seconds = return_time_in_seconds(n_t);
+	set_email_time(email_seconds);
     }
 
 }
@@ -94,7 +96,22 @@ istream& operator>>(ifstream &ifs, Sensor_Date &sd){
 
     return ifs;
 }
+Sensor_Date& Sensor_Date::operator=(const Sensor_Date &sd){
+	default_time = sd.default_time;
+	user_time = sd.user_time;
+	email_time = sd.email_time;
+	email_seconds = sd.email_seconds;
+}
 
+void get_time_from_file(Sensor_Date &sd) {
+	ifstream ifs{time_path};
+	if (!ifs){
+		throw runtime_error("Could not open " + time_path);
+	}
+	string temp;
+	getline(ifs, temp);
 
+	sd = Sensor_Date{temp};
+}
 
 
