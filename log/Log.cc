@@ -60,6 +60,7 @@ Log& Log::operator=(const Log &l){
     level = l.level;
     raw_data = l.raw_data;
 
+    return *this;
 }
 
 // Comparison Operator:
