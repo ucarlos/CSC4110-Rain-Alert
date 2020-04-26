@@ -39,7 +39,36 @@ Log::Log(pqxx::row &row){ // Extract the contents of row and fill the log.
     this->extract_row();
 }
 
+// Copy Constructor
+Log::Log(const Log &l){
+    this->comment = l.comment;
+    this->time_stamp = l.time_stamp;
+    this->date = l.date;
+    this->sensor_check = l.sensor_check;
+    this->level = l.level;
+    this->raw_data = l.raw_data;
 
+}
+
+// Copy assignment
+Log& Log::operator=(const Log &l){
+    // Only copy the raw data.
+    comment = l.comment;
+    time_stamp = l.time_stamp;
+    date = l.date;
+    sensor_check = l.sensor_check;
+    level = l.level;
+    raw_data = l.raw_data;
+
+}
+
+// Comparison Operator:
+bool Log::operator==(const Log &b){
+    return (comment == b.comment) && (time_stamp == b.time_stamp)
+	&& (date == b.date) && (sensor_check == b.sensor_check)
+	&& (level == b.level) && (raw_data == b.raw_data);
+
+}
 //------------------------------------------------------------------------------
 // extract_row() -- extracts the appropriate fields from raw_data.
 //------------------------------------------------------------------------------

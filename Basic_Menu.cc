@@ -152,8 +152,8 @@ int main(void){
     // Get the credentials for the SMTP and the database first.
     get_smtp_credentials();
     get_database_info_from_file();
-    test_smtp();
-    //menu();
+    //test_smtp();
+    menu();
 
 
 }

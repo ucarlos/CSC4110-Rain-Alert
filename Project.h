@@ -11,6 +11,7 @@
 #define CSC4110_PROJECT
 // Standard Library Headers
 #include <iostream>
+#include <pthread.h>
 #include <chrono>
 using namespace std;
 
@@ -47,23 +48,35 @@ const static vector<string> options = {"Enable/Disable Tracking",
 									   "Quit"};
 
 
+// Log used for the project.
+static Log project_log;
+
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
 void test_smtp(void);
 
-
+//------------------------------------------------------------------------------
+// Global Database variables:
+// Should only be used by Sensor_Tracking, Email Sending, and Database
+// Searching functions.
+//------------------------------------------------------------------------------
+static pqxx::connection db_connect;
 //------------------------------------------------------------------------------
 // Global Pthreads:
 // They are only to be used for the Sensor Tracking and Emailing Sending
 // Functions.
 //------------------------------------------------------------------------------
+static pthread_t sensor, email;
 
-
+// This mutex is used to prevent reading/writing to a log class
+static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
 
+// False: Disabled, True: Enabled
+static bool tracking_status = false;
 
 //------------------------------------------------------------------------------
 // Date class

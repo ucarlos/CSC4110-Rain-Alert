@@ -83,19 +83,22 @@ constexpr int log_offset = 4;
 
 class Log{
 public:
-    Log()=default;
+    // Default constructor
+    Log()=default; 
+    
     explicit Log(pqxx::row &row);
-    // Log(bool fsc, bool rsc, bool on_s, bool on_b, double b_l, double r_l, string com)
-    // 	: float_sensor_connected{fsc}, rain_sensor_connected{rsc},
-    // 	  on_solar_energy{on_s}, on_battery{on_b}, battery_level{b_l},
-    // 	  rain_level{r_l}, comment{com} { }
+    // Copy constructor
+    explicit Log (const Log &l);
+    // Copy Assignment
+    Log& operator=(const Log &b);
+    
+    Log(map<string, bool> &sensor, map<string, double> &levl,
+	string comm, string time_stamp);
+    // Comparision Operator:
+    bool operator==(const Log &b);
+    
 
-    Log(map<string, bool> &sensor, map<string, double> &levl, string comm, string time_stamp);
-
-    // bool float_sensor_connected{false};
-    // bool rain_sensor_connected{false};
-    // bool on_solar_energy{false};
-    // bool on_battery{false};
+    
     map<string, bool> sensor_check = {{"Float Sensor", false},
                                       {"Rain Sensor", false},
                                       {"Solar Panel", false},

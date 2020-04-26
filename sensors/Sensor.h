@@ -42,7 +42,8 @@
 int get_float_sensor_readings(std::uniform_real_distribution<int> &dist);
 int get_float_sensor_readings(void);
 
-double get_rain_sensor_readings(std::uniform_real_distribution<double> &dist);
+double get_rain_sensor_readings(std::mt19937 &merse,
+				std::uniform_real_distribution<double> &dist);
 std::uniform_real_distribution<double> initialize_rain_sensor(void);
 
 void initialize_float_sensor(std::mt19937 &merse,
@@ -79,7 +80,8 @@ static bool rain_sensor_status = true;
 
 // Use 1 if connected, and 0 if not. This is used to test the rest of the
 // program.
-const int float_sensor_status = 1; 
+const int float_sensor_status = 1;
 #endif
-
+//
+static uint32_t rain_limit = 60;
 #endif
