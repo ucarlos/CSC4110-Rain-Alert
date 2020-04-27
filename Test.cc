@@ -15,14 +15,26 @@
 void show_result_contents(pqxx::result &r){
 	if (r.empty()){
 		cerr << "No results found." << endl;
+		sleep(2);
 		return;
 	}
-	cout << "Results found:" << endl;
+
+
+	// Store into a file called Database_Results.txt
+	// and then open in less/nano.
+	ofstream ofs{database_results_path, ios_base::trunc};
+	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
+	ofs << "The results are listed below." << endl << endl;
+	Log log;
 	for (auto const &row : r){
-		for (auto const &field : row)
-			std::cout << field.c_str() << "\t";
-		std::cout << std::endl;
+		log.extract_row();
+		ofs << log << endl;
 	}
+	// Now open up less.
+	system("clear");
+	string sys_call = "less ";
+	sys_call = sys_call + " " + database_results_path;
+	system(sys_call.c_str());
 }
 
 

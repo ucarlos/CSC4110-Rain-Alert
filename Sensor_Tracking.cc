@@ -80,7 +80,9 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 
 inline void check_pthread_creation(int &return_val, string &error_msg){
     if (return_val)
-	throw runtime_error(error_msg);
+		throw runtime_error(error_msg);
+	else
+		return;
 }
 
 
@@ -167,12 +169,27 @@ void* handle_sensor_thread(void *temp_log){
     }
     // Update project log:
 
-    
+	ostringstream os;
     // Note this in the database.
     pthread_mutex_lock(&log_mutex); // Set up Mutex
+    // Populate Log with date and time:
+
+	std::time_t time_stamp = std::time(nullptr);
+	os << std::put_time(std::localtime(&time_stamp), "%c");
+	log->time_stamp = os.str();
+
+	os.str("");
+	os << std::put_time(std::localtime(&time_stamp), "%B %d %Y");
+	log->date = os.str();
+
+	// Now update project_log
     project_log = *log;
+
+    // Send to database.
     open_connection(db_connect);
     pqxx::work transaction{db_connect};
+    // Set the time:
+
     add_log(transaction, *log);
     close_connection(db_connect);
     // Now send an email and close the thread.:
@@ -216,7 +233,7 @@ void* send_email_thread(void *s_d){
 	string message = "Daily Report.";
 	time_t current_time;
 	uint64_t check;
-
+	ostringstream os;
 	// Place mutex here
 	pthread_mutex_lock(&log_mutex);
 	open_connection(db_connect);
@@ -236,6 +253,17 @@ void* send_email_thread(void *s_d){
 			pthread_mutex_lock(&log_mutex);
 			open_connection(db_connect);
 			pqxx::work transaction{db_connect};
+
+			// Add date and timestamp to log.
+
+			// Now use current_time again.
+			current_time = std::time(nullptr);
+			os << std::put_time(std::localtime(&current_time), "%c");
+			project_log.time_stamp = os.str();
+
+			os.str("");
+			os << std::put_time(std::localtime(&current_time), "%B %d %Y");
+			project_log.date = os.str();
 
 			// Update database
 			add_log(transaction, project_log);

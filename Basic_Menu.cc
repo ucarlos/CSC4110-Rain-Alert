@@ -31,7 +31,7 @@ vector<string> options = {"Enable/Disable Tracking",
 								 "Email Options",
 								 "Quit"};
 
-Log project_log;
+Log project_log{};
 //------------------------------------------------------------------------------
 // show_status(): Show the current values of the sensors (Enabled /Disabled)
 // alongside the current rain/battery levels.
@@ -39,13 +39,20 @@ Log project_log;
 void show_status(void){
     cout << options[1] << endl;
     char ch;
-    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-    cout << "Current Status: " << endl;
-    cout << "Press any key to return to main menu." << endl;
-	pthread_mutex_lock(&temp_mutex);
-	cout << project_log;
-	pthread_mutex_unlock(&temp_mutex);
-	cin >> ch;
+
+	ofstream ofs{log_status_path, ios_base::trunc};
+	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
+    ofs << "Current Status: " << endl;
+
+	//pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+	//pthread_mutex_lock(&temp_mutex);
+	ofs << project_log << endl;
+	//pthread_mutex_unlock(&temp_mutex);
+
+	string sys_call = "less ";
+	sys_call = sys_call + " " + log_status_path;
+	system(sys_call.c_str());
+
     return_to_menu();
 }
 
@@ -58,11 +65,11 @@ void search_logs(void){
     cout << options[2] << endl;
     string input;
 
-    cout << "If you want to go back to the main menu, input \"back\" ." << endl;
-    cin >> input;
-    string_to_lower(input);
-    if (input == "back")
-    	return_to_menu();
+    // cout << "If you want to go back to the main menu, input \"back\" ." << endl;
+    // cin >> input;
+    // string_to_lower(input);
+    // if (input == "back")
+    // 	return_to_menu();
 
 	cout << "Please enter a date (mm/dd/yyyy) and time (24 hour clock hh:mm) : " << endl;
 	string date, time;
@@ -86,9 +93,6 @@ void search_logs(void){
 	pqxx::result query = search_database(db_connect, date, time, end);
 	show_result_contents(query);
 	close_connection(db_connect);
-	cout << "Press any key to continue...";
-	char ch;
-	cin >> ch;
     return_to_menu();
 }
 
@@ -97,8 +101,17 @@ void search_logs(void){
 // Disable tracking and send an error log.
 //------------------------------------------------------------------------------
 void test_sensors(void){
-    cout << options[3] << endl;
-    cout << "This option has not be finished yet." << endl;
+
+#ifdef SENSOR_READINGS_RNG
+    cerr << "This project currently uses a random number generator "
+    	 << "to simulate sensor output.\nThis is intended to be used "
+    	 << "as a last resort or for debugging purposes.\nI apologize for the inconvenience.\n" << endl;
+#else
+	cout << options[3] << endl;
+#endif
+    cout << "Press any key to continue." << endl;
+    char ch;
+    cin >> ch;
     return_to_menu();
 }
 
@@ -108,6 +121,20 @@ void test_sensors(void){
 //------------------------------------------------------------------------------
 void database_options(void){
     cout << options[4] << endl;
+    // Lock project_file.
+	pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_lock(&temp_mutex);
+
+    cout << "You are currently connected to the database "
+    	 << project_file->get_database_info().at("psql_database")
+    	 << " on " << project_file->get_database_info().at("psql_ip")
+    	 << endl;
+
+	pthread_mutex_unlock(&temp_mutex);
+	// Unlock project_file.
+    cout << "Press any key to continue." << endl;
+    char input;
+    cin >> input;
     return_to_menu();
 }
 
@@ -117,6 +144,35 @@ void database_options(void){
 //------------------------------------------------------------------------------
 void email_options(void){
     cout << options[5] << endl;
+    char input;
+    cout << "Would you like to change the recipient email? [y/n]" << endl;
+    cin >> input;
+
+    if (input == 'n')
+		return_to_menu();
+	cout << "Enter the new recipient email: ";
+    string new_recipient_email;
+    std::regex test;
+	cin >> new_recipient_email;
+
+    while (!verify_username(test, new_recipient_email)){
+    	cout << "Invalid email. Username should follow name@domain_name.domain." << endl;
+    	cin >> new_recipient_email;
+    }
+
+    // If valid, change email.
+    // Place mutex here.
+	pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_lock(&temp_mutex);
+
+    project_file->get_smtp_info().at("receiver_email") = new_recipient_email;
+    project_file->save_file(xml_path);
+
+    pthread_mutex_unlock(&temp_mutex);
+
+    cout << "Setting saved in " << xml_path << "For now, restart the program." << endl;
+    sleep(2);
+    // End mutex here.
     return_to_menu();
 }
 

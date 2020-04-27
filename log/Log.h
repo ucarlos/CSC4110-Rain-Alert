@@ -117,7 +117,7 @@ public:
     bool extract_row();
     void write_to_file(ofstream &ofs) { ofs << this; }
     friend ostream& operator<<(ostream &os, const Log &l);
-
+	void apply_raw_data(pqxx::row &r_data){ raw_data = &r_data; this->extract_row(); }
 private:
     pqxx::row *raw_data {nullptr};
 };

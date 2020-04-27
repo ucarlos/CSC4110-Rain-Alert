@@ -25,11 +25,15 @@ public:
 		xml_filename = filename;
 		load_file(xml_filename);
 	}
+	// Ideally, I'd like to make this constant, but it seems more of a hassle to
+	// implement set_smtp_info() and set_datebase_info.
+	// So, TODO: Implement set_smtp_info() and set_datebase_info with bounds checking.
+	std::map<std::string, std::string>& get_smtp_info()  { return smtp_info; }
+	std::map<std::string, std::string>& get_database_info() { return database_info; }
 
-	const std::map<std::string, std::string>& get_smtp_info()  { return smtp_info; }
-	const std::map<std::string, std::string>& get_database_info() { return database_info; }
 
 	const std::string& get_email_time()  { return daily_email_time; }
+	void set_email_time(std::string &new_filename) { daily_email_time = new_filename; }
 	void load_file(const std::string &filename);
 	void save_file(const std::string &filename);
 private:

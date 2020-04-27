@@ -40,6 +40,8 @@ const bool can_use_boost = true;
 
 const string time_path = "..log/Settings.txt";
 const string xml_path = "../Project_Settings.xml";
+const string database_results_path = "../Database_results.txt";
+const string log_status_path = "../log_status.txt";
 
 //extern std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 extern std::unique_ptr<settings_file> project_file;
