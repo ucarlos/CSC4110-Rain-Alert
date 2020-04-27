@@ -45,13 +45,44 @@ bool verify_time(const string &time){
     if (!check) return false;
 
     //  hack to get values of hour and min
-    uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
-    uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
+    int64_t hour = 10 * (time[0] - '0') + (time[1] - '0');
+    int64_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
     // Check if date is valid
     return ((0 <= hour && hour <= 23) || (0 <= min && min <= 59));
     
 
+}
+//------------------------------------------------------------------------------
+// verify_date(): Check whether the date is in the form mm/dd/yyyy using a
+// regex expression. Not very accurate.
+//------------------------------------------------------------------------------
+bool verify_date(const string &date){
+	bool check;
+	string regex_str{R"(^\d{2}[\/]\d{2}[\/]\d{4}$)"};
+
+	static std::regex test{regex_str};
+	check = regex_match(date, test);
+	if (!check) return false;
+
+	//Get month:
+	uint32_t month = 10 * (date[0] - '0') + (date[1] - '0');
+	uint32_t day = 10 * (date[3] - '0') + (date[4] - '0');
+	uint32_t year = 1000 * (date[6] - '0') + 100 * (date[7] - '0')
+			+ 10 * (date[8] - '0') + (date[9] - '0');
+
+	check = (1 <= month && month <= 12);
+	check &= (1 <= day && day <= 31);
+	check &= (2000 <= year && day <= 9999);
+
+	// Now check for leap years
+	bool is_leap_year = (!(year % 4) || !(year % 400));
+
+	// No Feb 29 on an non-leap year
+	if (!is_leap_year && ((month == 2) && (day == 29)))
+		check = false;
+
+	return check;
 }
 
 //------------------------------------------------------------------------------
@@ -59,10 +90,10 @@ bool verify_time(const string &time){
 // to seconds for the std::chrono::seconds variable.
 // Assume that the string is valid.
 //------------------------------------------------------------------------------
-uint32_t return_time_in_seconds(string &time){
-    uint32_t unit = 60; // 60 seconds;
-    uint32_t hour = 10 * (time[0] - '0') + (time[1] - '0');
-    uint32_t min = 10 * (time[3] - '0') + (time[4] - '0');
+int64_t return_time_in_seconds(string &time){
+    int64_t unit = 60; // 60 seconds;
+    int64_t hour = 10 * (time[0] - '0') + (time[1] - '0');
+    int64_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
     // Don't remove the - time_zone. It accounts for UTC - x time.
     // So, since we're in UTC - 4 (EST), it will add 4 hours.
@@ -71,6 +102,19 @@ uint32_t return_time_in_seconds(string &time){
 
 }
 
+std::string string_to_seconds(int64_t &sec){
+	ostringstream os;
+	int64_t hours = (sec / 3600) + time_zone;
+	int64_t minutes = ((sec % 3600) / 60);
+
+	os << hours << ":";
+	if (minutes < 10)
+		os << "0" << minutes;
+	else
+		os << minutes;
+
+	return os.str();
+}
 //------------------------------------------------------------------------------
 // Sensor_Date class definitions
 //------------------------------------------------------------------------------
@@ -133,8 +177,15 @@ void get_time_from_file(Sensor_Date &sd) {
 	}
 	string temp;
 	getline(ifs, temp);
-
 	sd = Sensor_Date{temp};
 }
 
+void read_user_time(Sensor_Date &sd){
+	if (can_use_boost) {
+		string temp = project_file->get_email_time();
+		sd = Sensor_Date{temp};
+	}
+	else
+		get_time_from_file(sd);
 
+}

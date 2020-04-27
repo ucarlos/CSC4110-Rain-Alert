@@ -32,7 +32,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 # Add SMTP Library
 #add_library(SMTP ./smtp/SMTPMail.cpp ./smtp/smtp.c)
-add_library(Connection ./sql/Connection.cc)
+add_library(Connection sql/PSQL_Connection.cc)
 add_library(Log log/Log.cc)
 
 
@@ -46,7 +46,8 @@ if (SENSORS_OUTPUT_IS_RNG)
 else()
     add_library(Sensors ./sensors/Float_Sensor.cc ./sensors/Check_Sensors.cc ./sensors/Rain_Gauge.cc)
 endif()
-#add_library(Sensors ./sensors/Float_Sensor.cc)
+
+add_library(Configuration XML_Configuration.cc)
 #Add Subdirectories
 
 
@@ -58,9 +59,11 @@ endif()
 
 
 add_executable(CSC4110_Project Basic_Menu.cc Test.cc
-        ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/Connection.cc)
+        ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/PSQL_Connection.cc)
 
-target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto pthread Log Connection Sensors)
+target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto pthread Log Connection Sensors Configuration)
 #target_link_libraries(Basic_Menu PUBLIC curl m pqxx pq ssl crypto Log Connection dialog)
 target_include_directories(CSC4110_Project PUBLIC
         "${PROJECT_BINARY_DIR}")
+
+#add_executable(TEST_XML Configuration.cc)

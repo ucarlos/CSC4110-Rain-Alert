@@ -3,6 +3,7 @@
 #include <string>
 #include <pqxx/pqxx>
 #include <sstream>
+#include <ctime>
 #include <fstream>
 using namespace std;
 
@@ -27,7 +28,13 @@ void get_database_info_from_file(void);
 void initialize_connection(pqxx::connection &c);
 void close_connection(pqxx::connection &c);
 void open_connection(pqxx::connection &c);
-pqxx::result search_database(pqxx::connection &c, const std::string& date, string &time);
+pqxx::result
+search_database(pqxx::connection &c, const std::string &date, const std::string &start_time,
+				const std::string &end_time);
 
+//------------------------------------------------------------------------------
+// Project_Settings.xml functions
+//------------------------------------------------------------------------------
+void get_database_info_from_xml(const std::map<std::string, std::string> &db_info);
 
 #endif

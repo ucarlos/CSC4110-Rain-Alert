@@ -135,4 +135,8 @@ bool verify_password(std::regex &test, const string &password);
 
 [[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const string &password);
 
+//------------------------------------------------------------------------------
+// Project_Settings.xml functions
+//------------------------------------------------------------------------------
+void get_smtp_info_from_xml(const std::map<std::string, std::string> &smtp_info);
 #endif //CSC4110_PROJECT_LOG_H

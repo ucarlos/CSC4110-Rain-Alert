@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Contains all the necessay information for the project. !-->
+<!-- Contains all the necessary information for the project. !-->
 <!-- As this is a skeleton xml, it is up to you to make sure that the 
      data in the xml file is accurate. Failure to do will cause problems
      while running the program. WHEN you're done placing the info,
-     RENAME this file to Configuration.xml.
+     RENAME this file to Project_Settings.xml.
      !-->
 
 <settings>

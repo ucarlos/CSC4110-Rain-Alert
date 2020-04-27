@@ -7,7 +7,8 @@
  * -----------------------------------------------------------------------------
  */
 
-#include "./Connection.h"
+
+#include "./PSQL_Connection.h"
 
 
 //------------------------------------------------------------------------------
@@ -54,7 +55,8 @@ void close_connection(pqxx::connection &c){
 // contain no rows at all.
 //------------------------------------------------------------------------------
 
-pqxx::result search_database(pqxx::connection &c, const std::string& date, string &time){
+pqxx::result search_database(pqxx::connection &c, const std::string &date, const std::string &start_time,
+				const std::string &end_time) {
     // Time format should be default (yyyy/mm/dd)
     // Some form of checking for time
 
@@ -62,9 +64,14 @@ pqxx::result search_database(pqxx::connection &c, const std::string& date, strin
     pqxx::work work(c);
 
     // For now, only return one query,
-    ostringstream os;
-    os << "SELECT * FROM log WHERE log_date = " << work.esc(date) << " AND log_time = " << work.esc(time);
-    pqxx::result result = work.exec(os.str());
+	ostringstream os;
+
+
+    // TODO: Make sure query executes if (time + 1) rounds up a minute, hour, or day
+    os << "SELECT * FROM log WHERE log_date = " << work.quote(date) << " AND log_time >= "
+	   << work.quote(start_time) << "AND log_time <= " << work.quote(end_time);
+
+    return work.exec(os.str());
 
 }
 
@@ -111,3 +118,19 @@ void get_database_info_from_file(void){
     
 
 }
+
+//------------------------------------------------------------------------------
+// get_database_info_from_xml(): Using the Configuration class's database info
+// map, populate the database information.
+//------------------------------------------------------------------------------
+void get_database_info_from_xml(const map<std::string, std::string> &db_info) {
+	database_address = db_info.at("psql_ip");
+	database_name = db_info.at("psql_login");
+	database_table = db_info.at("psql_database");
+
+	database_path = "postgresql://" + database_name + "@" + database_address +
+					"/" + database_table;
+
+}
+
+

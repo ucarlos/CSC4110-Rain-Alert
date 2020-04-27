@@ -20,10 +20,18 @@ inline void return_to_menu(void){
 }
 
 
-// Menu Function definitions
+// Project_File for everything:
+std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
+//pqxx::connection db_connect;
+vector<string> options = {"Enable/Disable Tracking",
+								 "Status",
+								 "Search Logs",
+								 "Test Sensors",
+								 "Database Options",
+								 "Email Options",
+								 "Quit"};
 
-
-
+Log project_log;
 //------------------------------------------------------------------------------
 // show_status(): Show the current values of the sensors (Enabled /Disabled)
 // alongside the current rain/battery levels.
@@ -48,7 +56,39 @@ void show_status(void){
 //------------------------------------------------------------------------------
 void search_logs(void){
     cout << options[2] << endl;
+    string input;
 
+    cout << "If you want to go back to the main menu, input \"back\" ." << endl;
+    cin >> input;
+    string_to_lower(input);
+    if (input == "back")
+    	return_to_menu();
+
+	cout << "Please enter a date (mm/dd/yyyy) and time (24 hour clock hh:mm) : " << endl;
+	string date, time;
+	cin >> date >> time;
+	bool check;
+
+	while (!(check = verify_date(date))){
+		cout << "Invalid date. Remember to input a date in mm/dd/yyyy format.\n";
+		cin >> date;
+	}
+
+	while (!(check = verify_time(time))){
+		cout << "Invalid time. Remember to input time in hh:mm (24 hour clock).\n";
+		cin >> time;
+	}
+	// Now send the query.
+	cout << "Sending Query..." << endl;
+	open_connection(db_connect);
+	int64_t start = return_time_in_seconds(time) + 60;
+	string end = string_to_seconds(start);
+	pqxx::result query = search_database(db_connect, date, time, end);
+	show_result_contents(query);
+	close_connection(db_connect);
+	cout << "Press any key to continue...";
+	char ch;
+	cin >> ch;
     return_to_menu();
 }
 
@@ -160,11 +200,25 @@ void menu(void){
      
 }
 
+//------------------------------------------------------------------------------
+// get_credentials(): Function to get all the variables needed for the
+// project. Depending on whether boost is installed, either the credentials
+// will be read from a xml file or various txt files.
+//------------------------------------------------------------------------------
+void get_credentials(void){
+	if (can_use_boost){
+		get_smtp_info_from_xml(project_file->get_smtp_info());
+		get_database_info_from_xml(project_file->get_database_info());
+	}
+	else {
+		get_smtp_credentials();
+		get_database_info_from_file();
+	}
+}
+
 int main(void){
     // Get the credentials for the SMTP and the database first.
-    get_smtp_credentials();
-    get_database_info_from_file();
-    //test_smtp();
+	get_credentials();
     menu();
 
 

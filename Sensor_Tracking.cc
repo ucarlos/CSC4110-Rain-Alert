@@ -267,7 +267,7 @@ void* send_email_thread(void *s_d){
 //------------------------------------------------------------------------------
 void sensor_tracking(void){
 	Sensor_Date sd;
-	get_time_from_file(sd);
+	read_user_time(sd);
 
 	toggle_sensor_tracking(sd);
     

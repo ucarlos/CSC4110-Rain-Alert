@@ -12,7 +12,7 @@
 // Standard Library Headers
 #include <iostream>
 #include <pthread.h>
-
+#include <memory>
 #include <chrono>
 #include <ctime>
 using namespace std;
@@ -22,14 +22,27 @@ using namespace std;
 // Sensor Library
 #include "./sensors/Sensor.h"
 // Connection Library
-#include "./sql/Connection.h"
+#include "./sql/PSQL_Connection.h"
+
 // Project version number
 #include "./include/Project_Version.h"
 
+
+// XML Parsing Library
+#include "./XML_Configuration.h"
 // Macros
 #define MAX_SECONDS_IN_DAY (86400)
-const string time_path = "../Settings.txt";
 
+//------------------------------------------------------------------------------
+// File paths: If boost can't be installed, this system will be used instead.
+//------------------------------------------------------------------------------
+const bool can_use_boost = true;
+
+const string time_path = "..log/Settings.txt";
+const string xml_path = "../Project_Settings.xml";
+
+//extern std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
+extern std::unique_ptr<settings_file> project_file;
 //------------------------------------------------------------------------------
 // Menu Functions and variables
 //------------------------------------------------------------------------------
@@ -40,24 +53,17 @@ void search_logs(void);
 void test_sensors(void);
 void database_options(void);
 void email_options(void);
+void string_to_lower(string &str);
 
-const static vector<string> options = {"Enable/Disable Tracking",
-									   "Status",
-									   "Search Logs",
-									   "Test Sensors",
-									   "Database Options",
-									   "Email Options",
-									   "Quit"};
-
-
+void get_credentials(void);
 // Log used for the project.
-static Log project_log;
-
+extern Log project_log;
+extern vector<string> options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
 void test_smtp(void);
-
+void show_result_contents(pqxx::result &r);
 //------------------------------------------------------------------------------
 // Global Database variables:
 // Should only be used by Sensor_Tracking, Email Sending, and Database
@@ -124,8 +130,8 @@ private:
     std::chrono::seconds email_time{MAX_SECONDS_IN_DAY};
     uint32_t email_seconds{MAX_SECONDS_IN_DAY};
     void set_email_time(uint32_t &seconds);
-    
-    
+
+
 };
 
 
@@ -137,11 +143,16 @@ private:
 // SENT AT THE RIGHT TIME!
 
 static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
-uint32_t return_time_in_seconds(string &time);
-void get_time_from_file(Sensor_Date &sd);
-
+int64_t return_time_in_seconds(string &time);
+void read_user_time(Sensor_Date &sd);
 std::string twelve_hour_clock(string &time);
-
+bool verify_time(const string &time);
+bool verify_date(const string &date);
+std::string string_to_seconds(int64_t &sec);
+//------------------------------------------------------------------------------
+// Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h
+//
+//------------------------------------------------------------------------------
 
 
 #endif

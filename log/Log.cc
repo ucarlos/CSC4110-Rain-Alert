@@ -608,3 +608,35 @@ void get_smtp_credentials(void){
 
 
 }
+//------------------------------------------------------------------------------
+// get_smtp_info_from_xml(): Read the smtp credentials
+// from Project_Dir/Project_Settings.xml
+// Much simpler to use than using get_smtp_credentials
+//------------------------------------------------------------------------------
+
+void get_smtp_info_from_xml(const map<std::string, std::string> &smtp_info) {
+	std::string smtp_us = smtp_info.at("sender_email");
+	std::string smtp_pass = smtp_info.at("sender_password");
+	std::string reciv_us = smtp_info.at("receiver_email");
+
+	// Handle any issues regarding invalid email addresses/password.
+	// This doesn't make sure if the email address even exists, so
+	// its up to you to do so.
+	std::regex test;
+	bool check_info = verify_username(test, smtp_us);
+	check_credentials(check_info, "The email address you're using "
+								  "to send email to is not valid.");
+
+	check_info &= verify_password(test, smtp_pass);
+	check_credentials(check_info, "The password is not valid for some reason.");
+
+	check_info &= verify_username(test, reciv_us);
+	check_credentials(check_info, "The email address you're using "
+								  "to receive email from the project is not valid.");
+
+	// If everything goes well, copy the data.
+	smtp_username = smtp_us;
+	smtp_password = smtp_pass;
+	smtp_receiver_address = reciv_us;
+}
+

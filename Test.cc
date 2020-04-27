@@ -13,11 +13,16 @@
 
 
 void show_result_contents(pqxx::result &r){
-    for (auto const &row : r){
-	for (auto const &field : row)
-	    std::cout << field.c_str() << "\t";
-	std::cout << std::endl;
-    }
+	if (r.empty()){
+		cerr << "No results found." << endl;
+		return;
+	}
+	cout << "Results found:" << endl;
+	for (auto const &row : r){
+		for (auto const &field : row)
+			std::cout << field.c_str() << "\t";
+		std::cout << std::endl;
+	}
 }
 
 
@@ -95,7 +100,4 @@ void test_smtp(void){
 //------------------------------------------------------------------------------
 // test_pthread() : Tests creating a pthread and joining it.
 //------------------------------------------------------------------------------
-void test_pthread(void){
 
-
-}
