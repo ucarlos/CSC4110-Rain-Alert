@@ -23,7 +23,7 @@ std::string twelve_hour_clock(string &time){
 	if (!hour_val)
 		os << "12:" << time[3] << time[4] << " AM";
 	else if (hour_val >= 12)
-		os << hour_val << ":" << time[3] << time[4] << " PM";
+		os << (hour_val - 12) << ":" << time[3] << time[4] << " PM";
 	else os << hour_val << ":" << time[3] << time[4] << " AM";
 
 	return os.str();

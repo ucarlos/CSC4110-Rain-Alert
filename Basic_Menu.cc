@@ -4,7 +4,9 @@
  * 
  * Basic_Menu.cc
  * 
- * This program is a simple menu to be used with the project.
+ * This program is a simple menu to be used with the project. It should provide
+ * the necessary functionality, but ideally, I would like to have this as a
+ * menu of last resort if I don't get the dialog menu completed in time.
  * -----------------------------------------------------------------------------
  */
 
@@ -33,7 +35,7 @@ void show_status(void){
     cout << "Current Status: " << endl;
     cout << "Press any key to return to main menu." << endl;
 	pthread_mutex_lock(&temp_mutex);
-	cout << project_log << endl;
+	cout << project_log;
 	pthread_mutex_unlock(&temp_mutex);
 	cin >> ch;
     return_to_menu();
@@ -46,6 +48,7 @@ void show_status(void){
 //------------------------------------------------------------------------------
 void search_logs(void){
     cout << options[2] << endl;
+
     return_to_menu();
 }
 
@@ -55,6 +58,7 @@ void search_logs(void){
 //------------------------------------------------------------------------------
 void test_sensors(void){
     cout << options[3] << endl;
+    cout << "This option has not be finished yet." << endl;
     return_to_menu();
 }
 

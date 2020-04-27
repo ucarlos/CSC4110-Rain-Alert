@@ -151,11 +151,20 @@ void* handle_sensor_thread(void *temp_log){
 		
 	}
 	
+	// If another function needs to disable tracking (For example, Test_Sensors),
+	// do so.
+	if (end_all_threads)
+		break;
+
 
     } while (true);
 
 
-    
+    // Repeat of above:
+    if (end_all_threads){
+    	cerr << "Disabling Tracking.." << endl;
+    	return nullptr;
+    }
     // Update project log:
 
     
@@ -299,7 +308,7 @@ void sensor_tracking(void){
 
     //Now join them at the end.
     pthread_join(email, nullptr);
-//    pthread_join(sensor, nullptr);
+	pthread_join(sensor, nullptr);
 
     mutex_check = pthread_mutex_destroy(&log_mutex);
     error_msg = "Could not destroy the mutex for some reason.";

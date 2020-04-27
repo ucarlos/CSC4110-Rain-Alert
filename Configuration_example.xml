@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Contains all the necessay information for the project. !-->
+<!-- As this is a skeleton xml, it is up to you to make sure that the 
+     data in the xml file is accurate. Failure to do will cause problems
+     while running the program. WHEN you're done placing the info,
+     RENAME this file to Configuration.xml.
+     !-->
+
+<settings>
+  <!--
+      Contains all the data needed to send an email.
+  !-->
+  <smtp_info>
+    <!-- Email address that you're sending email from !-->
+    <sender_email></sender_email>
+    <!-- Password of that email address -->
+    <sender_password></sender_password>
+    <!-- Email address that will be receiving mail from the sender. -->
+    <receiver_email></receiver_email>
+  </smtp_info>
+
+  <!-- 
+       Contains all the data needed to access the postgresql
+       database.
+  !-->
+  
+  <database_info>
+    <!-- IP Address of the PSQL database. Can be ipv4/ipv6?(Not sure) !-->
+    <psql_ip></psql_ip>
+    <!-- PSQL_username:PSQL_password_of_that_user !-->
+    <psql_login></psql_login>
+    <!-- The name of the psql database that will be used. !-->
+    <psql_database></psql_database>
+  </database_info>
+  
+  <!--
+      Contains the time when the daily log report is sent.
+  !-->
+  <sensor_log>
+    <!-- Time when the daily report is sent, should be in hh::mm format (24 hour clock) -->
+    <!-- For example, for 6:00pm, write 18:00 -->
+    <daily_email_time></daily_email_time>
+  </sensor_log>
+</settings>
