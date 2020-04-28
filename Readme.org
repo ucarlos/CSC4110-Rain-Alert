@@ -17,7 +17,7 @@ This project required the following hardware in order to work:
 *** TLDR;
 If on Debian/Ubuntu/Raspbian, execute this command:
 #+BEGIN_SRC bash
-sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev libboost-dev
 #+END_SRC
 *** Long Explanation
 Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you need to install the following regardless:
@@ -59,6 +59,11 @@ In order to display the text-based UI, NCurses and dialog must be installed on y
 To do so, do
 #+BEGIN_SRC bash
 sudo apt-get install ncurses dialog
+#+END_SRC
+**** Boost Library
+XML_Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
+#+BEGIN_SRC bash
+sudo apt-get install libboost-dev
 #+END_SRC
 ** Explanation 
 ** How to compile

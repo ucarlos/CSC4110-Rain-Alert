@@ -180,7 +180,7 @@ void email_options(void){
 
 std::string version_info(void){
     ostringstream os;
-    os << "CSC 4110 Project Menu (Version "
+    os << "Rain Alert Menu (Version "
        << CSC4110_Project_VERSION_MAJOR
        << "."
        << CSC4110_Project_VERSION_MINOR << ")" << endl;

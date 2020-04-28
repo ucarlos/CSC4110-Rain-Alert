@@ -24,7 +24,7 @@ This project required the following hardware in order to work:
 If on Debian/Ubuntu/Raspbian, execute this command:
 
 ```bash
-sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev libboost-dev
 ```
 
 
@@ -78,6 +78,14 @@ Since this is a CLion Project, you can try installing it on your system and open
     
     ```bash
     sudo apt-get install ncurses dialog
+    ```
+
+6.  Boost Library
+
+    XML<sub>Configuration</sub> uses XML parsing and property tree libraries from Boost. You can install boost by doing
+    
+    ```bash
+    sudo apt-get install libboost-dev
     ```
 
 

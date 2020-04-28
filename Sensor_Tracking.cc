@@ -41,33 +41,37 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 	string time = s_d.get_user_time();
     cout << "Current Sensor Status: " << get_tracking_status() << endl;
     cout << "Daily reports will be sent every day at "
-    	 << time << " (" << twelve_hour_clock(time) <<")" << endl;
+    	 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
 
     cout << "Input \"Enable\" to enable Sensor Checking."
 	 << endl
 	 << "Input \"Disable\" to disable Sensor Checking."
 	 << endl
-	 << "To continue, enter anything else."
+	 << "To return to the main menu, input \"back\"."
+	 << endl
+	 << "Enter any letter to continue."
 	 << endl;
 
 	string input;
     cin >> input;
     string_to_lower(input);
-    
-    if (input == "enable"){
-	if (tracking_status)
-	    cerr << "Tracking is already enabled.\n";
-	else
-	    tracking_status = true;
+
+    if (input == "back")
+    	return_to_menu();
+    else if (input == "enable"){
+		if (tracking_status)
+	    	cerr << "Tracking is already enabled.\n";
+		else
+	    	tracking_status = true;
     }
     else if (input == "disable"){ 
-	if (!tracking_status)
-	    cerr << "Tracking is already disabled.\n";
-	else
-	    tracking_status = false;
+		if (!tracking_status)
+	    	cerr << "Tracking is already disabled.\n";
+		else
+	    	tracking_status = false;
     }
     else
-	cerr << "Continuing...";
+		cerr << "Continuing...";
 
 }
 
