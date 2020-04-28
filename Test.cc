@@ -11,7 +11,12 @@
 
 #include "./Project.h"
 
-
+//------------------------------------------------------------------------------
+// show_result_contents(): Given a pqxx::result variable, output
+// all its contents into a file specified by database_results_path.
+// Initially, this was used for testing, but I've modified it to work
+// for the Basic Menu.
+//------------------------------------------------------------------------------
 void show_result_contents(pqxx::result &r){
 	if (r.empty()){
 		cerr << "No results found." << endl;
@@ -27,6 +32,7 @@ void show_result_contents(pqxx::result &r){
 	ofs << "The results are listed below." << endl << endl;
 	Log log;
 	for (auto const &row : r){
+		log.apply_raw_data(const_cast<pqxx::row &>(row));
 		log.extract_row();
 		ofs << log << endl;
 	}

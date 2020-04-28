@@ -140,7 +140,7 @@ ostream& operator<<(ostream &os, const Log &l){
     double d = l.level.at("battery_level");
     o << "Battery Level: " << d << "%" << html_break << endl;
     d = l.level.at("rain_level");
-    o << "Rain level: " << d << " in (" << inches_to_cm(d) << " cm)"
+    o << "Rain level: " << d << " inches (" << inches_to_cm(d) << " cm)"
       << html_break << endl;
     o << "Comment: " << l.comment << html_break << endl;
     return os << o.str();

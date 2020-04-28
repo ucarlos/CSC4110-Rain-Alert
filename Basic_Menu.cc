@@ -170,7 +170,8 @@ void email_options(void){
 
     pthread_mutex_unlock(&temp_mutex);
 
-    cout << "Setting saved in " << xml_path << "For now, restart the program." << endl;
+    cout << "Setting saved in " << xml_path << endl
+    	 << "For now, restart the program." << endl;
     sleep(2);
     // End mutex here.
     return_to_menu();
@@ -215,7 +216,7 @@ void menu(void){
 
     cout << endl;
     cout << "Please choose a selection. To quit, press \"q\"."
-	 << endl;
+	 	 << endl;
 
     char input;
     cin >> input;
@@ -261,6 +262,7 @@ void menu(void){
 // project. Depending on whether boost is installed, either the credentials
 // will be read from a xml file or various txt files.
 //------------------------------------------------------------------------------
+
 void get_credentials(void){
 	if (can_use_boost){
 		get_smtp_info_from_xml(project_file->get_smtp_info());
@@ -276,6 +278,4 @@ int main(void){
     // Get the credentials for the SMTP and the database first.
 	get_credentials();
     menu();
-
-
 }

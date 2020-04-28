@@ -264,7 +264,8 @@ void* send_email_thread(void *s_d){
 			os.str("");
 			os << std::put_time(std::localtime(&current_time), "%B %d %Y");
 			project_log.date = os.str();
-
+			project_log.comment = "This is the daily report generated at ";
+			project_log.comment += sdate->get_user_time();
 			// Update database
 			add_log(transaction, project_log);
 			// Now send email
