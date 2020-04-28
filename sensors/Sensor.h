@@ -74,8 +74,8 @@ void test_float_guage(void);
 //------------------------------------------------------------------------------
 #ifdef SENSOR_READINGS_RNG
 // Rain amounts are in Inches
-const double max_rain_amount = 58;
-const double min_rain_amount = 2;
+const double max_rain_amount = 25;
+const double min_rain_amount = 0;
 static bool rain_sensor_status = true;
 
 // Use 1 if connected, and 0 if not. This is used to test the rest of the
@@ -84,5 +84,5 @@ const int float_sensor_status = 1;
 #endif
 
 // Specify the rain limit (in inches) of when the program should report an email.
-static double rain_limit = 60;
+static double rain_limit = 20;
 #endif

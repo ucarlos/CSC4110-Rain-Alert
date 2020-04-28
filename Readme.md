@@ -82,7 +82,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 6.  Boost Library
 
-    XML<sub>Configuration</sub> uses XML parsing and property tree libraries from Boost. You can install boost by doing
+    XML_Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
     
     ```bash
     sudo apt-get install libboost-dev
@@ -94,9 +94,13 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 ## How to compile
 
-If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
+First, clone the repository.
 
 ```sh
+git clone https://github.com/ucarlos/CSC4110_Project.git
+#+END_SRC sh
+If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
+#+BEGIN_SRC sh
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
 

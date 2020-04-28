@@ -2,6 +2,12 @@
 #+AUTHOR: Ulysses Carlos, Jared Goldman
 #+DATE: April 28, 2020
 #+OPTIONS: toc:nil
+
+#+LaTeX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \usepackage{mathpazo}
+#+LaTeX_HEADER: \linespread{1.05}
+#+LaTeX_HEADER: \usepackage[scaled]{helvet}
+#+LaTeX_HEADER: \usepackage{courier}
 * CSC 4110 Project -- Rain Detector using a Raspberry Pi
 This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options.
 This project was led by Ulysses Carlos (myself) and Jared Goldman.
@@ -17,7 +23,9 @@ This project required the following hardware in order to work:
 *** TLDR;
 If on Debian/Ubuntu/Raspbian, execute this command:
 #+BEGIN_SRC bash
-sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev libboost-dev
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake 
+sudo apt-get install libcurl4-openssl-dev ncurses dialog 
+sudo apt-get install libssl-dev libboost-dev
 #+END_SRC
 *** Long Explanation
 Since this is a CLion Project, you can try installing it on your system and opening it, making sure to have the following components installed on your system. CLion comes with a version of CMake, but you need to install the following regardless:
@@ -66,13 +74,21 @@ XML_Configuration uses XML parsing and property tree libraries from Boost. You c
 sudo apt-get install libboost-dev
 #+END_SRC
 ** Explanation 
+
 ** How to compile
+First, clone the repository.
+#+BEGIN_SRC bash
+git clone https://github.com/ucarlos/CSC4110_Project.git
+#+END_SRC 
+
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
-#+BEGIN_SRC sh
+
+#+BEGIN_SRC bash
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
 
 #+END_SRC
+
 
 ** Example Usage
 To run the program, do

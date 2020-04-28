@@ -106,8 +106,6 @@ public:
 
     map<string, double> level = {{"battery_level", NAN}, {"rain_level", NAN}};
 
-    // double battery_level{NAN};
-    // double rain_level{NAN};
     string comment;
     string time_stamp{"[NOT SPECIFIED]"};
     string date{"[NOT SPECIFIED]"};
