@@ -8,7 +8,7 @@
 #+LaTeX_HEADER: \linespread{1.05}
 #+LaTeX_HEADER: \usepackage[scaled]{helvet}
 #+LaTeX_HEADER: \usepackage{courier}
-* CSC 4110 Project -- Rain Detector using a Raspberry Pi
+* CSC 4110 Project -- Rain Detector using a Raspberry Pi -- Post Project Branch
 This is the Post Project Branch of the Rain Alert Application.
 This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options.
 Ulysses Carlos is the main contributor and will add some of the application functions that could not be added in time.
@@ -81,7 +81,7 @@ XML Configuration uses XML parsing and property tree libraries from Boost. You c
 sudo apt-get install libboost-dev
 #+END_SRC
 ** Explanation 
-A Video explaining the project can be found [[https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s][here.]]
+A Video explaining the project can be found [[https://youtu.be/HR-591p1Yrk][here.]]
 ** How to compile
 First, clone the repository.
 #+BEGIN_SRC bash

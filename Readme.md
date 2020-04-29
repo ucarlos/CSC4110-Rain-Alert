@@ -1,4 +1,4 @@
-# CSC 4110 Project &#x2013; Rain Detector using a Raspberry Pi
+# CSC 4110 Project &#x2013; Rain Detector using a Raspberry Pi &#x2013; Post Project Branch
 
 This is the Post Project Branch of the Rain Alert Application. This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. Ulysses Carlos is the main contributor and will add some of the application functions that could not be added in time.
 
@@ -92,7 +92,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 6.  Boost Library
 
-    XML \textunderscore Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
+    XML Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
     
     ```bash
     sudo apt-get install libboost-dev
@@ -101,7 +101,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 ## Explanation
 
-A Video explaining the project can be found [here.](https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s)
+A Video explaining the project can be found [here.](https://youtu.be/HR-591p1Yrk)
 
 
 ## How to compile
