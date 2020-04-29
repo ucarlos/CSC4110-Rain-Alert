@@ -24,7 +24,9 @@ This project required the following hardware in order to work:
 If on Debian/Ubuntu/Raspbian, execute this command:
 
 ```bash
-sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev libboost-dev
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake 
+sudo apt-get install libcurl4-openssl-dev ncurses dialog 
+sudo apt-get install libssl-dev libboost-dev
 ```
 
 
@@ -82,7 +84,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 6.  Boost Library
 
-    XML_Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
+    XML \textunderscore Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
     
     ```bash
     sudo apt-get install libboost-dev
@@ -96,14 +98,15 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 First, clone the repository.
 
-```sh
+```bash
 git clone https://github.com/ucarlos/CSC4110_Project.git
-#+END_SRC sh
+```
+
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
-#+BEGIN_SRC sh
+
+```bash
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
-
 ```
 
 
