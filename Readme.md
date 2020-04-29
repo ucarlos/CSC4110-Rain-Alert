@@ -1,6 +1,14 @@
 # CSC 4110 Project &#x2013; Rain Detector using a Raspberry Pi
 
-This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. This project was led by Ulysses Carlos (myself) and Jared Goldman.
+This is the Post Project Branch of the Rain Alert Application. This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. Ulysses Carlos is the main contributor and will add some of the application functions that could not be added in time.
+
+
+## Future Additions
+
+-   Functional Text-based UI
+-   Make Sensor tracking work in the background to enable other components of the application to be used.
+-   Improved Function Options
+-   Debug Mode
 
 
 ## Project Timeline
@@ -12,7 +20,7 @@ This project required the following hardware in order to work:
 
 -   Rain Sensor
 -   Float Sensor
--   Graduated Cylinder
+-   Rain Gauge (You can use a Graduated Cylinder in lieu of one)
 -   Raspberry Pi Zero W
 
 
@@ -93,6 +101,8 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 ## Explanation
 
+A Video explaining the project can be found [here.](https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s)
+
 
 ## How to compile
 
@@ -118,10 +128,16 @@ To run the program, do
 ./CSC4110_Project
 ```
 
+This executable may be found in the project directory, or in one of the cmake builds.
 
-## References
 
+## References used for the project
+
+-   [Pthread Tutorial](https://computing.llnl.gov/tutorials/pthreads/)
+-   [C++ Reference](https://en.cppreference.com)
 -   [POSIX Thread Introduction](https://computing.llnl.gov/tutorials/pthreads/)
 -   [POSIX Thread on C++](https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html)
 -   [libcurl Documentation](https://curl.haxx.se/libcurl/c/)
 -   [libpqxx Documentation](https://libpqxx.readthedocs.io/en/latest/)
+-   [Boost XML Parser and Property Trees](https://www.boost.org/doc/libs/1_44_0/doc/html/boost_propertytree/parsers.html)
+-   <https://github.com/leemunroe/responsive-html-email-template>
