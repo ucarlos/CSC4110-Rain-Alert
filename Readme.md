@@ -12,7 +12,7 @@ This project required the following hardware in order to work:
 
 -   Rain Sensor
 -   Float Sensor
--   Graduated Cylinder
+-   Rain Gauge (You can use a Graduated Cylinder in lieu of one)
 -   Raspberry Pi Zero W
 
 
@@ -24,7 +24,9 @@ This project required the following hardware in order to work:
 If on Debian/Ubuntu/Raspbian, execute this command:
 
 ```bash
-sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake libcurl4-openssl-dev ncurses dialog libssl-dev libboost-dev
+sudo apt-get install git postgresql libpq-dev libpqxx-dev cmake 
+sudo apt-get install libcurl4-openssl-dev ncurses dialog 
+sudo apt-get install libssl-dev libboost-dev
 ```
 
 
@@ -82,7 +84,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 6.  Boost Library
 
-    XML_Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
+    XML Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
     
     ```bash
     sudo apt-get install libboost-dev
@@ -91,19 +93,22 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 ## Explanation
 
+A Video explaining the project can be found [here.](https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s)
+
 
 ## How to compile
 
 First, clone the repository.
 
-```sh
+```bash
 git clone https://github.com/ucarlos/CSC4110_Project.git
-#+END_SRC sh
+```
+
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
-#+BEGIN_SRC sh
+
+```bash
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
-
 ```
 
 
@@ -115,10 +120,16 @@ To run the program, do
 ./CSC4110_Project
 ```
 
+This executable may be found in the project directory, or in one of the cmake builds.
 
-## References
 
+## References used for the project
+
+-   [Pthread Tutorial](https://computing.llnl.gov/tutorials/pthreads/)
+-   [C++ Reference](https://en.cppreference.com)
 -   [POSIX Thread Introduction](https://computing.llnl.gov/tutorials/pthreads/)
 -   [POSIX Thread on C++](https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html)
 -   [libcurl Documentation](https://curl.haxx.se/libcurl/c/)
 -   [libpqxx Documentation](https://libpqxx.readthedocs.io/en/latest/)
+-   [Boost XML Parser and Property Trees](https://www.boost.org/doc/libs/1_44_0/doc/html/boost_propertytree/parsers.html)
+-   <https://github.com/leemunroe/responsive-html-email-template>

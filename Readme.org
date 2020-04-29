@@ -12,12 +12,11 @@
 This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options.
 This project was led by Ulysses Carlos (myself) and Jared Goldman.
 ** Project Timeline
-
 ** Necessary Hardware
 This project required the following hardware in order to work:
 - Rain Sensor
 - Float Sensor
-- Graduated Cylinder 
+- Rain Gauge (You can use a Graduated Cylinder in lieu of one)
 - Raspberry Pi Zero W
 ** Necessary Software
 *** TLDR;
@@ -69,12 +68,12 @@ To do so, do
 sudo apt-get install ncurses dialog
 #+END_SRC
 **** Boost Library
-XML_Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
+XML Configuration uses XML parsing and property tree libraries from Boost. You can install boost by doing
 #+BEGIN_SRC bash
 sudo apt-get install libboost-dev
 #+END_SRC
 ** Explanation 
-
+A Video explaining the project can be found [[https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s][here.]]
 ** How to compile
 First, clone the repository.
 #+BEGIN_SRC bash
@@ -86,20 +85,19 @@ If you can get CLion running on your machine, simply execute the program by pres
 #+BEGIN_SRC bash
 cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
 make
-
 #+END_SRC
-
-
 ** Example Usage
 To run the program, do
 #+BEGIN_SRC sh
 ./CSC4110_Project
 #+END_SRC
-** References
+This executable may be found in the project directory, or in one of the cmake builds.
+** References used for the project
+- [[https://computing.llnl.gov/tutorials/pthreads/][Pthread Tutorial]]
+- [[https://en.cppreference.com][C++ Reference]]
 - [[https://computing.llnl.gov/tutorials/pthreads/][POSIX Thread Introduction]]
 - [[https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html][POSIX Thread on C++]]
 - [[https://curl.haxx.se/libcurl/c/][libcurl Documentation]]
 - [[https://libpqxx.readthedocs.io/en/latest/][libpqxx Documentation]]
-
-
-
+- [[https://www.boost.org/doc/libs/1_44_0/doc/html/boost_propertytree/parsers.html][Boost XML Parser and Property Trees]]
+- https://github.com/leemunroe/responsive-html-email-template
