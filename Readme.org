@@ -73,7 +73,7 @@ XML Configuration uses XML parsing and property tree libraries from Boost. You c
 sudo apt-get install libboost-dev
 #+END_SRC
 ** Explanation 
-A Video explaining the project can be found [[https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s][here.]]
+A Video explaining the project can be found [[https://youtu.be/HR-591p1Yrk][here.]]
 ** How to compile
 First, clone the repository.
 #+BEGIN_SRC bash

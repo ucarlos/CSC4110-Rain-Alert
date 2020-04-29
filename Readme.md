@@ -93,7 +93,7 @@ Since this is a CLion Project, you can try installing it on your system and open
 
 ## Explanation
 
-A Video explaining the project can be found [here.](https://www.youtube.com/watch?v=HR-591p1Yrk&t=714s)
+A Video explaining the project can be found [here.](https://youtu.be/HR-591p1Yrk)
 
 
 ## How to compile
