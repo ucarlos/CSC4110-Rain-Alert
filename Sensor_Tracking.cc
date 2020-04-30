@@ -32,48 +32,9 @@ void string_to_lower(string &str){
 // toggle_sensor_tracking(): Allows user to enable/disable tracking
 // before using the pthreads.
 //------------------------------------------------------------------------------
-inline std::string get_tracking_status(){
-    return (tracking_status)? "Enabled" : "Disabled";
-}
 
-void toggle_sensor_tracking(const Sensor_Date &s_d) {
-    cout << options[0] << endl;
-	string time = s_d.get_user_time();
-    cout << "Current Sensor Status: " << get_tracking_status() << endl;
-    cout << "Daily reports will be sent every day at "
-    	 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
 
-    cout << "Input \"Enable\" to enable Sensor Checking."
-	 << endl
-	 << "Input \"Disable\" to disable Sensor Checking."
-	 << endl
-	 << "To return to the main menu, input \"back\"."
-	 << endl
-	 << "Enter any letter to continue."
-	 << endl;
 
-	string input;
-    cin >> input;
-    string_to_lower(input);
-
-    if (input == "back")
-    	return_to_menu();
-    else if (input == "enable"){
-		if (tracking_status)
-	    	cerr << "Tracking is already enabled.\n";
-		else
-	    	tracking_status = true;
-    }
-    else if (input == "disable"){ 
-		if (!tracking_status)
-	    	cerr << "Tracking is already disabled.\n";
-		else
-	    	tracking_status = false;
-    }
-    else
-		cerr << "Continuing...";
-
-}
 
 //------------------------------------------------------------------------------
 // check_pthread_creation(): Quick inline function to determine
@@ -82,12 +43,7 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 
 
 
-inline void check_pthread_creation(int &return_val, string &error_msg){
-    if (return_val)
-		throw runtime_error(error_msg);
-	else
-		return;
-}
+
 
 
 //------------------------------------------------------------------------------
@@ -290,61 +246,3 @@ void* send_email_thread(void *s_d){
 
 }
 
-//------------------------------------------------------------------------------
-// Tracking() : Enables / Disable Sensor Tracking
-// When Tracking is enabled, Make a pthread that handles reading the values
-// Of the Float Sensor/Rain Sensor. When an error occurs or when it is time
-// To send a daily report, send an email.
-// When Tracking is disabled, close the pthread.
-// TODO: Allow both threads to run in the background.
-//------------------------------------------------------------------------------
-void sensor_tracking(void){
-	Sensor_Date sd;
-	read_user_time(sd);
-
-	toggle_sensor_tracking(sd);
-    
-    if (!tracking_status){
-	cerr << "Tracking is currently disabled. Return back to the"
-	     << " main menu.\n";
-	return_to_menu();
-
-    }
-
-	//Initalize the mutex first
-	int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
-
-    string error_msg = "Could not initalize the mutex for some reason.";
-    check_pthread_creation(mutex_check, error_msg);
-
-    Log temp_log;
-    int pthread_check;
-    pthread_check = pthread_create(&sensor, nullptr,
-    				   handle_sensor_thread,
-    				   static_cast<void*>(&temp_log));
-
-
-
-    error_msg = "Could not create pthread for sensor tracking.";
-    
-    check_pthread_creation(pthread_check, error_msg);
-    
-    // Now create the pthread for email sending.
-
-    pthread_check = pthread_create(&email, nullptr,
-								   send_email_thread,
-								   static_cast<void *>(&sd));
-    
-    error_msg = "Could not create a pthread for sending email.";
-    check_pthread_creation(pthread_check, error_msg);
-
-
-    //Now join them at the end.
-    pthread_join(email, nullptr);
-	pthread_join(sensor, nullptr);
-
-    mutex_check = pthread_mutex_destroy(&log_mutex);
-    error_msg = "Could not destroy the mutex for some reason.";
-    check_pthread_creation(mutex_check, error_msg);
-    return_to_menu();
-}

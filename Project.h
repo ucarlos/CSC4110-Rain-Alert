@@ -15,6 +15,7 @@
 #include <memory>
 #include <chrono>
 #include <ctime>
+#include <ncurses.h>
 using namespace std;
 
 // Log Library
@@ -56,7 +57,8 @@ void test_sensors(void);
 void database_options(void);
 void email_options(void);
 void string_to_lower(string &str);
-
+void menu(void);
+inline void check_pthread_creation(int &return_val, string &error_msg);
 void get_credentials(void);
 // Log used for the project.
 extern Log project_log;
@@ -85,8 +87,18 @@ static bool end_all_threads = false;
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
-
+void* handle_sensor_thread(void *temp_log);
+void* send_email_thread(void *s_d);
+inline std::string get_tracking_status();
 // False: Disabled, True: Enabled
+
+inline void check_pthread_creation(int &return_val, string &error_msg){
+	if (return_val)
+		throw runtime_error(error_msg);
+	else
+		return;
+}
+
 static bool tracking_status = false;
 
 //------------------------------------------------------------------------------
@@ -155,6 +167,9 @@ std::string string_to_seconds(int64_t &sec);
 // Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h
 //
 //------------------------------------------------------------------------------
+inline std::string get_tracking_status(){
+	return (tracking_status)? "Enabled" : "Disabled";
+}
 
 
 #endif

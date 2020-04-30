@@ -15,13 +15,22 @@
 #define CSC4110_PROJECT_XML_CONFIGURATION_H
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <filesystem>
 #include <map>
+#include <stdexcept>
 
+bool verify_xml_path(const std::string &path);
 
 class settings_file{
 public:
 
 	explicit settings_file(const std::string &filename){
+		bool check = verify_xml_path(filename);
+		if (!check) {
+			throw std::runtime_error(filename + " could not be found. "
+									   "Please make sure that the file exists"
+			" in the root directory.");
+		}
 		xml_filename = filename;
 		load_file(xml_filename);
 	}
@@ -42,5 +51,6 @@ private:
 	std::string daily_email_time;
 	std::string xml_filename{};
 };
+
 
 #endif //CSC4110_PROJECT_XML_CONFIGURATION_H

@@ -68,4 +68,7 @@ void settings_file::save_file(const std::string &filename){
 	write_xml(filename, tree);
 
 }
-
+// Wrapper around filesystem::exists
+bool verify_xml_path(const std::string &path){
+	return std::filesystem::exists(path);
+}

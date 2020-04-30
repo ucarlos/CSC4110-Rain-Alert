@@ -38,13 +38,7 @@ Log project_log{};
 // Function Definitions
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-// return_to_menu(): Inline function to "return" to menu.
-//------------------------------------------------------------------------------
-inline void return_to_menu(void){
-    void (*function_pointer) (void) = menu;
-    function_pointer();
-}
+
 
 //------------------------------------------------------------------------------
 // get_credentials(): Function to get all the variables needed for the
@@ -62,8 +56,6 @@ void get_credentials(void){
 		get_database_info_from_file();
 	}
 }
-
-
 
 
 int main(void){

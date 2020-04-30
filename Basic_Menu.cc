@@ -11,27 +11,118 @@
  */
 
 #include "./Project.h"
-
-void menu(void);
-// Static Functions:
+void toggle_sensor_tracking(const Sensor_Date &s_d);
+//------------------------------------------------------------------------------
+// return_to_menu(): Inline function to "return" to menu.
+//------------------------------------------------------------------------------
 inline void return_to_menu(void){
-    void (*function_pointer) (void) = menu;
-    function_pointer();
+	void (*function_pointer) (void) = menu;
+	function_pointer();
 }
 
+//------------------------------------------------------------------------------
+// toggle_sensor_tracking(): It's mainly a prompt before sensor_tracking is
+// called.
+//------------------------------------------------------------------------------
 
-// Project_File for everything:
-std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
-//pqxx::connection db_connect;
-vector<string> options = {"Enable/Disable Tracking",
-								 "Status",
-								 "Search Logs",
-								 "Test Sensors",
-								 "Database Options",
-								 "Email Options",
-								 "Quit"};
+void toggle_sensor_tracking(const Sensor_Date &s_d) {
+	cout << options[0] << endl;
+	string time = s_d.get_user_time();
+	cout << "Current Sensor Status: " << get_tracking_status() << endl;
+	cout << "Daily reports will be sent every day at "
+		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
 
-Log project_log{};
+	cout << "Input \"Enable\" to enable Sensor Checking."
+		 << endl
+		 << "Input \"Disable\" to disable Sensor Checking."
+		 << endl
+		 << "To return to the main menu, input \"back\"."
+		 << endl
+		 << "Enter any letter to continue."
+		 << endl;
+
+	string input;
+	cin >> input;
+	string_to_lower(input);
+
+	if (input == "back")
+		return_to_menu();
+	else if (input == "enable"){
+		if (tracking_status)
+			cerr << "Tracking is already enabled.\n";
+		else
+			tracking_status = true;
+	}
+	else if (input == "disable"){
+		if (!tracking_status)
+			cerr << "Tracking is already disabled.\n";
+		else
+			tracking_status = false;
+	}
+	else
+		cerr << "Continuing...";
+
+}
+
+//------------------------------------------------------------------------------
+// Tracking() : Enables / Disable Sensor Tracking
+// When Tracking is enabled, Make a pthread that handles reading the values
+// Of the Float Sensor/Rain Sensor. When an error occurs or when it is time
+// To send a daily report, send an email.
+// When Tracking is disabled, close the pthread.
+// TODO: Allow both threads to run in the background.
+//------------------------------------------------------------------------------
+void sensor_tracking(void){
+	Sensor_Date sd;
+	read_user_time(sd);
+
+	toggle_sensor_tracking(sd);
+
+	if (!tracking_status){
+		cerr << "Tracking is currently disabled. Return back to the"
+			 << " main menu.\n";
+		return_to_menu();
+
+	}
+
+	//Initalize the mutex first
+	int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
+
+	string error_msg = "Could not initalize the mutex for some reason.";
+	check_pthread_creation(mutex_check, error_msg);
+
+	Log temp_log;
+	int pthread_check;
+	pthread_check = pthread_create(&sensor, nullptr,
+								   handle_sensor_thread,
+								   static_cast<void*>(&temp_log));
+
+
+
+	error_msg = "Could not create pthread for sensor tracking.";
+
+	check_pthread_creation(pthread_check, error_msg);
+
+	// Now create the pthread for email sending.
+
+	pthread_check = pthread_create(&email, nullptr,
+								   send_email_thread,
+								   static_cast<void *>(&sd));
+
+	error_msg = "Could not create a pthread for sending email.";
+	check_pthread_creation(pthread_check, error_msg);
+
+
+	//Now join them at the end.
+	pthread_join(email, nullptr);
+	pthread_join(sensor, nullptr);
+
+	mutex_check = pthread_mutex_destroy(&log_mutex);
+	error_msg = "Could not destroy the mutex for some reason.";
+	check_pthread_creation(mutex_check, error_msg);
+	return_to_menu();
+}
+
 //------------------------------------------------------------------------------
 // show_status(): Show the current values of the sensors (Enabled /Disabled)
 // alongside the current rain/battery levels.
@@ -255,27 +346,4 @@ void menu(void){
     system("clear");
     function_pointer();
      
-}
-
-//------------------------------------------------------------------------------
-// get_credentials(): Function to get all the variables needed for the
-// project. Depending on whether boost is installed, either the credentials
-// will be read from a xml file or various txt files.
-//------------------------------------------------------------------------------
-
-void get_credentials(void){
-	if (can_use_boost){
-		get_smtp_info_from_xml(project_file->get_smtp_info());
-		get_database_info_from_xml(project_file->get_database_info());
-	}
-	else {
-		get_smtp_credentials();
-		get_database_info_from_file();
-	}
-}
-
-int main(void){
-    // Get the credentials for the SMTP and the database first.
-	get_credentials();
-    menu();
 }
