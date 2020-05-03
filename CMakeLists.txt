@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.45)
+project(CSC4110_Project VERSION 0.5)
 
 
 # Add version number to program
@@ -28,8 +28,6 @@ find_library(DIALOG_CHECK dialog)
 
 # Set C and C++ Standards
 set(CMAKE_CXX_STANDARD 20)
-#set(CMAKE_CXX_FLAGS "-g -O1 -Wall -fprofile-arcs -ftest-coverage")
-#set(CMAKE_C_STANDARD 11)
 
 # Add SMTP Library
 #add_library(SMTP ./smtp/SMTPMail.cpp ./smtp/smtp.c)

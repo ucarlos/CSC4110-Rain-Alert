@@ -23,12 +23,12 @@ std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 
 // Menu options
 vector<string> options = {"Enable/Disable Tracking",
-								 "Status",
-								 "Search Logs",
-								 "Test Sensors",
-								 "Database Options",
-								 "Email Options",
-								 "Quit"};
+			  "Status",
+			  "Search Logs",
+			  "Test Sensors",
+			  "Database Options",
+			  "Email Options",
+			  "Quit"};
 
 // Global Log File
 Log project_log{};
@@ -47,14 +47,14 @@ Log project_log{};
 //------------------------------------------------------------------------------
 
 void get_credentials(void){
-	if (can_use_boost){
-		get_smtp_info_from_xml(project_file->get_smtp_info());
-		get_database_info_from_xml(project_file->get_database_info());
-	}
-	else {
-		get_smtp_credentials();
-		get_database_info_from_file();
-	}
+    if (can_use_boost){
+	get_smtp_info_from_xml(project_file->get_smtp_info());
+	get_database_info_from_xml(project_file->get_database_info());
+    }
+    else {
+	get_smtp_credentials();
+	get_database_info_from_file();
+    }
 }
 
 
