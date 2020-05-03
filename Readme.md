@@ -115,7 +115,7 @@ git clone https://github.com/ucarlos/CSC4110_Project.git
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
 
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
+cmake .
 make
 ```
 
