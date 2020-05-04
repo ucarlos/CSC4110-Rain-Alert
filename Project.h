@@ -50,7 +50,7 @@ extern std::unique_ptr<settings_file> project_file;
 // Menu Functions and variables
 //------------------------------------------------------------------------------
 void sensor_tracking(void);
-inline void return_to_menu(void);
+extern inline void return_to_menu(void);
 void show_status(void);
 void search_logs(void);
 void test_sensors(void);
@@ -58,6 +58,7 @@ void database_options(void);
 void email_options(void);
 void string_to_lower(string &str);
 void menu(void);
+std::string version_info(void);
 inline void check_pthread_creation(int &return_val, string &error_msg);
 void get_credentials(void);
 // Log used for the project.

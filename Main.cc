@@ -12,7 +12,7 @@
  */
 
 #include "./Project.h"
-
+#include <newt.h>
 
 //------------------------------------------------------------------------------
 // Definition of external variables declared in Project.h
@@ -27,8 +27,7 @@ vector<string> options = {"Enable/Disable Tracking",
 			  "Search Logs",
 			  "Test Sensors",
 			  "Database Options",
-			  "Email Options",
-			  "Quit"};
+			  "Email Options"};
 
 // Global Log File
 Log project_log{};
@@ -37,6 +36,16 @@ Log project_log{};
 //------------------------------------------------------------------------------
 // Function Definitions
 //------------------------------------------------------------------------------
+
+std::string version_info(void){
+    ostringstream os;
+    os << "Rain Alert (Version "
+       << CSC4110_Project_VERSION_MAJOR
+       << "."
+       << CSC4110_Project_VERSION_MINOR << ")" << endl;
+
+    return os.str();
+}
 
 
 
@@ -61,5 +70,7 @@ void get_credentials(void){
 int main(void){
     // First, retrieve the credentials:
     get_credentials();
+	newtInit();
     menu();
+    newtFinished();
 }

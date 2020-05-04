@@ -12,6 +12,7 @@
 
 #include "./Project.h"
 void toggle_sensor_tracking(const Sensor_Date &s_d);
+
 //------------------------------------------------------------------------------
 // return_to_menu(): Inline function to "return" to menu.
 //------------------------------------------------------------------------------
@@ -269,16 +270,6 @@ void email_options(void){
 }
 
 
-std::string version_info(void){
-    ostringstream os;
-    os << "Rain Alert Menu (Version "
-       << CSC4110_Project_VERSION_MAJOR
-       << "."
-       << CSC4110_Project_VERSION_MINOR << ")" << endl;
-
-    return os.str();
-}
-
 void info(){
     cout << "This entire menu screen is an temporary screen in order"
 	 << "to provide some form that can be worked with." << endl;
@@ -291,7 +282,7 @@ void info(){
 
 void list_menu(void){
 
-    for (int i = 0;  i < options.size() - 1; i++){
+    for (int i = 0;  i < options.size(); i++){
 	cout << static_cast<char>(('a' + i)) << ") "
 	     << options[i] << endl;
 	

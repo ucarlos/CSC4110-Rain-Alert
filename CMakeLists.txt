@@ -56,15 +56,15 @@ add_library(Configuration XML_Configuration.cc)
 
 #Test with coverage:
 
-set(DIALOG_GUI FALSE)
+set(NEWT_GUI TRUE)
 
-if (DIALOG_GUI AND DIALOG_CHECK)
-    message("Using the Dialog UI for the Project.")
-    add_executable(CSC4110_Project Main.cc Dialog_Menu.cc "Debug Functions.cc"
+if (NEWT_GUI AND DIALOG_CHECK)
+    message("Using the Newt UI for the Project.")
+    add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
             ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/PSQL_Connection.cc)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto
-            pthread Log Connection ncurses dialog Sensors Configuration)
+            pthread Log Connection ncurses newt Sensors Configuration)
 else()
     message("Using the Default Basic Menu UI for the Project.")
     add_executable(CSC4110_Project Main.cc Basic_Menu.cc ./Sensor_Tracking.cc "Debug Functions.cc"
@@ -81,5 +81,3 @@ target_include_directories(CSC4110_Project PUBLIC
         "${PROJECT_BINARY_DIR}")
 
 #add_executable(TEST_XML Configuration.cc)
-add_executable(Test_Dialog Dialog_Test.cc)
-target_link_libraries(Test_Dialog Wall dialog ncurses )
