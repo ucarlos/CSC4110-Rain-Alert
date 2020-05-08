@@ -70,7 +70,5 @@ void get_credentials(void){
 int main(void){
     // First, retrieve the credentials:
     get_credentials();
-	newtInit();
     menu();
-    newtFinished();
 }
