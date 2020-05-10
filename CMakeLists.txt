@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.5)
+project(CSC4110_Project VERSION 0.50)
 
 
 # Add version number to program
@@ -24,7 +24,13 @@ if (NOT CURL_CHECK)
             "Please install it using your package manager or compile from source.")
 endif()
 
-find_library(DIALOG_CHECK dialog)
+find_library(NEWT_CHECK newt)
+if (NOT NEWT_CHECK)
+    set(NEWT_GUI FALSE)
+else()
+    set(NEWT_GUI TRUE)
+endif()
+
 
 # Set C and C++ Standards
 set(CMAKE_CXX_STANDARD 20)
@@ -56,9 +62,7 @@ add_library(Configuration XML_Configuration.cc)
 
 #Test with coverage:
 
-set(NEWT_GUI TRUE)
-
-if (NEWT_GUI AND DIALOG_CHECK)
+if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
             ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/PSQL_Connection.cc)
@@ -74,10 +78,6 @@ else()
             ssl crypto pthread Log Connection Sensors Configuration)
 endif()
 
-
-
-#target_link_libraries(Basic_Menu PUBLIC curl m pqxx pq ssl crypto Log Connection dialog)
 target_include_directories(CSC4110_Project PUBLIC
         "${PROJECT_BINARY_DIR}")
 
-#add_executable(TEST_XML Configuration.cc)

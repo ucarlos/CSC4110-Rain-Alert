@@ -3,7 +3,8 @@
  * Created by Ulysses Carlos on 04/05/2020 at 06:16 PM
  * 
  * log.cpp
- * 
+ * Log class definitions, database log functions and smtp send functions are
+ * contained in this file.
  * -----------------------------------------------------------------------------
  */
 

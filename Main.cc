@@ -12,7 +12,7 @@
  */
 
 #include "./Project.h"
-#include <newt.h>
+
 
 //------------------------------------------------------------------------------
 // Definition of external variables declared in Project.h
@@ -22,7 +22,7 @@
 std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 
 // Menu options
-vector<string> options = {"Enable/Disable Tracking",
+const vector<string> options = {"Enable/Disable Tracking",
 			  "Status",
 			  "Search Logs",
 			  "Test Sensors",

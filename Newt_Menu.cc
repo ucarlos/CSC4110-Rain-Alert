@@ -12,14 +12,14 @@
 #include "./Project.h"
 #include <newt.h>
 
-// Box width and height should be divisble by 4.
+// Box width and height should be divisible by 4.
 // For example, 72x20 or 60x16 .
-
-const unsigned int box_width = 60;
+void main_menu(void);
+const unsigned int box_width = 64;
 const unsigned int box_height = 16;
 
 // Since all buttons will be at the end,
-// Only the x value has to be changed (Muliplied by 1, 2, or 3)
+// Only the x value has to be changed (Multiplied by 1, 2, or 3)
 const unsigned int button_y = 7 * (box_height / 8);
 const unsigned int button_x = (box_width / 8);
 
@@ -39,13 +39,15 @@ inline void exit_program(){
 	exit(EXIT_SUCCESS);
 }
 
+
+
 void sensor_tracking(void){
     // Make sure to pop the last window:
     newtPopWindow();
     newtComponent form, window, n_list, back, cont;
     // Wait a moment to refresh screen
     newtCls();
-
+    
     
     newtDrawRootText(0, 0, version_info().c_str());
     newtCenteredWindow(box_width, box_height, options[0].c_str());
@@ -56,20 +58,30 @@ void sensor_tracking(void){
     cont = newtCompactButton(6 * button_x, button_y, "Forward!");
     newtFormAddComponents(form, back, cont, nullptr);
     newtRunForm(form);
+    newtFormDestroy(form);
+    return_to_menu();
 
 }
 
 void show_status(void){
-    newtComponent form, window, n_list;
-    // Wait a moment to refresh screen
-    newtCls();
-	
-    newtDrawRootText(0, 0, version_info().c_str());
-    newtCenteredWindow(box_width, box_height, options[1].c_str());
+	// Make sure to stop newt for this section:
+	newtFinished();
 
-    // Always create a new form for every screen.
-    form = newtForm(nullptr, nullptr, 0);
-    newtRunForm(form);
+	ofstream ofs{log_status_path, ios_base::trunc};
+	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
+	ofs << "Current Status: " << endl;
+
+	//pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+	//pthread_mutex_lock(&temp_mutex);
+	ofs << project_log << endl;
+	//pthread_mutex_unlock(&temp_mutex);
+
+	string sys_call = "less ";
+	sys_call = sys_call + " " + log_status_path;
+	system(sys_call.c_str());
+
+	//Reinitialize Newt and return to menu
+	newtInit();
 
 }
 
@@ -78,13 +90,14 @@ void search_logs(void){
     // Wait a moment to refresh screen
     newtCls();
 
-	
+
     newtDrawRootText(0, 0, version_info().c_str());
     newtCenteredWindow(box_width, box_height, options[2].c_str());
 
     // Always create a new form for every screen.
     form = newtForm(nullptr, nullptr, 0);
-    newtRunForm(form);    
+
+    newtRunForm(form);
 
 }
 
@@ -167,7 +180,7 @@ void main_menu(void){
     char exit_name[100];
     exit_name[0] = static_cast<char>(menu_pointers.size() + 1 + '0');
     exit_name[1] = ' ';
-    strncpy(exit_name + 2, "Exit Program", 98);
+    strncpy(exit_name + 2, "Exit Program", 30);
 
     newtListboxAppendEntry(window, exit_name, reinterpret_cast<void *>(exit_program));
 
@@ -184,6 +197,15 @@ void main_menu(void){
     // newtFinished();
     option_point();
 	
+}
+
+
+
+inline void return_to_menu(void){
+	void (*function_pointer) () = main_menu;
+	// Pop the current window:
+	newtPopWindow();
+	function_pointer();
 }
 
 

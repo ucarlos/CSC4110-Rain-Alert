@@ -63,7 +63,7 @@ inline void check_pthread_creation(int &return_val, string &error_msg);
 void get_credentials(void);
 // Log used for the project.
 extern Log project_log;
-extern vector<string> options;
+extern const vector<string> options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
