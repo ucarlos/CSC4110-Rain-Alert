@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<settings><smtp_info><sender_email>csc4110.project@gmail.com</sender_email><sender_password>A password for the project.</sender_password><receiver_email>ucarlos1@student.gsu.edu</receiver_email></smtp_info><database_info><psql_ip>192.168.1.93</psql_ip><psql_login>project:Pi_Project</psql_login><psql_database>csc4110_project</psql_database></database_info><sensor_log><daily_email_time>18:45</daily_email_time><time_zone>-5</time_zone><email_type>0</email_type></sensor_log></settings>
