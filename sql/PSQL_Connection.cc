@@ -55,8 +55,7 @@ void close_connection(pqxx::connection &c){
 // contain no rows at all.
 //------------------------------------------------------------------------------
 
-pqxx::result search_database(pqxx::connection &c, const std::string &date, const std::string &start_time,
-				const std::string &end_time) {
+pqxx::result search_database(pqxx::connection &c, const std::string &date) {
     // Time format should be default (yyyy/mm/dd)
     // Some form of checking for time
 
@@ -64,12 +63,11 @@ pqxx::result search_database(pqxx::connection &c, const std::string &date, const
     pqxx::work work(c);
 
     // For now, only return one query,
-	ostringstream os;
+    ostringstream os;
 
 
     // TODO: Make sure query executes if (time + 1) rounds up a minute, hour, or day
-    os << "SELECT * FROM log WHERE log_date = " << work.quote(date) << " AND log_time >= "
-	   << work.quote(start_time) << "AND log_time <= " << work.quote(end_time);
+    os << "SELECT * FROM log WHERE log_date = " << work.quote(date);
 
     return work.exec(os.str());
 

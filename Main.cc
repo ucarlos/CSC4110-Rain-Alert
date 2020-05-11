@@ -21,17 +21,19 @@
 // Settings file used throughout the program
 std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 
-// Menu options
-const vector<string> options = {"Enable/Disable Tracking",
-			  "Status",
-			  "Search Logs",
-			  "Test Sensors",
-			  "Database Options",
-			  "Email Options"};
+// Menu main_menu_options
+const vector<string> main_menu_options = {"Enable/Disable Tracking",
+										  "Status",
+										  "Search Logs",
+										  "Test Sensors",
+										  "Database Options",
+										  "Email Options"};
 
 // Global Log File
 Log project_log{};
 
+const vector<string> email_menu_options = {"Change Recipient Mail", "Change Time",
+										   "Change Timezone", "Change Email Type"};
 
 //------------------------------------------------------------------------------
 // Function Definitions

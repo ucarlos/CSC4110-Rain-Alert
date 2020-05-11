@@ -21,35 +21,47 @@
 
 bool verify_xml_path(const std::string &path);
 
+
+// Enum for Email sending:
+enum class email_type{
+    html = 0, plain_text
+};
+
 class settings_file{
 public:
-
-	explicit settings_file(const std::string &filename){
-		bool check = verify_xml_path(filename);
-		if (!check) {
-			throw std::runtime_error(filename + " could not be found. "
-									   "Please make sure that the file exists"
-			" in the root directory.");
-		}
-		xml_filename = filename;
-		load_file(xml_filename);
+    
+    explicit settings_file(const std::string &filename){
+	bool check = verify_xml_path(filename);
+	if (!check) {
+	    throw std::runtime_error(filename + " could not be found. "
+				     "Please make sure that the file exists"
+				     " in the root directory.");
 	}
-	// Ideally, I'd like to make this constant, but it seems more of a hassle to
-	// implement set_smtp_info() and set_datebase_info.
-	// So, TODO: Implement set_smtp_info() and set_datebase_info with bounds checking.
-	std::map<std::string, std::string>& get_smtp_info()  { return smtp_info; }
-	std::map<std::string, std::string>& get_database_info() { return database_info; }
-
-
-	const std::string& get_email_time()  { return daily_email_time; }
-	void set_email_time(std::string &new_filename) { daily_email_time = new_filename; }
-	void load_file(const std::string &filename);
-	void save_file(const std::string &filename);
+	xml_filename = filename;
+	load_file(xml_filename);
+    }
+    // Ideally, I'd like to make this constant, but it seems more of a hassle to
+    // implement set_smtp_info() and set_datebase_info.
+    // So, TODO: Implement set_smtp_info() and set_datebase_info with bounds checking.
+    std::map<std::string, std::string>& get_smtp_info()  { return smtp_info; }
+    std::map<std::string, std::string>& get_database_info() { return database_info; }
+    
+    const std::string& get_email_time()  { return daily_email_time; }
+    const enum email_type& get_email_type() { return e_t; }
+    void set_email_time(std::string &new_filename) { daily_email_time = new_filename; }
+    
+    [[nodiscard]] int8_t get_time_zone() const { return time_zone; }
+    void set_time_zone(int8_t val) { time_zone = val; }
+    void load_file(const std::string &filename);
+    void save_file(const std::string &filename);
+    void set_email_type(int val);
 private:
-	std::map<std::string, std::string>smtp_info;
-	std::map<std::string, std::string> database_info;
-	std::string daily_email_time;
-	std::string xml_filename{};
+    std::map<std::string, std::string>smtp_info;
+    std::map<std::string, std::string> database_info;
+    std::string daily_email_time;
+    std::string xml_filename{};
+    int8_t time_zone {-5}; // Eastern Standard Time as default, can be changed?
+    enum email_type e_t;
 };
 
 

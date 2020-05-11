@@ -1,0 +1,2 @@
+[Time when daily report is sent (in hh:mm format (24 hour clock)) For example 18:00 for 6:00pm.]
+[Time Zone of where the device is located (In UTC format) (For example -5 for Eastern Standard Time (New York))]

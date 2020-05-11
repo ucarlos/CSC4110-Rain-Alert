@@ -40,7 +40,7 @@ using namespace std;
 const bool can_use_boost = true;
 
 const string time_path = "..log/Settings.txt";
-const string xml_path = "../Project_Settings.xml";
+const string xml_path = "../settings/Project_Settings.xml";
 const string database_results_path = "../Database_results.txt";
 const string log_status_path = "../log_status.txt";
 
@@ -55,15 +55,18 @@ void show_status(void);
 void search_logs(void);
 void test_sensors(void);
 void database_options(void);
-void email_options(void);
+void email_settings(void);
 void string_to_lower(string &str);
 void menu(void);
 std::string version_info(void);
 inline void check_pthread_creation(int &return_val, string &error_msg);
 void get_credentials(void);
+
+
 // Log used for the project.
 extern Log project_log;
-extern const vector<string> options;
+extern const vector<string> main_menu_options;
+extern const vector<string> email_menu_options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
@@ -160,10 +163,12 @@ private:
 static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
 int64_t return_time_in_seconds(string &time);
 void read_user_time(Sensor_Date &sd);
+bool verify_time_zone(const int8_t &time_zone);
 std::string twelve_hour_clock(string &time);
 bool verify_time(const string &time);
 bool verify_date(const string &date);
 std::string string_to_seconds(int64_t &sec);
+
 //------------------------------------------------------------------------------
 // Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h
 //

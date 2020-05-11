@@ -30,13 +30,13 @@ const vector<void (*)(void)>menu_pointers = {&sensor_tracking,
 					     &search_logs,
 					     &test_sensors,
 					     &database_options,
-					     &email_options};
+					     &email_settings};
 
 
 //Small inline function to quit program.
 inline void exit_program(){
-	newtFinished();
-	exit(EXIT_SUCCESS);
+    newtFinished();
+    exit(EXIT_SUCCESS);
 }
 
 
@@ -64,24 +64,24 @@ void sensor_tracking(void){
 }
 
 void show_status(void){
-	// Make sure to stop newt for this section:
-	newtFinished();
+    // Make sure to stop newt for this section:
+    newtFinished();
 
-	ofstream ofs{log_status_path, ios_base::trunc};
-	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
-	ofs << "Current Status: " << endl;
+    ofstream ofs{log_status_path, ios_base::trunc};
+    ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
+    ofs << "Current Status: " << endl;
 
-	//pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-	//pthread_mutex_lock(&temp_mutex);
-	ofs << project_log << endl;
-	//pthread_mutex_unlock(&temp_mutex);
+    //pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+    //pthread_mutex_lock(&temp_mutex);
+    ofs << project_log << endl;
+    //pthread_mutex_unlock(&temp_mutex);
 
-	string sys_call = "less ";
-	sys_call = sys_call + " " + log_status_path;
-	system(sys_call.c_str());
+    string sys_call = "less ";
+    sys_call = sys_call + " " + log_status_path;
+    system(sys_call.c_str());
 
-	//Reinitialize Newt and return to menu
-	newtInit();
+    //Reinitialize Newt and return to menu
+    newtInit();
 
 }
 
@@ -130,7 +130,7 @@ void database_options(void){
 }
 
 
-void email_options(void){
+void email_settings(void){
     newtComponent form, window, n_list;
     // Wait a moment to refresh screen
     newtCls();
@@ -202,10 +202,10 @@ void main_menu(void){
 
 
 inline void return_to_menu(void){
-	void (*function_pointer) () = main_menu;
-	// Pop the current window:
-	newtPopWindow();
-	function_pointer();
+    void (*function_pointer) () = main_menu;
+    // Pop the current window:
+    newtPopWindow();
+    function_pointer();
 }
 
 

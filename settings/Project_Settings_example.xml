@@ -12,11 +12,11 @@
   !-->
   <smtp_info>
     <!-- Email address that you're sending email from !-->
-    <sender_email>csc4110.project@gmail.com</sender_email>
+    <sender_email></sender_email>
     <!-- Password of that email address -->
-    <sender_password>A password for the project.</sender_password>
+    <sender_password></sender_password>
     <!-- Email address that will be receiving mail from the sender. -->
-    <receiver_email>ucarlos1@student.gsu.edu</receiver_email>
+    <receiver_email></receiver_email>
   </smtp_info>
 
   <!-- 
@@ -40,5 +40,7 @@
     <!-- Time when the daily report is sent, should be in hh::mm format (24 hour clock) -->
     <!-- For example, for 6:00pm, write 18:00 -->
     <daily_email_time></daily_email_time>
+    <!-- Time zone of the device; It should be in UTC format. For example, Eastern Standard Time is UTC -5, so just place -5 here. !-->
+    <time_zone></time_zone>
   </sensor_log>
 </settings>

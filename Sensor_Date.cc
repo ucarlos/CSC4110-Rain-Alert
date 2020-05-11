@@ -86,6 +86,15 @@ bool verify_date(const string &date){
 }
 
 //------------------------------------------------------------------------------
+// verify_time_zone(): Check whether time zone is in range of UTC [-12: 12]
+// Please don't use this when in Australia or some country that has fractional
+// time zones or whatever. I know that Australia has something like UTC + 9 1/2 
+//------------------------------------------------------------------------------
+bool verify_time_zone(const int8_t &time_z){
+    return (-12 <= time_z && time_z <= 12);
+}
+
+//------------------------------------------------------------------------------
 // return_time_in_seconds() : UNSAFE function to convert a string of hh:mm
 // to seconds for the std::chrono::seconds variable.
 // Assume that the string is valid.
@@ -98,7 +107,7 @@ int64_t return_time_in_seconds(string &time){
     // Don't remove the - time_zone. It accounts for UTC - x time.
     // So, since we're in UTC - 4 (EST), it will add 4 hours.
 	return (!hour && !min) ? 0 :
-		   ((unit * unit * (hour - time_zone)) + (unit * min));
+		   ((unit * unit * (hour - project_file->get_time_zone())) + (unit * min));
 
 }
 

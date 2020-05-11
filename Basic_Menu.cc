@@ -12,22 +12,36 @@
 
 #include "./Project.h"
 void toggle_sensor_tracking(const Sensor_Date &s_d);
-
+void list_menu(const vector<string> &v);
 //------------------------------------------------------------------------------
 // return_to_menu(): Inline function to "return" to menu.
 //------------------------------------------------------------------------------
 inline void return_to_menu(void){
 	void (*function_pointer) (void) = menu;
+	system("clear");
 	function_pointer();
 }
 
+
+//------------------------------------------------------------------------------
+// list_menu(): Display the items in vector<string> as an option.
+//------------------------------------------------------------------------------
+void list_menu(const vector<string> & v){
+
+    for (int i = 0;  i < v.size(); i++){
+	cout << static_cast<char>(('a' + i)) << ") "
+		 << v[i] << endl;
+	
+    }
+
+}
 //------------------------------------------------------------------------------
 // toggle_sensor_tracking(): It's mainly a prompt before sensor_tracking is
 // called.
 //------------------------------------------------------------------------------
 
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
-	cout << options[0] << endl;
+	cout << main_menu_options[0] << endl;
 	string time = s_d.get_user_time();
 	cout << "Current Sensor Status: " << get_tracking_status() << endl;
 	cout << "Daily reports will be sent every day at "
@@ -129,62 +143,54 @@ void sensor_tracking(void){
 // alongside the current rain/battery levels.
 //------------------------------------------------------------------------------
 void show_status(void){
-    cout << options[1] << endl;
+    cout << main_menu_options[1] << endl;
     char ch;
 
-	ofstream ofs{log_status_path, ios_base::trunc};
-	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
+    ofstream ofs{log_status_path, ios_base::trunc};
+    ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
     ofs << "Current Status: " << endl;
+    
+    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&temp_mutex);
+    ofs << project_log << endl;
+    pthread_mutex_unlock(&temp_mutex);
 
-	//pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-	//pthread_mutex_lock(&temp_mutex);
-	ofs << project_log << endl;
-	//pthread_mutex_unlock(&temp_mutex);
-
-	string sys_call = "less ";
-	sys_call = sys_call + " " + log_status_path;
-	system(sys_call.c_str());
+    string sys_call = "less ";
+    sys_call = sys_call + " " + log_status_path;
+    system(sys_call.c_str());
 
     return_to_menu();
 }
 
 //------------------------------------------------------------------------------
-// search_logs(): Given a date and time, search the database for that log.
+// search_logs(): Given a date (mm/dd/yyyy), search the database for that log.
 // If found, output the result to a file/stdout. Otherwise, display "Not Found."
 //
 //------------------------------------------------------------------------------
 void search_logs(void){
-    cout << options[2] << endl;
+    cout << main_menu_options[2] << endl;
     string input;
+    
 
-    // cout << "If you want to go back to the main menu, input \"back\" ." << endl;
-    // cin >> input;
-    // string_to_lower(input);
-    // if (input == "back")
-    // 	return_to_menu();
+    cout << "Please enter a date (mm/dd/yyyy):" << endl;
+    string date, time;
+    cin >> date >> time;
+    bool check;
 
-	cout << "Please enter a date (mm/dd/yyyy) and time (24 hour clock hh:mm) : " << endl;
-	string date, time;
-	cin >> date >> time;
-	bool check;
+    while (!(check = verify_date(date))){
+	cout << "Invalid date. Remember to input a date in "
+	     << "mm/dd/yyyy format and make sure that it is a valid date "
+	     << "(i.e no Feb 29 on an non leap year).\n";
+	cin >> date;
+    }
+	
+    // Now send the query.
+    cout << "Sending Query..." << endl;
+    open_connection(db_connect);
 
-	while (!(check = verify_date(date))){
-		cout << "Invalid date. Remember to input a date in mm/dd/yyyy format.\n";
-		cin >> date;
-	}
-
-	while (!(check = verify_time(time))){
-		cout << "Invalid time. Remember to input time in hh:mm (24 hour clock).\n";
-		cin >> time;
-	}
-	// Now send the query.
-	cout << "Sending Query..." << endl;
-	open_connection(db_connect);
-	int64_t start = return_time_in_seconds(time) + 60;
-	string end = string_to_seconds(start);
-	pqxx::result query = search_database(db_connect, date, time, end);
-	show_result_contents(query);
-	close_connection(db_connect);
+    pqxx::result query = search_database(db_connect, date);
+    show_result_contents(query);
+    close_connection(db_connect);
     return_to_menu();
 }
 
@@ -197,9 +203,10 @@ void test_sensors(void){
 #ifdef SENSOR_READINGS_RNG
     cerr << "This project currently uses a random number generator "
     	 << "to simulate sensor output.\nThis is intended to be used "
-    	 << "as a last resort or for debugging purposes.\nI apologize for the inconvenience.\n" << endl;
+    	 << "as a last resort or for debugging purposes.\nI apologize "
+	 << "for the inconvenience.\n" << endl;
 #else
-	cout << options[3] << endl;
+	cout << main_menu_options[3] << endl;
 #endif
     cout << "Press any key to continue." << endl;
     char ch;
@@ -211,8 +218,8 @@ void test_sensors(void){
 // database_options(): Function handles the current log information and
 // a connection test to the database.
 //------------------------------------------------------------------------------
-void database_options(void){
-    cout << options[4] << endl;
+void database_options(){
+    cout << main_menu_options[4] << endl;
     // Lock project_file.
 	pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_lock(&temp_mutex);
@@ -231,41 +238,95 @@ void database_options(void){
 }
 
 //------------------------------------------------------------------------------
-// email_options() : Handles what email address the log is sent to, as well
+// email_menu_options() : Handles what email address the log is sent to, as well
 // as the type of email sent (HTML or Basic Text)
 //------------------------------------------------------------------------------
-void email_options(void){
-    cout << options[5] << endl;
+void email_settings(){
     char input;
-    cout << "Would you like to change the recipient email? [y/n]" << endl;
-    cin >> input;
+    string str;
+    std::regex regex_test;
+    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&temp_mutex);
+    int8_t val;
+ 
+    do {
+	cout << main_menu_options[5] << endl;
+	list_menu(email_menu_options);
+	cout << "r) Return to main menu" << endl;
+	
+	cin >> input;
+	switch(input){
+	case 'a': // Change Recipient Email
+	    cout << "Enter a new recipient email:" << endl;
+	    cin >> str;
 
-    if (input == 'n')
-		return_to_menu();
-	cout << "Enter the new recipient email: ";
-    string new_recipient_email;
-    std::regex test;
-	cin >> new_recipient_email;
+	    while (!verify_username(regex_test, str)){
+		cout << "Invalid address. "
+		     << "Username should follow "
+		     << "name@domain_name.domain." << endl;
+		
+		cin >> str;
+	    }
 
-    while (!verify_username(test, new_recipient_email)){
-    	cout << "Invalid email. Username should follow name@domain_name.domain." << endl;
-    	cin >> new_recipient_email;
-    }
+	    // Otherwise set the recipient email
+	    project_file->get_smtp_info().at("receiver_email") = str;
+	    break;
+	    
+	case 'b': // Change Email Time
+	    cout << "Enter a new time to send the email:" << endl;
+	    cin >> str;
 
-    // If valid, change email.
-    // Place mutex here.
-	pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_lock(&temp_mutex);
+	    while (!verify_time(str)){
+		cout << "Invalid time. Time should be in hh::mm"
+		     << " format and be in the range "
+		     << "00:00 to 23:59" << endl;
+		cin >> str;
+	    }
 
-    project_file->get_smtp_info().at("receiver_email") = new_recipient_email;
-    project_file->save_file(xml_path);
+	    // Otherwise set email time
+	    project_file->set_email_time(str);
+	    break;
+	case 'c': // Change Timezone
+	    cout << "Enter the timezone this device is on:" << endl;
+	    cin >> val;
+
+	    while (!verify_time_zone(val)){
+		cout << "Invalid time zone. Time zone should "
+		     << "be in the range [-12: 12]."
+		     << endl;
+		cin >> val;
+	    }
+	   
+	    // Otherwise set the time_zone
+	    project_file->set_time_zone(val);
+	    break;
+	case 'd': // Change Email Type
+	    cout << "Enter the email type that is sent [HTML or Text]" << endl;
+	    cin >> str;
+	    string_to_lower(str);
+	    
+	    if (str == "html")
+		project_file->set_email_type(0);
+	    else if (str == "text")
+		project_file->set_email_type(1);
+	    else {
+		cout << "Invalid input." << endl;
+		break;
+	    }
+
+	    break;
+
+	case 'r': // Return
+	    break;
+	default:
+	    cout << "Invalid input. Try again." << endl;
+	}
+
+    } while (input != 'r');
 
     pthread_mutex_unlock(&temp_mutex);
-
-    cout << "Setting saved in " << xml_path << endl
-    	 << "For now, restart the program." << endl;
-    sleep(2);
-    // End mutex here.
+    
+    project_file->save_file(xml_path);
     return_to_menu();
 }
 
@@ -280,19 +341,13 @@ void info(){
 
 }
 
-void list_menu(void){
 
-    for (int i = 0;  i < options.size(); i++){
-	cout << static_cast<char>(('a' + i)) << ") "
-	     << options[i] << endl;
-	
-    }
-    cout << "q) Quit" << endl;
-}
 
 void menu(void){
     cout << version_info() << endl;
-    list_menu();
+    list_menu(main_menu_options);
+    // Quit Option
+    cout << "q) Quit" << endl;
     // Function Pointer to each option.
     void (*function_pointer)(void);
 
@@ -303,7 +358,7 @@ void menu(void){
     char input;
     cin >> input;
 
-    char max = static_cast<char>('a' + options.size() - 1);
+    char max = static_cast<char>('a' + main_menu_options.size() - 1);
     // Make sure that input is a valid selection.
     while (!('a' <= input && input <= max) && (input != 'q')){
 	cout << "Invalid input. Try again." << endl;
@@ -327,7 +382,7 @@ void menu(void){
 	        function_pointer = database_options;
 	        break;
         case 'f':
-	        function_pointer = email_options;
+	        function_pointer = email_settings;
 	        break;
         default:
 	        exit(EXIT_SUCCESS);

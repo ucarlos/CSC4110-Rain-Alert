@@ -153,7 +153,10 @@ void* handle_sensor_thread(void *temp_log){
     add_log(transaction, *log);
     close_connection(db_connect);
     // Now send an email and close the thread.:
-    send_log_as_HTML(project_log, error_message);
+	if (project_file->get_email_type() == email_type::html)
+		send_log_as_HTML(project_log, error_message);
+	else
+		send_log_as_text(project_log, error_message);
 	// Also cancel the other thread.
     end_all_threads = true;
     pthread_mutex_unlock(&log_mutex); // Unlock Mutex
@@ -228,8 +231,11 @@ void* send_email_thread(void *s_d){
 			project_log.comment += sdate->get_user_time();
 			// Update database
 			add_log(transaction, project_log);
-			// Now send email
-			send_log_as_HTML(project_log, message);
+			// Now send email (HTML or Plain Text)
+			if (project_file->get_email_type() == email_type::html)
+				send_log_as_HTML(project_log, message);
+			else
+				send_log_as_text(project_log, message);
 			// Unlock the resources.
 			pthread_mutex_unlock(&log_mutex);
 		}

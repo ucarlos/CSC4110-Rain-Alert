@@ -35,7 +35,12 @@ void settings_file::load_file(const std::string &filename){
 		database_info.insert(std::pair<std::string, std::string>(
 					 i.first.data(), i.second.data()));
     
-    
+
+    // Time zone:
+    time_zone = tree.get<int8_t>("settings.sensor_log.time_zone");
+    // Email type
+    auto temp = tree.get<int8_t>("settings.sensor_log.email_type");
+    set_email_type(temp);
     // Lastly, get the time.
     daily_email_time = tree.get<std::string>("settings.sensor_log.daily_email_time");
 
@@ -65,9 +70,18 @@ void settings_file::save_file(const std::string &filename){
 	tree.put("settings.sensor_log.daily_email_time",
 			daily_email_time);
 
+	tree.put("settings.sensor_log.time_zone", time_zone);
 	write_xml(filename, tree);
 
 }
+
+//------------------------------------------------------------------------------
+// set_email_type() : Toggle between HTML or Plain_text
+//------------------------------------------------------------------------------
+void settings_file::set_email_type(int val){
+    e_t = (!val) ? email_type::html : email_type::plain_text;
+}
+
 // Wrapper around filesystem::exists
 bool verify_xml_path(const std::string &path){
 	return std::filesystem::exists(path);

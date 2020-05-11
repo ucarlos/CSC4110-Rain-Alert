@@ -11,7 +11,7 @@ using namespace std;
 // Database Variables
 //------------------------------------------------------------------------------
 // Change depending on which system to compile to:
-const string database_info_path = "../sql/database_info.txt";
+const string database_info_path = "../settings/database_info.txt";
 
 
 static string database_address;
@@ -28,9 +28,7 @@ void get_database_info_from_file(void);
 void initialize_connection(pqxx::connection &c);
 void close_connection(pqxx::connection &c);
 void open_connection(pqxx::connection &c);
-pqxx::result
-search_database(pqxx::connection &c, const std::string &date, const std::string &start_time,
-				const std::string &end_time);
+pqxx::result search_database(pqxx::connection &c, const std::string &date);
 
 //------------------------------------------------------------------------------
 // Project_Settings.xml functions

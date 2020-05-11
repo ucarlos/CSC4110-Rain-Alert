@@ -31,9 +31,10 @@ else()
     set(NEWT_GUI TRUE)
 endif()
 
+set(NEWT_GUI FALSE)
 
 # Set C and C++ Standards
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 # Add SMTP Library
 #add_library(SMTP ./smtp/SMTPMail.cpp ./smtp/smtp.c)

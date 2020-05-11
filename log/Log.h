@@ -65,7 +65,7 @@ void get_smtp_credentials(void);
 //------------------------------------------------------------------------------
 // Filepaths
 //------------------------------------------------------------------------------
-const string smtp_file_path = "../log/smtp_info.txt";
+const string smtp_file_path = "../settings/smtp_info.txt";
 const string text_file_path = "../log/Report.txt";
 const string html_template_path = "../log/html_template.html";
 const string html_file_path = "../log/Report.html";
