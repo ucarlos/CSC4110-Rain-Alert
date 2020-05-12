@@ -69,7 +69,7 @@ void settings_file::save_file(const std::string &filename){
 			database_info["psql_database"].data());
 	tree.put("settings.sensor_log.daily_email_time",
 			daily_email_time);
-
+	tree.put("settings.sensor_log.email_type", (int)e_t);
 	tree.put("settings.sensor_log.time_zone", time_zone);
 	write_xml(filename, tree);
 

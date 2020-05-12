@@ -103,7 +103,7 @@ void sensor_tracking(void){
 	//Initalize the mutex first
 	int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
 
-	string error_msg = "Could not initalize the mutex for some reason.";
+	string error_msg = "Could not initialize the mutex for some reason.";
 	check_pthread_creation(mutex_check, error_msg);
 
 	Log temp_log;
@@ -173,8 +173,8 @@ void search_logs(void){
     
 
     cout << "Please enter a date (mm/dd/yyyy):" << endl;
-    string date, time;
-    cin >> date >> time;
+    string date;
+    cin >> date;
     bool check;
 
     while (!(check = verify_date(date))){
@@ -287,7 +287,8 @@ void email_settings(){
 	    project_file->set_email_time(str);
 	    break;
 	case 'c': // Change Timezone
-	    cout << "Enter the timezone this device is on:" << endl;
+	    cout << "Enter the timezone this device is on. Time zone should be in "
+			 "the range [-12: 12]." << endl;
 	    cin >> val;
 
 	    while (!verify_time_zone(val)){
@@ -329,19 +330,6 @@ void email_settings(){
     project_file->save_file(xml_path);
     return_to_menu();
 }
-
-
-void info(){
-    cout << "This entire menu screen is an temporary screen in order"
-	 << "to provide some form that can be worked with." << endl;
-    
-    cout << "In the future, I plan on making this menu in ncurses, "
-	 << "which each option fully functional.\n";
-
-
-}
-
-
 
 void menu(void){
     cout << version_info() << endl;

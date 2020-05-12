@@ -42,5 +42,7 @@
     <daily_email_time></daily_email_time>
     <!-- Time zone of the device; It should be in UTC format. For example, Eastern Standard Time is UTC -5, so just place -5 here. !-->
     <time_zone></time_zone>
+    <!-- What type of email should be sent (0 for HTML and 1 for Plain text) !-->
+    <email_type></email_type>
   </sensor_log>
 </settings>
