@@ -55,13 +55,8 @@ endif()
 add_library(Configuration XML_Configuration.cc)
 #Add Subdirectories
 
-
-
-#add_executable(CSC4110_Project main.cpp)
-#add_executable(Basic_Menu Basic_Menu.cc ./sensors/Float_Sensor.cc log/log.cpp sql/Connection.cc)
-
 #Test with coverage:
-set(NEWT_GUI FALSE)
+#set(NEWT_GUI FALSE)
 if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
@@ -80,4 +75,3 @@ endif()
 
 target_include_directories(CSC4110_Project PUBLIC
         "${PROJECT_BINARY_DIR}")
-

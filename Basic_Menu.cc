@@ -27,7 +27,6 @@ inline void return_to_menu(void){
 // list_menu(): Display the items in vector<string> as an option.
 //------------------------------------------------------------------------------
 void list_menu(const vector<string> & v){
-
     for (int i = 0;  i < v.size(); i++){
 	cout << static_cast<char>(('a' + i)) << ") "
 		 << v[i] << endl;
@@ -41,41 +40,41 @@ void list_menu(const vector<string> & v){
 //------------------------------------------------------------------------------
 
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
-	cout << main_menu_options[0] << endl;
-	string time = s_d.get_user_time();
-	cout << "Current Sensor Status: " << project_file->get_tracking_status() << endl;
-	cout << "Daily reports will be sent every day at "
-		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
+    cout << main_menu_options[0] << endl;
+    string time = s_d.get_user_time();
+    cout << "Current Sensor Status: " << project_file->get_tracking_status() << endl;
+    cout << "Daily reports will be sent every day at "
+	 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
+    
+    cout << "Input \"Enable\" to enable Sensor Checking."
+	 << endl
+	 << "Input \"Disable\" to disable Sensor Checking."
+	 << endl
+	 << "To return to the main menu, input \"back\"."
+	 << endl
+	 << "Enter any letter to continue."
+	 << endl;
 
-	cout << "Input \"Enable\" to enable Sensor Checking."
-		 << endl
-		 << "Input \"Disable\" to disable Sensor Checking."
-		 << endl
-		 << "To return to the main menu, input \"back\"."
-		 << endl
-		 << "Enter any letter to continue."
-		 << endl;
-
-	string input;
-	cin >> input;
-	string_to_lower(input);
-
-	if (input == "back")
-		return_to_menu();
-	else if (input == "enable"){
-		if (project_file->get_tracking_status())
-			cerr << "Tracking is already enabled.\n";
-		else
-			project_file->set_tracking_status(true);
-	}
-	else if (input == "disable"){
-		if (!project_file->get_tracking_status())
-			cerr << "Tracking is already disabled.\n";
-		else
-			project_file->set_tracking_status(false);
-	}
+    string input;
+    cin >> input;
+    string_to_lower(input);
+    
+    if (input == "back")
+	return_to_menu();
+    else if (input == "enable"){
+	if (project_file->get_tracking_status())
+	    cerr << "Tracking is already enabled.\n";
 	else
-		cerr << "Continuing...";
+	    project_file->set_tracking_status(true);
+    }
+    else if (input == "disable"){
+	if (!project_file->get_tracking_status())
+	    cerr << "Tracking is already disabled.\n";
+	else
+	    project_file->set_tracking_status(false);
+    }
+    else
+	cerr << "Continuing...";
 
 }
 
@@ -88,54 +87,54 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 // TODO: Allow both threads to run in the background.
 //------------------------------------------------------------------------------
 void sensor_tracking(void){
-	Sensor_Date sd;
-	read_user_time(sd);
+    Sensor_Date sd;
+    read_user_time(sd);
+    
+    toggle_sensor_tracking(sd);
 
-	toggle_sensor_tracking(sd);
-
-	if (!project_file->get_tracking_status()){
-		cerr << "Tracking is currently disabled. Return back to the"
-			 << " main menu.\n";
-		return_to_menu();
-
-	}
-
-	//Initalize the mutex first
-	int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
-
-	string error_msg = "Could not initialize the mutex for some reason.";
-	check_pthread_creation(mutex_check, error_msg);
-
-	Log temp_log;
-	int pthread_check;
-	pthread_check = pthread_create(&sensor, nullptr,
-								   handle_sensor_thread,
-								   static_cast<void*>(&temp_log));
-
-
-
-	error_msg = "Could not create pthread for sensor tracking.";
-
-	check_pthread_creation(pthread_check, error_msg);
-
-	// Now create the pthread for email sending.
-
-	pthread_check = pthread_create(&email, nullptr,
-								   send_email_thread,
-								   static_cast<void *>(&sd));
-
-	error_msg = "Could not create a pthread for sending email.";
-	check_pthread_creation(pthread_check, error_msg);
-
-
-	//Now join them at the end.
-	pthread_join(email, nullptr);
-	pthread_join(sensor, nullptr);
-
-	mutex_check = pthread_mutex_destroy(&log_mutex);
-	error_msg = "Could not destroy the mutex for some reason.";
-	check_pthread_creation(mutex_check, error_msg);
+    if (!project_file->get_tracking_status()){
+	cerr << "Tracking is currently disabled. Return back to the"
+	     << " main menu.\n";
 	return_to_menu();
+	
+    }
+
+    //Initalize the mutex first
+    int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
+
+    string error_msg = "Could not initialize the mutex for some reason.";
+    check_pthread_creation(mutex_check, error_msg);
+
+    Log temp_log;
+    int pthread_check;
+    pthread_check = pthread_create(&sensor, nullptr,
+				   handle_sensor_thread,
+				   static_cast<void*>(&temp_log));
+
+
+
+    error_msg = "Could not create pthread for sensor tracking.";
+    
+    check_pthread_creation(pthread_check, error_msg);
+	
+    // Now create the pthread for email sending.
+    
+    pthread_check = pthread_create(&email, nullptr,
+				   send_email_thread,
+				   static_cast<void *>(&sd));
+
+    error_msg = "Could not create a pthread for sending email.";
+    check_pthread_creation(pthread_check, error_msg);
+
+    
+    //Now join them at the end.
+    pthread_join(email, nullptr);
+    pthread_join(sensor, nullptr);
+
+    mutex_check = pthread_mutex_destroy(&log_mutex);
+    error_msg = "Could not destroy the mutex for some reason.";
+    check_pthread_creation(mutex_check, error_msg);
+    return_to_menu();
 }
 
 //------------------------------------------------------------------------------
