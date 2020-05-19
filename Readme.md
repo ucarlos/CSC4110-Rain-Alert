@@ -1,6 +1,6 @@
 # CSC 4110 Project &#x2013; Rain Detector using a Raspberry Pi &#x2013; Post Project Branch
 
-This is the Post Project Branch of the Rain Alert Application. This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. This branch is to complete all the specified functionality that I could not implement in time. If you are looking for the project files that I used for my project, please select the master branch.
+This is the Post Project Branch of the Rain Alert Application. This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. This branch is to complete all the specified functionality that I could not implement in time. If you are looking for the project files that I used for my project, [Click here.](https://github.com/ucarlos/CSC4110_Project/tree/master)
 
 
 ## Future Additions
@@ -24,7 +24,7 @@ This project required the following hardware in order to work:
 ## Necessary Software
 
 
-### TLDR;
+### tldr
 
 If on Debian/Ubuntu/Raspbian, execute this command:
 
@@ -132,6 +132,8 @@ This executable may be found in the project directory, or in one of the cmake bu
 
 -   [Pthread Tutorial](https://computing.llnl.gov/tutorials/pthreads/)
 -   [C++ Reference](https://en.cppreference.com)
+-   [C++ Chrono Library](https://en.cppreference.com/w/cpp/chrono)
+-   [C++ std::thread](https://en.cppreference.com/w/cpp/thread/thread)
 -   [POSIX Thread on C++](https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html)
 -   [libcurl Documentation](https://curl.haxx.se/libcurl/c/)
 -   [libpqxx Documentation](https://libpqxx.readthedocs.io/en/latest/)
