@@ -1,5 +1,5 @@
 #+TITLE: CSC 4110 Project README
-#+AUTHOR: Ulysses Carlos, Jared Goldman
+#+AUTHOR: Ulysses Carlos
 #+DATE: April 28, 2020
 #+OPTIONS: toc:nil
 
@@ -10,15 +10,12 @@
 #+LaTeX_HEADER: \usepackage{courier}
 * CSC 4110 Project -- Rain Detector using a Raspberry Pi -- Post Project Branch
 This is the Post Project Branch of the Rain Alert Application.
-This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options.
-Ulysses Carlos is the main contributor and will add some of the application functions that could not be added in time.
+This repository contains all the files needed to use a Raspberry Pi as a Rain Detector, which reports changes in local rain levels to a email server, as well as other options. This branch is to complete all the specified functionality that I could not implement in time. If you are looking for the project files that I used for my project, please select the master branch.
 ** Future Additions
 - Functional Text-based UI
 - Make Sensor tracking work in the background to enable other components of the application to be used.
 - Improved Function Options
 - Debug Mode
-
-** Project Timeline
 
 ** Necessary Hardware
 This project required the following hardware in order to work:
@@ -91,7 +88,7 @@ git clone https://github.com/ucarlos/CSC4110_Project.git
 If you can get CLion running on your machine, simply execute the program by pressing the run button on the top right (SHIFT-F10). If you can't get CLion (Or decide not to), run the following command in the project directory:
 
 #+BEGIN_SRC bash
-cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" .
+cmake .
 make
 #+END_SRC
 
@@ -104,11 +101,11 @@ This executable may be found in the project directory, or in one of the cmake bu
 ** References used for the project
 - [[https://computing.llnl.gov/tutorials/pthreads/][Pthread Tutorial]]
 - [[https://en.cppreference.com][C++ Reference]]
-- [[https://computing.llnl.gov/tutorials/pthreads/][POSIX Thread Introduction]]
 - [[https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html][POSIX Thread on C++]]
 - [[https://curl.haxx.se/libcurl/c/][libcurl Documentation]]
 - [[https://libpqxx.readthedocs.io/en/latest/][libpqxx Documentation]]
 - [[https://www.boost.org/doc/libs/1_44_0/doc/html/boost_propertytree/parsers.html][Boost XML Parser and Property Trees]]
 - https://github.com/leemunroe/responsive-html-email-template
+
 
 
