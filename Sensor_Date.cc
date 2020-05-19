@@ -3,7 +3,7 @@
  * Created by Ulysses Carlos on 04/22/2020 at 05:22 PM
  * 
  * Sensor_Date.cc
- * Defintion of member functions and operator functions for the 
+ * Definition of member functions and operator functions for the
  * Sensor_Date class.
  * -----------------------------------------------------------------------------
  */

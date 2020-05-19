@@ -241,6 +241,8 @@ void database_options(){
 // as the type of email sent (HTML or Basic Text)
 //------------------------------------------------------------------------------
 void email_settings(){
+	cout << version_info() << endl;
+
     char input;
     string str;
     std::regex regex_test;
@@ -252,7 +254,7 @@ void email_settings(){
 	cout << main_menu_options[5] << endl;
 	list_menu(email_menu_options);
 	cout << "r) Return to main menu" << endl;
-	
+	cout << "Please choose an option." << endl;
 	cin >> input;
 	switch(input){
 	case 'a': // Change Recipient Email
