@@ -148,6 +148,11 @@ void run_sensor_tracking(Sensor_Date &sd){
 
 }
 
+
+//------------------------------------------------------------------------------
+// sensor_tracking(): Handles Enabling/Disabling Tracking. 
+//------------------------------------------------------------------------------
+
 void sensor_tracking(void){
     // Read user time
     Sensor_Date sd;
@@ -207,11 +212,10 @@ void sensor_tracking(void){
     newtFormAddComponents(form, back, message_label, enable_button,
 			  disable_button, nullptr);
 
-	newtRunForm(form);
+    newtRunForm(form);
     // Get the user selected radio button.
-    // By default, tracking is disabled,
-    // So compare with button selected with the current radio.
-    // If tracking_is disabled and button is disable or tracking_enabled and button is enabled, create a message saying "No change" and return to menu.
+    // If tracking_is disabled and button is disable or tracking_enabled and button is enabled,
+    //create a message saying "No change" and return to menu.
     // Otherwise take action.
     newtComponent user_input = newtRadioGetCurrent(enable_button);
 
@@ -266,6 +270,10 @@ void sensor_tracking(void){
 
 }
 
+//------------------------------------------------------------------------------
+// show_status(): Shows the current values reported by the sensors.
+// The output is stored in a temp file that is opened by less.
+//------------------------------------------------------------------------------
 void show_status(void){
     // Make sure to stop newt for this section:
     newtPopWindow();
@@ -290,6 +298,10 @@ void show_status(void){
 
 }
 
+//------------------------------------------------------------------------------
+// search_logs(): Allows the user to search the database for logs on
+// a specified date (mm/dd/yyyy).
+//------------------------------------------------------------------------------
 void search_logs(void){
     // Wait a moment to refresh screen
     newtPopWindow();
@@ -372,6 +384,13 @@ void search_logs(void){
 
 }
 
+//------------------------------------------------------------------------------
+// test_sensors(): Provides the user to test the project components, such as
+//     * Testing whether the SMTP server can send an test email
+//     * Connecting to the database and retrieving a query.
+//     * Sensor Connection
+//     * 
+//------------------------------------------------------------------------------
 void test_sensors(){
     newtSuspend();
 #ifdef SENSOR_READINGS_RNG
@@ -393,6 +412,9 @@ void test_sensors(){
 
 }
 
+//------------------------------------------------------------------------------
+// database_options(): Displays information about the current database.
+//------------------------------------------------------------------------------
 void database_options(){
     newtComponent form, window, label;
     // Wait a moment to refresh screen
@@ -429,6 +451,7 @@ void database_options(){
     
     return_to_menu();
 }
+
 
 void email_selection(const int &option){
     newtCls();
@@ -520,6 +543,17 @@ void email_selection(const int &option){
     function_pointer();
 
 }
+
+//------------------------------------------------------------------------------
+// email_settings(): Opens a menu to allow the user to adjust the following
+// options:
+//     * Recipient Email Address
+//     * What time the email will be sent
+//     * What timezone should be used (UTC)
+//     * What type of Email will be sent (Either HTML or Plain Text)
+// This is then passed to email_selection(), which will execute whichever
+// option was selected.
+//------------------------------------------------------------------------------
 void email_settings(){
     newtComponent form, window;
     // Wait a moment to refresh screen
@@ -566,6 +600,10 @@ void email_settings(){
     email_selection(option_point);
 }
 
+//------------------------------------------------------------------------------
+// main_menu(): Creates a menu that allows the user to access the rest of
+// the program.
+//------------------------------------------------------------------------------
 void main_menu(){
     // Check this first.
     
