@@ -43,7 +43,7 @@ void list_menu(const vector<string> & v){
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
 	cout << main_menu_options[0] << endl;
 	string time = s_d.get_user_time();
-	cout << "Current Sensor Status: " << get_tracking_status() << endl;
+	cout << "Current Sensor Status: " << project_file->get_tracking_status() << endl;
 	cout << "Daily reports will be sent every day at "
 		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
 
@@ -63,16 +63,16 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 	if (input == "back")
 		return_to_menu();
 	else if (input == "enable"){
-		if (tracking_status)
+		if (project_file->get_tracking_status())
 			cerr << "Tracking is already enabled.\n";
 		else
-			tracking_status = true;
+			project_file->set_tracking_status(true);
 	}
 	else if (input == "disable"){
-		if (!tracking_status)
+		if (!project_file->get_tracking_status())
 			cerr << "Tracking is already disabled.\n";
 		else
-			tracking_status = false;
+			project_file->set_tracking_status(false);
 	}
 	else
 		cerr << "Continuing...";
@@ -93,7 +93,7 @@ void sensor_tracking(void){
 
 	toggle_sensor_tracking(sd);
 
-	if (!tracking_status){
+	if (!project_file->get_tracking_status()){
 		cerr << "Tracking is currently disabled. Return back to the"
 			 << " main menu.\n";
 		return_to_menu();
@@ -247,7 +247,7 @@ void email_settings(){
     std::regex regex_test;
     pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_lock(&temp_mutex);
-    int8_t val;
+    int32_t val;
  
     do {
 	cout << main_menu_options[5] << endl;

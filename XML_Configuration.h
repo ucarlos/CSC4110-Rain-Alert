@@ -55,13 +55,22 @@ public:
     void load_file(const std::string &filename);
     void save_file(const std::string &filename);
     void set_email_type(int val);
+    bool get_tracking_status() { return tracking_status; }
+    void set_tracking_status(bool t_s) { tracking_status = t_s; }
+
+    void enable_threads() { kill_threads = false; }
+    void disable_threads() { kill_threads = true; }
+    bool get_thread_status() const { return kill_threads; }
 private:
     std::map<std::string, std::string>smtp_info;
     std::map<std::string, std::string> database_info;
     std::string daily_email_time;
     std::string xml_filename{};
-    int8_t time_zone {-5}; // Eastern Standard Time as default, can be changed?
+    int16_t time_zone {-4}; // Eastern Standard Time as default, can be changed?
     enum email_type e_t;
+    bool tracking_status{false}; // Determines whether tracking is on or off.
+    // Determines whether both email sending and sensor checking are killed/disabled.
+    bool kill_threads{false}; 
 };
 
 

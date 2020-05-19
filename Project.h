@@ -93,17 +93,15 @@ static bool end_all_threads = false;
 //------------------------------------------------------------------------------
 void* handle_sensor_thread(void *temp_log);
 void* send_email_thread(void *s_d);
-inline std::string get_tracking_status();
 // False: Disabled, True: Enabled
 
 inline void check_pthread_creation(int &return_val, string &error_msg){
 	if (return_val)
-		throw runtime_error(error_msg);
+	    throw runtime_error(error_msg);
 	else
-		return;
+	    return;
 }
 
-static bool tracking_status = false;
 
 //------------------------------------------------------------------------------
 // Date class
@@ -160,11 +158,11 @@ private:
 // DOING ANYTHING WITH THE SENSOR DATE! OTHERWISE, THE EMAIL WON'T BE
 // SENT AT THE RIGHT TIME!
 
-static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
+//static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
 int64_t return_time_in_seconds(string &time);
 void read_user_time(Sensor_Date &sd);
-bool verify_time_zone(const int8_t &time_zone);
-std::string twelve_hour_clock(string &time);
+bool verify_time_zone(const int32_t &time_zone);
+std::string twelve_hour_clock(const string &time);
 bool verify_time(const string &time);
 bool verify_date(const string &date);
 std::string string_to_seconds(int64_t &sec);
@@ -173,9 +171,7 @@ std::string string_to_seconds(int64_t &sec);
 // Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h
 //
 //------------------------------------------------------------------------------
-inline std::string get_tracking_status(){
-	return (tracking_status)? "Enabled" : "Disabled";
-}
+
 
 
 #endif

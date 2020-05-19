@@ -17,7 +17,7 @@
 // formats won't work.
 //------------------------------------------------------------------------------
 
-std::string twelve_hour_clock(string &time){
+std::string twelve_hour_clock(const string &time){
 	ostringstream os;
 	uint32_t hour_val = (10 * (time[0] - '0')) + (time[1] - '0');
 	if (!hour_val)
@@ -49,7 +49,7 @@ bool verify_time(const string &time){
     int64_t min = 10 * (time[3] - '0') + (time[4] - '0');
 
     // Check if date is valid
-    return ((0 <= hour && hour <= 23) || (0 <= min && min <= 59));
+    return ((0 <= hour && hour <= 23) && (0 <= min && min <= 59));
     
 
 }
@@ -90,8 +90,8 @@ bool verify_date(const string &date){
 // Please don't use this when in Australia or some country that has fractional
 // time zones or whatever. I know that Australia has something like UTC + 9 1/2 
 //------------------------------------------------------------------------------
-bool verify_time_zone(const int8_t &time_z){
-    return (-12 <= time_z && time_z <= 12);
+bool verify_time_zone(const int32_t &time_z){
+    return -12 <= time_z && time_z <= 12;
 }
 
 //------------------------------------------------------------------------------
@@ -106,14 +106,19 @@ int64_t return_time_in_seconds(string &time){
 
     // Don't remove the - time_zone. It accounts for UTC - x time.
     // So, since we're in UTC - 4 (EST), it will add 4 hours.
+    // Make sure that UTC - timezone fits 00: 23, so
+    int64_t utc_time = (hour - project_file->get_time_zone());
+    int64_t adjusted_hour = (utc_time > 23) ? ((utc_time % 24))
+    		: (utc_time < 0) ? (24 - utc_time) : utc_time;
+
 	return (!hour && !min) ? 0 :
-		   ((unit * unit * (hour - project_file->get_time_zone())) + (unit * min));
+		   ((unit * unit * (adjusted_hour)) + (unit * min));
 
 }
 
 std::string string_to_seconds(int64_t &sec){
 	ostringstream os;
-	int64_t hours = (sec / 3600) + time_zone;
+	int64_t hours = (sec / 3600) + project_file->get_time_zone();
 	int64_t minutes = ((sec % 3600) / 60);
 
 	os << hours << ":";

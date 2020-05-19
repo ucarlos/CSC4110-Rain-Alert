@@ -24,14 +24,14 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216">
-        <schema name="pg_catalog" object-types="table, view" />
-        <schema name="public" object-types="table, view, column" />
+      <connection connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96">
+        <schema name="pg_catalog" object-types="view, table" />
+        <schema name="public" object-types="view, table, column" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="4f3ca1f9-be20-44c8-8179-6482a5c2a216">
+    <connection id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96">
       <console name="CSC4110_Project" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
@@ -39,14 +39,14 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" />
+    <connection id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/sql/db_populate.sql" connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" session-id="MAIN" current-schema="public" />
-    <mapping file-url="file://$PROJECT_DIR$/sql/csc4110_project.sql" connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/sql/db_populate.sql" connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/sql/csc4110_project.sql" connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" session-id="MAIN" current-schema="public" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -64,11 +64,13 @@
     <filters />
   </component>
   <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
-    <recently-used-interfaces />
+    <recently-used-interfaces>
+      <mapping database-type="POSTGRES" interface-id="DEFAULT" />
+    </recently-used-interfaces>
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" active="true">
+      <connection id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" active="true">
         <database>
           <name value="CSC4110_Project" />
           <description value="" />
@@ -79,7 +81,7 @@
           <driver-library value="" />
           <driver value="" />
           <url-type value="DATABASE" />
-          <host value="192.168.1.93" />
+          <host value="192.168.1.92" />
           <port value="5432" />
           <database value="csc4110_project" />
           <type value="USER_PASSWORD" />

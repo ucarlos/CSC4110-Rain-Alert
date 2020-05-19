@@ -22,7 +22,7 @@
 std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 
 // Menu main_menu_options
-const vector<string> main_menu_options = {"Enable/Disable Tracking",
+const vector<string> main_menu_options = {"Sensor Tracking",
 										  "Status",
 										  "Search Logs",
 										  "Test Sensors",

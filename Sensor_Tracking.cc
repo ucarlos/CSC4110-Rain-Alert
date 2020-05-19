@@ -210,7 +210,7 @@ void* send_email_thread(void *s_d){
 		// Convert all the dates
 		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		check = current_time % MAX_SECONDS_IN_DAY;
-
+		auto val = sdate->get_email_time().count();
 		if (check == sdate->get_email_time().count()){
 			// First lock the resources
 			pthread_mutex_lock(&log_mutex);

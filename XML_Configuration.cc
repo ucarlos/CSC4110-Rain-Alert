@@ -20,7 +20,7 @@ void settings_file::load_file(const std::string &filename){
 
     // Load the XML file into the property tree. An exception will be
     // thrown if it doesn't work.
-    read_xml(filename, tree);
+    boost::property_tree::read_xml(filename, tree);
     
     // Iterate over configuration.smtp_info first
 
@@ -71,8 +71,10 @@ void settings_file::save_file(const std::string &filename){
 			daily_email_time);
 	tree.put("settings.sensor_log.email_type", (int)e_t);
 	tree.put("settings.sensor_log.time_zone", time_zone);
-	write_xml(filename, tree);
+	boost::property_tree::xml_writer_settings<std::string> xml_indent('\t', 1);
 
+	boost::property_tree::write_xml(filename, tree, std::locale(), xml_indent);
+	//write_xml(filename, tree);
 }
 
 //------------------------------------------------------------------------------

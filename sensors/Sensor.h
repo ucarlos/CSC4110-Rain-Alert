@@ -74,7 +74,7 @@ void test_float_guage(void);
 //------------------------------------------------------------------------------
 #ifdef SENSOR_READINGS_RNG
 // Rain amounts are in Inches
-const double max_rain_amount = 25;
+const double max_rain_amount = 19;
 const double min_rain_amount = 0;
 static bool rain_sensor_status = true;
 
