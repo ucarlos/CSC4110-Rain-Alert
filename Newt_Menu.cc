@@ -507,7 +507,7 @@ void email_selection(const int &option){
 		 << endl;
 	    cin >> val;
 	}
-p
+
 	// Otherwise set the time_zone
 	project_file->set_time_zone(val);
 	break;
