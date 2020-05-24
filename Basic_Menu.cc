@@ -258,6 +258,10 @@ void email_settings(){
 	cin >> input;
 	switch(input){
 	case 'a': // Change Recipient Email
+	    cout << "Current email: " 
+		 << project_file->get_smtp_info().at("receiver_email")
+		 << endl;
+	    
 	    cout << "Enter a new recipient email:" << endl;
 	    cin >> str;
 
@@ -274,6 +278,14 @@ void email_settings(){
 	    break;
 	    
 	case 'b': // Change Email Time
+
+	    cout << "A Daily report will be sent at "
+		 << project_file->get_email_time()
+		 << " ("
+		 << twelve_hour_clock(project_file->get_email_time())
+		 << ")"
+		 << endl;
+	    		    
 	    cout << "Enter a new time to send the email:" << endl;
 	    cin >> str;
 
@@ -288,6 +300,10 @@ void email_settings(){
 	    project_file->set_email_time(str);
 	    break;
 	case 'c': // Change Timezone
+	    cout << "Current Timezone: UTC "
+		 << project_file->get_time_zone()
+		 << endl;
+	    
 	    cout << "Enter the timezone this device is on. Time zone should be in "
 			 "the range [-12: 12]." << endl;
 	    cin >> val;

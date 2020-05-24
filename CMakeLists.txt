@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.55)
+project(CSC4110_Project VERSION 0.56)
 
 
 # Add version number to program
@@ -20,8 +20,15 @@ endif()
 
 find_library(CURL_CHECK curl)
 if (NOT CURL_CHECK)
-    message(FATAl ERROR "\"Libcurl\" could not be found on your system."
+    message(FATAL_ERROR "\"libcurl\" could not be found on your system."
             "Please install it using your package manager or compile from source.")
+endif()
+
+find_file(BOOST_CHECK boost)
+if (NOT BOOST_CHECK)
+    message(FATAL_ERROR "\"libboost\" could not be found on your system."
+            "Please install it using your package manager or compile from source."
+            "This is required for XML parsing.")
 endif()
 
 find_library(NEWT_CHECK newt)
@@ -56,7 +63,7 @@ add_library(Configuration XML_Configuration.cc)
 #Add Subdirectories
 
 #Test with coverage:
-#set(NEWT_GUI FALSE)
+set(NEWT_GUI FALSE)
 if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"

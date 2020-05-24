@@ -50,8 +50,8 @@ public:
     const enum email_type& get_email_type() { return e_t; }
     void set_email_time(std::string &new_filename) { daily_email_time = new_filename; }
     
-    [[nodiscard]] int8_t get_time_zone() const { return time_zone; }
-    void set_time_zone(int8_t val) { time_zone = val; }
+    [[nodiscard]] int16_t get_time_zone() const { return time_zone; }
+    void set_time_zone(int16_t val) { time_zone = val; }
     void load_file(const std::string &filename);
     void save_file(const std::string &filename);
     void set_email_type(int val);

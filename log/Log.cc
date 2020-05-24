@@ -223,14 +223,23 @@ std::string system_call_to_string(const char* cmd) {
 // create_date() : Do a system call to get the current date in
 // month day year hh::mm:ss 
 //------------------------------------------------------------------------------
+
 std::string create_date(void){
-    string date_str = system_call_to_string("date \"+%a, %d %b %Y %k:%M:%S -0500\"");
+    std::time_t t = std::time(nullptr);
+    char str[100];
+    std::strftime(str, sizeof(str), "%a, %d %b %Y %T", std::localtime(&t));
 
-    if (date_str.back() == '\r')
-        date_str += '\n';
-
-    return date_str;
+    return string{str};
 }
+
+// std::string create_date(void){
+//     string date_str = system_call_to_string("date \"+%a, %d %b %Y %k:%M:%S -0500\"");
+
+//     if (date_str.back() == '\r')
+//         date_str += '\n';
+
+//     return date_str;
+// }
 
 //------------------------------------------------------------------------------
 // create_smtp_html_header():
