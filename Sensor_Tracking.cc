@@ -24,10 +24,6 @@ void string_to_lower(string &str){
 	ch = tolower(temp);
     }
 }
-
-
-
-
 //------------------------------------------------------------------------------
 // toggle_sensor_tracking(): Allows user to enable/disable tracking
 // before using the pthreads.
@@ -92,9 +88,6 @@ void* handle_sensor_thread(void *temp_log){
 		break;
 	    }
 	    
-
-	    
-	    
 	}
 	else { 
 	    // Can't read values from rain_sensor, so stop the program
@@ -115,34 +108,39 @@ void* handle_sensor_thread(void *temp_log){
 	
 	// If another function needs to disable tracking (For example, Test_Sensors),
 	// do so.
-	if (end_all_threads)
-		break;
-
+	pthread_mutex_lock(&log_mutex);	
+	if (project_file->get_thread_status())
+	    break;
+	
+	pthread_mutex_unlock(&log_mutex);
 
     } while (true);
 
 
     // Repeat of above:
-    if (end_all_threads){
+    pthread_mutex_lock(&log_mutex);
+    if (project_file->get_thread_status()){
     	cerr << "Disabling Tracking.." << endl;
     	return nullptr;
     }
+    
+    pthread_mutex_unlock(&log_mutex);
     // Update project log:
 
-	ostringstream os;
+    ostringstream os;
     // Note this in the database.
     pthread_mutex_lock(&log_mutex); // Set up Mutex
     // Populate Log with date and time:
+    
+    std::time_t time_stamp = std::time(nullptr);
+    os << std::put_time(std::localtime(&time_stamp), "%c");
+    log->time_stamp = os.str();
 
-	std::time_t time_stamp = std::time(nullptr);
-	os << std::put_time(std::localtime(&time_stamp), "%c");
-	log->time_stamp = os.str();
+    os.str("");
+    os << std::put_time(std::localtime(&time_stamp), "%B %d %Y");
+    log->date = os.str();
 
-	os.str("");
-	os << std::put_time(std::localtime(&time_stamp), "%B %d %Y");
-	log->date = os.str();
-
-	// Now update project_log
+    // Now update project_log
     project_log = *log;
 
     // Send to database.
@@ -153,15 +151,14 @@ void* handle_sensor_thread(void *temp_log){
     add_log(transaction, *log);
     close_connection(db_connect);
     // Now send an email and close the thread.:
-	if (project_file->get_email_type() == email_type::html)
-		send_log_as_HTML(project_log, error_message);
-	else
-		send_log_as_text(project_log, error_message);
-	// Also cancel the other thread.
-    end_all_threads = true;
+    if (project_file->get_email_type() == email_type::html)
+	send_log_as_HTML(project_log, error_message);
+    else
+	send_log_as_text(project_log, error_message);
+    // Also cancel the other thread.
+    //end_all_threads = true;
+    project_file->disable_threads();
     pthread_mutex_unlock(&log_mutex); // Unlock Mutex
-
-
 
     return nullptr;
     
@@ -174,16 +171,16 @@ void* handle_sensor_thread(void *temp_log){
 // the appropriate time. 
 //------------------------------------------------------------------------------
 std::chrono::system_clock::duration time_since_midnight() {
-	auto now = std::chrono::system_clock::now();
+    auto now = std::chrono::system_clock::now();
+    
+    time_t tnow = std::chrono::system_clock::to_time_t(now);
+    tm *date = std::localtime(&tnow);
+    date->tm_hour = 0;
+    date->tm_min = 0;
+    date->tm_sec = 0;
+    auto midnight = std::chrono::system_clock::from_time_t(std::mktime(date));
 
-	time_t tnow = std::chrono::system_clock::to_time_t(now);
-	tm *date = std::localtime(&tnow);
-	date->tm_hour = 0;
-	date->tm_min = 0;
-	date->tm_sec = 0;
-	auto midnight = std::chrono::system_clock::from_time_t(std::mktime(date));
-
-	return now-midnight;
+    return now-midnight;
 }
 
 //------------------------------------------------------------------------------
@@ -191,64 +188,62 @@ std::chrono::system_clock::duration time_since_midnight() {
 // time 
 //------------------------------------------------------------------------------
 void* send_email_thread(void *s_d){
-	Sensor_Date *sdate = static_cast<Sensor_Date*>(s_d);
+    Sensor_Date *sdate = static_cast<Sensor_Date*>(s_d);
 
-	string message = "Daily Report.";
-	time_t current_time;
-	uint64_t check;
-	ostringstream os;
-	// Place mutex here
-	pthread_mutex_lock(&log_mutex);
-	open_connection(db_connect);
-	pthread_mutex_unlock(&log_mutex);
-	//end mutex
-
-
-	// First, get the current time.
-	// If the clock % Seconds ==
-	while (true){
-		// Convert all the dates
-		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		check = current_time % MAX_SECONDS_IN_DAY;
-		auto val = sdate->get_email_time().count();
-		if (check == sdate->get_email_time().count()){
-			// First lock the resources
-			pthread_mutex_lock(&log_mutex);
-			open_connection(db_connect);
-			pqxx::work transaction{db_connect};
-
-			// Add date and timestamp to log.
-
-			// Now use current_time again.
-			current_time = std::time(nullptr);
-			os << std::put_time(std::localtime(&current_time), "%c");
-			project_log.time_stamp = os.str();
-
-			os.str("");
-			os << std::put_time(std::localtime(&current_time), "%B %d %Y");
-			project_log.date = os.str();
-			project_log.comment = "This is the daily report generated at ";
-			project_log.comment += sdate->get_user_time();
-			// Update database
-			add_log(transaction, project_log);
-			// Now send email (HTML or Plain Text)
-			if (project_file->get_email_type() == email_type::html)
-				send_log_as_HTML(project_log, message);
-			else
-				send_log_as_text(project_log, message);
-			// Unlock the resources.
-			pthread_mutex_unlock(&log_mutex);
-		}
-		// If the other thread is closed, close this one too.
-		if (end_all_threads)
-			break;
-
-	}
+    string message = "Daily Report.";
+    time_t current_time;
+    uint64_t check;
+    ostringstream os;
+	
+    // Place mutex here
+    pthread_mutex_lock(&log_mutex);
+    open_connection(db_connect);
+    pthread_mutex_unlock(&log_mutex);
+    //end mutex
 
     
+    // First, get the current time.
+    // If the clock % Seconds ==
+    while (true){
+	// Convert all the dates
+	current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	check = current_time % MAX_SECONDS_IN_DAY;
+	// auto val = sdate->get_email_time().count();
+	if (check == sdate->get_email_time().count()){
+	    // First lock the resources
+	    pthread_mutex_lock(&log_mutex);
+	    open_connection(db_connect);
+	    pqxx::work transaction{db_connect};
+	    
+	    // Add date and timestamp to log.
+	    // Now use current_time again.
+	    current_time = std::time(nullptr);
+	    os << std::put_time(std::localtime(&current_time), "%c");
+	    project_log.time_stamp = os.str();
+	    os.str("");
+	    os << std::put_time(std::localtime(&current_time), "%B %d %Y");
+	    project_log.date = os.str();
+	    project_log.comment = "This is the daily report generated at ";
+	    project_log.comment += sdate->get_user_time();
+	    // Update database
+	    add_log(transaction, project_log);
+	    // Now send email (HTML or Plain Text)
+	    if (project_file->get_email_type() == email_type::html)
+		send_log_as_HTML(project_log, message);
+	    else
+		send_log_as_text(project_log, message);
+	    // Unlock the resources.
+	    pthread_mutex_unlock(&log_mutex);
+	}
+		// If the other thread is closed, close this one too.
+	
+	if (project_file->get_thread_status())
+	    break;
+	    
+    }
 
-	return nullptr;
-
+ 
+    return nullptr;
 
 }
 
