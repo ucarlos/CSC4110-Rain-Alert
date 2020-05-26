@@ -384,31 +384,85 @@ void search_logs(void){
 
 }
 
+void test_sensor_selection(const int &option){
+    newtCls();
+    newtSuspend();
+    
+    int32_t selection = (option + 'a');
+    switch(selection){
+    case 'a':
+	test_smtp();
+	break;
+    case 'b':
+	test_connection();
+	break;
+    case 'c':
+	test_pthread();
+	break;
+    default:
+	newtResume();
+	return_to_menu();
+    }
+    // Sleep for 3 seconds, clear the screen and return to menu.
+    sleep(3);
+    system("clear");
+    newtResume();
+    return_to_menu();
+}
+
 //------------------------------------------------------------------------------
 // test_sensors(): Provides the user to test the project components, such as
 //     * Testing whether the SMTP server can send an test email
 //     * Connecting to the database and retrieving a query.
-//     * Sensor Connection
-//     * 
+//     * Testing whether two pthreads can be made.
 //------------------------------------------------------------------------------
 void test_sensors(){
-    newtSuspend();
-#ifdef SENSOR_READINGS_RNG
-    cerr << "This project currently uses a random number generator "
-    	 << "to simulate sensor output.\nThis is intended to be used "
-    	 << "as a last resort or for debugging purposes.\nI apologize "
-	 << "for the inconvenience.\n" << endl;
-#else
-    cout << main_menu_options[3] << endl;
-#endif
-    cout << "Press any key to continue." << endl;
-    char ch;
-    cin >> ch;
 
-    newtResume();
+    newtComponent form, list_box;
+    newtPopWindow();
+    newtCls();
+    newtPushHelpLine("You can test each component here.");
+    newtDrawRootText(0, 0, version_info().c_str());
+    newtCenteredWindow(box_width, box_height, main_menu_options[3].c_str());
+    list_box = newtListbox((box_width / 4), 2, (box_width / 8), 1);
+
+    int val = test_sensor_menu_options.size() + 1;
+    vector<int> list(val);
+
+    for (int i = 0; i < list.size(); i++)
+	list[i] = i;
+
+    string temp;
+
+    for (int i = 0; i < test_sensor_menu_options.size(); i++){
+	temp = static_cast<char>((i + 1) + '0');
+	newtListboxAppendEntry(list_box,
+			       string{temp + " " + test_sensor_menu_options[i]}.c_str(),
+			       reinterpret_cast<void *>(&list[i]));
+
+    }
+
+
+    string last_option = "  ";
+    last_option[0] = static_cast<char>(val + '0');
+    last_option[1] = ' ';
+    last_option += "Return to Main Menu";
+
+    newtListboxAppendEntry(list_box, last_option.c_str(),
+			   reinterpret_cast<void *>(&list[val - 1]));
+
+    //Set up the form:
+    form = newtForm(nullptr, nullptr, 0);
+    newtFormAddComponents(form, list_box, nullptr);
+    newtRunForm(form);
     
-    void (*function_pointer) () = main_menu;
-    function_pointer();
+    // Take the option, and make the selection:
+    auto option_input =
+	*reinterpret_cast<int *>(newtListboxGetCurrent(list_box));
+
+    newtFormDestroy(form);
+    test_sensor_selection(option_input);
+    
 
 }
 
@@ -418,7 +472,7 @@ void test_sensors(){
 void database_options(){
     newtComponent form, window, label;
     // Wait a moment to refresh screen
-	newtPopWindow();
+    newtPopWindow();
     newtCls();
     	
     newtDrawRootText(0, 0, version_info().c_str());
@@ -581,10 +635,10 @@ void email_settings(){
     window = newtListbox((box_width / 4), 2, (box_width / 8), 1);
 
     int val = email_menu_options.size() + 1;
-	vector<int> list(val);
+    vector<int> list(val);
 
-	for (int i = 0; i < list.size(); i++)
-		list[i] = i;
+    for (int i = 0; i < list.size(); i++)
+	list[i] = i;
 
     std::string temp;
     for (int i = 0; i < email_menu_options.size(); i++) {
@@ -652,12 +706,17 @@ void main_menu(){
 
     // Awful method to center last option and add a number to it:
     // I also didn't want to create another string.
-    char exit_name[100];
+    // char exit_name[100];
+    // exit_name[0] = static_cast<char>(menu_pointers.size() + 1 + '0');
+    // exit_name[1] = ' ';
+    string exit_name = "  ";
     exit_name[0] = static_cast<char>(menu_pointers.size() + 1 + '0');
     exit_name[1] = ' ';
-    strncpy(exit_name + 2, "Exit Program", 30);
+    exit_name += "Exit Program";
+    //strncpy(exit_name + 2, "Exit Program", 30);
 
-    newtListboxAppendEntry(window, exit_name, reinterpret_cast<void *>(exit_program));
+    newtListboxAppendEntry(window, exit_name.c_str(),
+			   reinterpret_cast<void *>(exit_program));
 
 
     // Now add all the components and run them.

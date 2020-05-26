@@ -193,12 +193,12 @@ void search_logs(void){
     return_to_menu();
 }
 
+
 //------------------------------------------------------------------------------
-// test_sensors() : Test all sensors to see if they're functional. If not,
-// Disable tracking and send an error log.
-// * Test Email Sending
-// * Test Database Connection
-// * Test Pthread
+// test_sensors(): Provides the user to test the project components, such as
+//     * Testing whether the SMTP server can send an test email
+//     * Connecting to the database and retrieving a query.
+//     * Testing whether two pthreads can be made.
 //------------------------------------------------------------------------------
 void test_sensors(void){
 #ifdef SENSOR_READINGS_RNG
