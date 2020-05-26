@@ -85,7 +85,7 @@ void test_connection(void){
     cout << "Testing connection:" << endl;
     pqxx::connection connection;
     initialize_connection(connection);
-    
+    test_log_reading(connection);
     close_connection(connection);
 
 }
@@ -118,4 +118,45 @@ void test_smtp(void){
 //------------------------------------------------------------------------------
 // test_pthread() : Tests creating a pthread and joining it.
 //------------------------------------------------------------------------------
+void * pthread_function1(void *val){
+    cout << "This is thread 1!" << endl;
+    cout << "Now, I'll make a basic loop for Thread 1:" << endl;
+    for (int i = 0; i < 5; i++)
+	cout << "Message " << i << " in Thread 1!" << endl;
 
+    return nullptr;
+
+}
+
+void * pthread_function2(void *val){
+    cout << "This is thread 2!" << endl;
+    cout << "Now, I'll make a basic loop for Thread 2:" << endl;
+    for (int i = 0; i < 5; i++)
+	cout << "Message " << i << " in Thread 2!" << endl;
+
+    return nullptr;
+}
+
+
+void test_pthread(void){
+    // First create a pthread_t
+    pthread_t thread1, thread2;
+    int whatever_arg;
+    int pthread_check = pthread_create(&thread1, nullptr, pthread_function1,
+				       static_cast<void *>(&whatever_arg));
+
+    string error_message{"Could not create Pthread 1."};
+    check_pthread_creation(pthread_check, error_message);
+    
+    
+    pthread_check = pthread_create(&thread2, nullptr, pthread_function2,
+				   static_cast<void *>(nullptr));
+
+    error_message = "Could not create Pthread 2.";
+    check_pthread_creation(pthread_check, error_message);
+    
+    // Now join both
+    pthread_join(email, nullptr);
+    pthread_join(sensor, nullptr);
+
+}

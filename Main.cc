@@ -35,6 +35,13 @@ Log project_log{};
 const vector<string> email_menu_options = {"Change Recipient Mail", "Change Time",
 					   "Change Timezone", "Change Email Type"};
 
+
+
+const vector<string> test_sensor_menu_options = {"Test Email Sending",
+												 "Test Database Connection",
+												 "Test Thread Creation"};
+					    
+
 //------------------------------------------------------------------------------
 // Function Definitions
 //------------------------------------------------------------------------------

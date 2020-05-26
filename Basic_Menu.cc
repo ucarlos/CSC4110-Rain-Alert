@@ -196,21 +196,58 @@ void search_logs(void){
 //------------------------------------------------------------------------------
 // test_sensors() : Test all sensors to see if they're functional. If not,
 // Disable tracking and send an error log.
+// * Test Email Sending
+// * Test Database Connection
+// * Test Pthread
 //------------------------------------------------------------------------------
 void test_sensors(void){
-
 #ifdef SENSOR_READINGS_RNG
     cerr << "This project currently uses a random number generator "
     	 << "to simulate sensor output.\nThis is intended to be used "
     	 << "as a last resort or for debugging purposes.\nI apologize "
 	 << "for the inconvenience.\n" << endl;
-#else
-	cout << main_menu_options[3] << endl;
 #endif
-    cout << "Press any key to continue." << endl;
-    char ch;
-    cin >> ch;
+    
+    cout << main_menu_options[3] << endl;
+    list_menu(test_sensor_menu_options);
+    cout << "r) Return to Main Menu" << endl;
+    cout << "Please choose a selection." << endl;
+    
+    // Options should be a, b, c, r, and default:
+
+    char input;
+    
+    //cin >> input;
+    while ((cin >> input && input != 'r')){
+	switch (input){
+	case 'a': // Test Email Sending:
+	    test_smtp();
+	    break;
+	case 'b': // Test Database Connection:
+	    test_connection();
+	    break;
+	case 'c': // Test Thread creation:
+	    test_pthread();
+	    break;
+	case 'r': // Return
+	    break;
+	default:
+	    cout << "Invalid Selection. Try again." << endl;
+	}
+	
+	system("clear");	
+	cout << main_menu_options[3] << endl;
+	list_menu(test_sensor_menu_options);
+	cout << "r) Return to Main Menu" << endl;
+	cout << "Please choose a selection." << endl;
+    
+    }
+
+    system("clear");
     return_to_menu();
+
+    
+    
 }
 
 //------------------------------------------------------------------------------

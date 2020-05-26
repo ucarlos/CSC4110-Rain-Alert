@@ -16,7 +16,7 @@
 // then opens the postgresql connection.
 //------------------------------------------------------------------------------
 void initialize_connection(pqxx::connection &c){
-    get_database_info_from_file();
+    //get_database_info_from_file();
     open_connection(c);
 }
 

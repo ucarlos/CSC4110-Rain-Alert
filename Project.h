@@ -67,10 +67,13 @@ void get_credentials(void);
 extern Log project_log;
 extern const vector<string> main_menu_options;
 extern const vector<string> email_menu_options;
+extern const vector<string> test_sensor_menu_options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
 void test_smtp(void);
+void test_pthread(void);
+void test_connection(void);
 void show_result_contents(pqxx::result &r);
 //------------------------------------------------------------------------------
 // Global Database variables:
@@ -165,7 +168,8 @@ bool verify_time_zone(const int32_t &time_zone);
 std::string twelve_hour_clock(const string &time);
 bool verify_time(const string &time);
 bool verify_date(const string &date);
-std::string string_to_seconds(int64_t &sec);
+
+[[maybe_unused]] std::string string_to_seconds(int64_t &sec);
 
 //------------------------------------------------------------------------------
 // Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h

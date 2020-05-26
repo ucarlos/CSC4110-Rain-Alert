@@ -116,7 +116,7 @@ int64_t return_time_in_seconds(string &time){
 
 }
 
-std::string string_to_seconds(int64_t &sec){
+[[maybe_unused]] std::string string_to_seconds(int64_t &sec){
 	ostringstream os;
 	int64_t hours = (sec / 3600) + project_file->get_time_zone();
 	int64_t minutes = ((sec % 3600) / 60);
