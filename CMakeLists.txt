@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.56)
+project(CSC4110_Project VERSION 0.57)
 
 
 # Add version number to program

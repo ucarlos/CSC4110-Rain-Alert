@@ -361,8 +361,8 @@ void search_logs(void){
     while (!verify_date(result)){
 
 	newtResume();
-	string error_message = "Invalid Date. Make sure that the";
-	error_message += " date is in mm/dd/yyyy format.";
+	string error_message = "Make sure that the";
+	error_message += " date format is in mm/dd/yyyy and is valid.";
 	void (*function_pointer)() = search_logs;
 	error_box(error_message, function_pointer);
 	//goto confession;

@@ -18,15 +18,15 @@
 //------------------------------------------------------------------------------
 
 std::string twelve_hour_clock(const string &time){
-	ostringstream os;
-	uint32_t hour_val = (10 * (time[0] - '0')) + (time[1] - '0');
-	if (!hour_val)
-		os << "12:" << time[3] << time[4] << " AM";
-	else if (hour_val >= 12)
-		os << (hour_val - 12) << ":" << time[3] << time[4] << " PM";
-	else os << hour_val << ":" << time[3] << time[4] << " AM";
+    ostringstream os;
+    uint32_t hour_val = (10 * (time[0] - '0')) + (time[1] - '0');
+    if (!hour_val)
+	os << "12:" << time[3] << time[4] << " AM";
+    else if (hour_val >= 12)
+	os << (hour_val - 12) << ":" << time[3] << time[4] << " PM";
+    else os << hour_val << ":" << time[3] << time[4] << " AM";
 
-	return os.str();
+    return os.str();
 
 }
 //------------------------------------------------------------------------------
@@ -55,34 +55,47 @@ bool verify_time(const string &time){
 }
 //------------------------------------------------------------------------------
 // verify_date(): Check whether the date is in the form mm/dd/yyyy using a
-// regex expression. Not very accurate.
+// regex expression.
 //------------------------------------------------------------------------------
 bool verify_date(const string &date){
-	bool check;
-	string regex_str{R"(^\d{2}[\/]\d{2}[\/]\d{4}$)"};
+    bool check;
+    string regex_str{R"(^\d{2}[\/]\d{2}[\/]\d{4}$)"};
 
-	static std::regex test{regex_str};
-	check = regex_match(date, test);
-	if (!check) return false;
+    static std::regex test{regex_str};
+    check = regex_match(date, test);
+    if (!check) return false;
 
-	//Get month:
-	uint32_t month = 10 * (date[0] - '0') + (date[1] - '0');
-	uint32_t day = 10 * (date[3] - '0') + (date[4] - '0');
-	uint32_t year = 1000 * (date[6] - '0') + 100 * (date[7] - '0')
-			+ 10 * (date[8] - '0') + (date[9] - '0');
+    //Get month:
+    uint32_t month = 10 * (date[0] - '0') + (date[1] - '0');
+    uint32_t day = 10 * (date[3] - '0') + (date[4] - '0');
+    uint32_t year = 1000 * (date[6] - '0') + 100 * (date[7] - '0')
+	+ 10 * (date[8] - '0') + (date[9] - '0');
 
-	check = (1 <= month && month <= 12);
-	check &= (1 <= day && day <= 31);
-	check &= (2000 <= year && day <= 9999);
+    check = (1 <= month && month <= 12);
+    check &= (1 <= day && day <= 31);
+    check &= (1950 <= year && day <= 9999);
 
-	// Now check for leap years
-	bool is_leap_year = (!(year % 4) || !(year % 400));
+    // Make sure that February has at most 29 days
+    if ((month == 2 && day > 29))
+	check = false;
+    
+    // Now check for leap years
+    
+    bool is_leap_year = (!(year % 4) || !(year % 400));
 
-	// No Feb 29 on an non-leap year
-	if (!is_leap_year && ((month == 2) && (day == 29)))
-		check = false;
-
-	return check;
+    // No Feb 29 on an non-leap year
+    if (!is_leap_year && ((month == 2) && (day == 29)))
+	check = false;
+    
+    // Make sure that the day is at most 30 on these months:
+    // April, June, September, November
+    static array<uint32_t, 4> list_30 = {4, 6, 9, 11};
+    auto search = find(list_30.begin(), list_30.end(), month);
+    
+    if (search != list_30.end() && day > 30)
+	check = false;
+    
+    return check;
 }
 
 //------------------------------------------------------------------------------

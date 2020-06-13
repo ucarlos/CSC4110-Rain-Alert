@@ -65,14 +65,18 @@ std::string version_info(void){
 //------------------------------------------------------------------------------
 
 void get_credentials(void){
-    if (can_use_boost){
-	get_smtp_info_from_xml(project_file->get_smtp_info());
-	get_database_info_from_xml(project_file->get_database_info());
-    }
-    else {
-	get_smtp_credentials();
-	get_database_info_from_file();
-    }
+    // if (can_use_boost){
+    // 	get_smtp_info_from_xml(project_file->get_smtp_info());
+    // 	get_database_info_from_xml(project_file->get_database_info());
+    // }
+    // else {
+    // 	get_smtp_credentials();
+    // 	get_database_info_from_file();
+    // }
+
+    // Just use Boost
+    get_smtp_info_from_xml(project_file->get_smtp_info());
+    get_database_info_from_xml(project_file->get_database_info());
 }
 
 

@@ -17,7 +17,6 @@
 #include <ctime>
 #include <ncurses.h>
 using namespace std;
-
 // Log Library
 #include "./log/Log.h"
 // Sensor Library
@@ -117,13 +116,13 @@ class Sensor_Date{
 public:
 	// Default Constructor
     Sensor_Date(){
-		user_time = default_time;
+	user_time = default_time;
     }
 
     explicit Sensor_Date(string &d_t, string &u_t) :
     	default_time{d_t}{
-	    // Set seconds:
-	    change_user_time(u_t);
+	// Set seconds:
+	change_user_time(u_t);
 
 	}
     // String constructor
