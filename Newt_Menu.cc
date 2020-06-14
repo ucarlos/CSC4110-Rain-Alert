@@ -141,8 +141,6 @@ void run_sensor_tracking(Sensor_Date &sd){
     check_pthread_creation(mutex_check, mutex_error_message);
 
     // Now resume newt.
-    char ch;
-    cin >> ch;
     newtResume();
     return_to_menu();
 
