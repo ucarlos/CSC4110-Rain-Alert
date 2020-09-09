@@ -16,24 +16,6 @@
           </excludedPaths>
         </serverdata>
       </paths>
-      <paths name="Raspberry Pi 4 (GCC 8.3) (a72853d8-092d-422e-b969-262918383370)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/tmp/tmp.8gs2DSWzIh" local="$PROJECT_DIR$" />
-          </mappings>
-          <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-pi-4" />
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
-          </excludedPaths>
-        </serverdata>
-      </paths>
-      <paths name="Raspberry Pi Zero W (86429d43-00a3-4046-80b0-20fe78dad1ea)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/tmp/CSC4110_Project" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
     </serverData>
   </component>
 </project>

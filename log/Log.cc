@@ -232,15 +232,6 @@ std::string create_date(void){
     return string{str};
 }
 
-// std::string create_date(void){
-//     string date_str = system_call_to_string("date \"+%a, %d %b %Y %k:%M:%S -0500\"");
-
-//     if (date_str.back() == '\r')
-//         date_str += '\n';
-
-//     return date_str;
-// }
-
 //------------------------------------------------------------------------------
 // create_smtp_html_header():
 // Populates a vector of std::string containing a smtp header.

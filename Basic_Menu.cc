@@ -210,6 +210,7 @@ void test_sensors(void){
     
     cout << main_menu_options[3] << endl;
     list_menu(test_sensor_menu_options);
+    cout << "\n";
     cout << "r) Return to Main Menu" << endl;
     cout << "Please choose a selection." << endl;
     
@@ -238,6 +239,7 @@ void test_sensors(void){
 	system("clear");	
 	cout << main_menu_options[3] << endl;
 	list_menu(test_sensor_menu_options);
+	cout << "\n";
 	cout << "r) Return to Main Menu" << endl;
 	cout << "Please choose a selection." << endl;
     
@@ -291,6 +293,7 @@ void email_settings(){
 	cout << main_menu_options[5] << endl;
 	list_menu(email_menu_options);
 	cout << "r) Return to main menu" << endl;
+	cout << "\n";
 	cout << "Please choose an option." << endl;
 	cin >> input;
 	switch(input){
@@ -395,7 +398,7 @@ void menu(void){
 
     cout << endl;
     cout << "Please choose a selection. To quit, press \"q\"."
-	 	 << endl;
+	 << endl;
 
     char input;
     cin >> input;
@@ -409,25 +412,25 @@ void menu(void){
 
     switch(input){
         case 'a':
-	        function_pointer = sensor_tracking;
-	        break;
+	    function_pointer = sensor_tracking;
+	    break;
         case 'b':
-	        function_pointer = show_status;
-	        break;
+	    function_pointer = show_status;
+	    break;
         case 'c':
-	        function_pointer = search_logs;
-	        break;
+	    function_pointer = search_logs;
+	    break;
         case 'd':
-	        function_pointer = test_sensors;
-	        break;
+	    function_pointer = test_sensors;
+	    break;
         case 'e':
-	        function_pointer = database_options;
-	        break;
+	    function_pointer = database_options;
+	    break;
         case 'f':
-	        function_pointer = email_settings;
-	        break;
+	    function_pointer = email_settings;
+	    break;
         default:
-	        exit(EXIT_SUCCESS);
+	    exit(EXIT_SUCCESS);
     }
     
     // Clear screen and go to the function:

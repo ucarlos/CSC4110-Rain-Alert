@@ -16,6 +16,7 @@
 #include <chrono>
 #include <ctime>
 #include <ncurses.h>
+
 using namespace std;
 // Log Library
 #include "./log/Log.h"
