@@ -49,18 +49,18 @@ extern std::unique_ptr<settings_file> project_file;
 //------------------------------------------------------------------------------
 // Menu Functions and variables
 //------------------------------------------------------------------------------
-void sensor_tracking(void);
-extern inline void return_to_menu(void);
-void show_status(void);
-void search_logs(void);
-void test_sensors(void);
-void database_options(void);
-void email_settings(void);
+void sensor_tracking();
+extern inline void return_to_menu();
+void show_status();
+void search_logs();
+void test_sensors();
+void database_options();
+void email_settings();
 void string_to_lower(std::string &str);
-void menu(void);
-std::string version_info(void);
+void menu();
+std::string version_info();
 inline void check_pthread_creation(int &return_val, std::string &error_msg);
-void get_credentials(void);
+void get_credentials();
 
 
 // Log used for the project.
@@ -71,9 +71,9 @@ extern const std::vector<std::string> test_sensor_menu_options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
-void test_smtp(void);
-void test_pthread(void);
-void test_connection(void);
+void test_smtp();
+void test_pthread();
+void test_connection();
 void show_result_contents(pqxx::result &r);
 //------------------------------------------------------------------------------
 // Global Database variables:

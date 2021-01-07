@@ -46,7 +46,7 @@ const vector<string> test_sensor_menu_options = {"Test Email Sending",
 // Function Definitions
 //------------------------------------------------------------------------------
 
-std::string version_info(void){
+std::string version_info(){
     ostringstream os;
     os << "Rain Alert (Version "
        << CSC4110_Project_VERSION_MAJOR
@@ -64,23 +64,14 @@ std::string version_info(void){
 // will be read from a xml file or various txt files.
 //------------------------------------------------------------------------------
 
-void get_credentials(void){
-    // if (can_use_boost){
-    // 	get_smtp_info_from_xml(project_file->get_smtp_info());
-    // 	get_database_info_from_xml(project_file->get_database_info());
-    // }
-    // else {
-    // 	get_smtp_credentials();
-    // 	get_database_info_from_file();
-    // }
-
+void get_credentials(){
     // Just use Boost
     get_smtp_info_from_xml(project_file->get_smtp_info());
     get_database_info_from_xml(project_file->get_database_info());
 }
 
 
-int main(void){
+int main(){
     // First, retrieve the credentials and then call menu.
     get_credentials();
     menu();

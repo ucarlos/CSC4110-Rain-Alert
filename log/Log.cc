@@ -176,8 +176,8 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     auto check = l.level.begin();
     advance(check, 1);
 
-    for (auto i = l.level.begin(); i != l.level.end(); i++){
-        os << trans.quote(i->second) << ", ";
+    for (const auto & i : l.level){
+        os << trans.quote(i.second) << ", ";
     }
     os << trans.quote(l.comment) << ")";
 
@@ -224,7 +224,7 @@ std::string system_call_to_string(const char* cmd) {
 // month day year hh::mm:ss 
 //------------------------------------------------------------------------------
 
-std::string create_date(void){
+std::string create_date(){
     std::time_t t = std::time(nullptr);
     char str[100];
     std::strftime(str, sizeof(str), "%a, %d %b %Y %T", std::localtime(&t));
@@ -560,7 +560,7 @@ inline void check_credentials(bool check, std::string error) {
 // Line 3: recipient email address
 //------------------------------------------------------------------------------
 
-void get_smtp_credentials(void){
+void get_smtp_credentials(){
     // Read the data from
     std::ifstream file{smtp_file_path};
     if (!file){

@@ -81,7 +81,7 @@ bool test_log_reading(pqxx::connection &c){
 // test_connection(): Make sure that a connection can be made to the database
 // server using the info from "./sql/database_info.txt".
 //------------------------------------------------------------------------------
-void test_connection(void){
+void test_connection(){
 	std::cout << "Testing connection:" << std::endl;
     pqxx::connection connection;
     initialize_connection(connection);
@@ -95,7 +95,7 @@ void test_connection(void){
 // test_smtp(): Tests whether an sample log can be sent to a recipient
 // addresses specified by smtp_receiver_address.
 //------------------------------------------------------------------------------
-void test_smtp(void){
+void test_smtp(){
     Log l;
 	std::ifstream ifs;
     l.comment = "<b>This is intended to be a test of the SMTP client."
@@ -138,7 +138,7 @@ void * pthread_function2(void *val){
 }
 
 
-void test_pthread(void){
+void test_pthread(){
     // First create a pthread_t
     pthread_t thread1, thread2;
     int whatever_arg;

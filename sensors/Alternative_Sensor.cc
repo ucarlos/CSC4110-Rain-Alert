@@ -79,7 +79,7 @@ void initialize_float_sensor(std::mt19937 &merse,
 // of the time. 
 //------------------------------------------------------------------------------
 
-int get_float_sensor_readings(void){
+int get_float_sensor_readings(){
     return float_sensor_status;
 }
 

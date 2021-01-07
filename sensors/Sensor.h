@@ -39,11 +39,11 @@
 #ifdef SENSOR_READINGS_RNG // RNG Function declarations:
 
 int get_float_sensor_readings(std::uniform_real_distribution<int> &dist);
-int get_float_sensor_readings(void);
+int get_float_sensor_readings();
 
 double get_rain_sensor_readings(std::mt19937 &merse,
 				std::uniform_real_distribution<double> &dist);
-std::uniform_real_distribution<double> initialize_rain_sensor(void);
+std::uniform_real_distribution<double> initialize_rain_sensor();
 
 void initialize_float_sensor(std::mt19937 &merse,
 			    std::uniform_int_distribution<int> &dist);

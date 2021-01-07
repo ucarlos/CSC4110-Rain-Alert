@@ -20,7 +20,7 @@ void list_menu(const vector<string> &v);
  * @brief return_to_menu(): Inline function to "return" to menu.
  * @param void
  */
-inline void return_to_menu(void){
+inline void return_to_menu(){
 	void (*function_pointer) () = menu;
 	system("clear");
 	function_pointer();
@@ -98,7 +98,7 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
  * @param void
  * @returns void
  */
-void sensor_tracking(void){
+void sensor_tracking(){
     Sensor_Date sd;
     read_user_time(sd);
     
@@ -153,11 +153,10 @@ void sensor_tracking(void){
 // show_status(): Show the current values of the sensors (Enabled /Disabled)
 // alongside the current rain/battery levels.
 //------------------------------------------------------------------------------
-void show_status(void){
+void show_status(){
     cout << main_menu_options[1] << endl;
-    char ch;
 
-    ofstream ofs{log_status_path, ios_base::trunc};
+	ofstream ofs{log_status_path, ios_base::trunc};
     ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
     ofs << "Current Status: " << endl;
     
@@ -185,7 +184,7 @@ void show_status(void){
  * @param void
  * @returns void
  */
-void search_logs(void){
+void search_logs(){
     cout << main_menu_options[2] << endl;
     string input;
     
@@ -193,9 +192,8 @@ void search_logs(void){
     cout << "Please enter a date (mm/dd/yyyy):" << endl;
     string date;
     cin >> date;
-    bool check;
 
-    while (!(check = verify_date(date))){
+    while (!(verify_date(date))){
 		cout << "Invalid date. Remember to input a date in "
 			 << "mm/dd/yyyy format and make sure that it is a valid date "
 			 << "(i.e no Feb 29 on an non leap year).\n";
@@ -220,7 +218,7 @@ void search_logs(void){
  * @param void
  * @returns void
  */
-void test_sensors(void){
+void test_sensors(){
 #ifdef SENSOR_READINGS_RNG
     cerr << "This project currently uses a random number generator "
     	 << "to simulate sensor output.\nThis is intended to be used "
@@ -421,7 +419,7 @@ void email_settings(){
  * @param void
  * @returns void
  */
-void menu(void){
+void menu(){
     cout << version_info() << endl;
     list_menu(main_menu_options);
     // Quit Option
