@@ -111,7 +111,7 @@ void sensor_tracking(){
 	
     }
 
-    //Initalize the mutex first
+    //Initialize the mutex first
     int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
 
     string error_msg = "Could not initialize the mutex for some reason.";

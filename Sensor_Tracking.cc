@@ -188,7 +188,7 @@ std::chrono::system_clock::duration time_since_midnight() {
 // time 
 //------------------------------------------------------------------------------
 void* send_email_thread(void *s_d){
-    Sensor_Date *sdate = static_cast<Sensor_Date*>(s_d);
+    auto *sdate = static_cast<Sensor_Date*>(s_d);
 
 	std::string message = "Daily Report.";
     time_t current_time;

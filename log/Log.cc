@@ -52,17 +52,7 @@ Log::Log(const Log &l){
 }
 
 // Copy assignment
-Log& Log::operator=(const Log &l){
-    // Only copy the raw data.
-    comment = l.comment;
-    time_stamp = l.time_stamp;
-    date = l.date;
-    sensor_check = l.sensor_check;
-    level = l.level;
-    raw_data = l.raw_data;
-
-    return *this;
-}
+Log& Log::operator=(const Log &l)= default;
 
 // Comparison Operator:
 bool Log::operator==(const Log &b){
@@ -202,7 +192,7 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
 // This function takes the result of a system call and stores it into a
 // string. Shamelessly taken from Stackoverflow.
 //------------------------------------------------------------------------------
-std::string system_call_to_string(const char* cmd) {
+[[maybe_unused]] std::string system_call_to_string(const char* cmd) {
     std::array<char, 128> buffer{};
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
@@ -230,6 +220,18 @@ std::string create_date(){
     std::strftime(str, sizeof(str), "%a, %d %b %Y %T", std::localtime(&t));
 
     return std::string{str};
+}
+
+std::string create_date(std::string format_string) {
+	std::time_t time1 = std::time(nullptr);
+	char c_string[100];
+	std::strftime(c_string,
+				  sizeof(c_string),
+				  format_string.c_str(),
+				  std::localtime(&time1));
+
+	return std::string{c_string};
+
 }
 
 //------------------------------------------------------------------------------
@@ -460,7 +462,6 @@ void send_log_as_HTML(const Log &l, std::string &message_type){
     // and then pass it to the header.
     std::string smtp_endl = "\r\n";
     std::ifstream ifs{html_template_path};
-    //fstream new_file{html_file_path, ios_base::trunc | ios_base::out };
     std::ostringstream new_file{};
     std::string check = "                <!--- INSERT MESSAGE :) -->";
     std::string temp;
@@ -478,11 +479,13 @@ void send_log_as_HTML(const Log &l, std::string &message_type){
     
     // <!--- INSERT MESSAGE :) -->
     // Insert header
-    new_file << "<h1> Pi Rain Alert: " << message_type << " for "
-             << system_call_to_string("date \"+%d %b %Y\"") << "</h1>" << std::endl;
+    new_file << "<h1> Pi Rain Alert: "
+			 << message_type << " for "
+             << create_date("%d %b %Y")
+			 << "</h1>" << std::endl;
+	
     new_file << "<p>" << smtp_endl;
 
-    // Make sure to
 
     new_file << l << smtp_endl;
     new_file << "</p>" << smtp_endl;
@@ -496,7 +499,6 @@ void send_log_as_HTML(const Log &l, std::string &message_type){
     // close file
     //new_file.close();
     // Now prepare to send
-    //ifstream send_file{html_file_path, ios_base::in};
     send_html_through_SMTP(l, new_file, message_type);
 }
 
@@ -560,7 +562,7 @@ inline void check_credentials(bool check, std::string error) {
 // Line 3: recipient email address
 //------------------------------------------------------------------------------
 
-void get_smtp_credentials(){
+[[maybe_unused]] void get_smtp_credentials(){
     // Read the data from
     std::ifstream file{smtp_file_path};
     if (!file){

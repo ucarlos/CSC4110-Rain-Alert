@@ -48,7 +48,7 @@ static std::string smtp_password;
 static std::string smtp_receiver_address;
 
 
-void get_smtp_credentials(void);
+[[maybe_unused]] void get_smtp_credentials();
 
 //------------------------------------------------------------------------------
 // Filepaths
@@ -56,7 +56,7 @@ void get_smtp_credentials(void);
 const std::string smtp_file_path = "../settings/smtp_info.txt";
 const std::string text_file_path = "../log/Report.txt";
 const std::string html_template_path = "../log/html_template.html";
-const std::string html_file_path = "../log/Report.html";
+[[maybe_unused]] const std::string html_file_path = "../log/Report.html";
 
 
 //------------------------------------------------------------------------------
@@ -72,11 +72,10 @@ constexpr int log_offset = 4;
 class Log{
 public:
     // Default constructor
-    Log()=default; 
-    
+    Log()=default;
     explicit Log(pqxx::row &row);
     // Copy constructor
-    explicit Log (const Log &l);
+    Log (const Log &l);
     // Copy Assignment
     Log& operator=(const Log &b);
     
@@ -113,7 +112,9 @@ void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &
 void send_log_as_HTML(const Log &l, std::string &message_type);
 void send_log_as_text(const Log &l, std::string &message_type);
 std::vector<std::string> create_html_header(std::string &message_type);
-std::string system_call_to_string(const char* cmd);
+
+[[maybe_unused]] std::string system_call_to_string(const char* cmd);
+std::string create_date(std::string format_string);
 std::string create_smtp_text_header(std::string &message_type);
 void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type);
 bool verify_username(std::regex &test, const std::string &user_name);
