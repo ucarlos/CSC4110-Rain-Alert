@@ -11,7 +11,7 @@
 
 #include "./Project.h"
 #include <newt.h>
-
+using namespace std;
 // Box width and height should be divisible by 4.
 // For example, 72x20 or 60x16 .
 void main_menu(void);
@@ -26,11 +26,11 @@ const uint32_t button_x = (box_width / 8);
 
 
 const vector<void (*)(void)>menu_pointers = {&sensor_tracking,
-					     &show_status,
-					     &search_logs,
-					     &test_sensors,
-					     &database_options,
-					     &email_settings};
+    &show_status,
+    &search_logs,
+    &test_sensors,
+    &database_options,
+    &email_settings};
 
 
 //Small inline function to quit program.
@@ -40,7 +40,7 @@ inline void exit_program(){
 }
 
 inline int32_t center_string(const char *str){
-	return (strlen(str) / 2);
+    return (strlen(str) / 2);
 }
 
 
@@ -76,7 +76,7 @@ void error_box(const string &error_message, void (*function_pointer)()){
     const char *ok_message = "OK";
     align_x = ((box_width / 2) - ((strlen(ok_message) + 2) / 2) - 1);
     newtComponent ok_button = newtCompactButton(align_x,
-						box_height / 8, ok_message);
+												box_height / 8, ok_message);
 
     // Now add all components
     newtComponent error_form = newtForm(nullptr, nullptr, 0);
@@ -87,11 +87,11 @@ void error_box(const string &error_message, void (*function_pointer)()){
 
     // Pop the window and go to wherever the pointer leads to
     if (function_pointer != nullptr){
-	newtPopWindow();
-	function_pointer();
+		newtPopWindow();
+		function_pointer();
     }
     else // by default, return to main menu.
-	return_to_menu();
+		return_to_menu();
     
 
 }
@@ -116,8 +116,8 @@ void run_sensor_tracking(Sensor_Date &sd){
     // Create a temp log
     Log temp_log;
     int32_t pthread_check = pthread_create(&sensor, nullptr,
-					   handle_sensor_thread,
-					   static_cast<void*>(&temp_log));
+										   handle_sensor_thread,
+										   static_cast<void*>(&temp_log));
     
     string pthread_error_message;
     pthread_error_message = "Could not create the Sensor reading pthread.";
@@ -127,7 +127,7 @@ void run_sensor_tracking(Sensor_Date &sd){
     // Now create the Email Sending pthread
     pthread_error_message = "Could not create the Email Sending pthread.";
     pthread_check = pthread_create(&email, nullptr, send_email_thread,
-				   static_cast<void*>(&sd));
+								   static_cast<void*>(&sd));
     
     check_pthread_creation(pthread_check, pthread_error_message);
 
@@ -171,7 +171,7 @@ void sensor_tracking(void){
     const string time = sd.get_user_time();
     string time_info;
     time_info = "Status: A Daily email report will be sent at " + time + " (" + twelve_hour_clock(time) +
-	")";
+		")";
     
     newtPushHelpLine(time_info.c_str());
     
@@ -181,23 +181,23 @@ void sensor_tracking(void){
     // Write main label:
     const string message = "Please select an option.";
     message_label = newtLabel(((box_width / 2) - (message.size() / 2)),
-			      0, message.c_str());
+							  0, message.c_str());
 
     const string enable_str = "Enable Tracking";
     const string disabled_str = "Disable Tracking";
 
     // Set which radio button is selected by default:
-	bool current_status = project_file->get_tracking_status();
+    bool current_status = project_file->get_tracking_status();
     // Set where the enable radio will be placed
 
     int32_t align = (3 * (box_width / 8));
     newtComponent enable_button = newtRadiobutton(align , (box_height / 8),
-						  enable_str.c_str(),  static_cast<int32_t>(current_status), nullptr);
+												  enable_str.c_str(),  static_cast<int32_t>(current_status), nullptr);
 
     //align = (5 * (box_width / 8) - (disabled_str.size() / 2));	
     newtComponent disable_button = newtRadiobutton(align, ((box_height / 8) + 1),
-						   disabled_str.c_str(),
-						   !(static_cast<int32_t>(current_status)), enable_button);
+												   disabled_str.c_str(),
+												   !(static_cast<int32_t>(current_status)), enable_button);
 
 
     
@@ -208,7 +208,7 @@ void sensor_tracking(void){
     
     //cont = newtCompactButton(6 * button_x, button_y, "Forward!");
     newtFormAddComponents(form, back, message_label, enable_button,
-			  disable_button, nullptr);
+						  disable_button, nullptr);
 
     newtRunForm(form);
     // Get the user selected radio button.
@@ -223,47 +223,47 @@ void sensor_tracking(void){
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
     string mutex_error_message;
     
-    if (current_status){ // Disable Tracking
-	if (user_input == enable_button)
-	    error_box("Tracking is already enabled.", nullptr);
-	// Set tracking to false and kill any threads working.
+    if (current_status) { // Disable Tracking
+		if (user_input == enable_button)
+			error_box("Tracking is already enabled.", nullptr);
+		// Set tracking to false and kill any threads working.
 	
-	int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
-	mutex_error_message = "Could not initialize the mutex.";
-	check_pthread_creation(mutex_check, mutex_error_message);
+		int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
+		mutex_error_message = "Could not initialize the mutex.";
+		check_pthread_creation(mutex_check, mutex_error_message);
 	
-	pthread_mutex_lock(&mutex);
-	project_file->set_tracking_status(false);
-	end_all_threads = true;
-	pthread_mutex_unlock(&mutex);
+		pthread_mutex_lock(&mutex);
+		project_file->set_tracking_status(false);
+		end_all_threads = true;
+		pthread_mutex_unlock(&mutex);
 	
-	newtFormDestroy(form);
-	mutex_error_message = "Could not destroy the mutex while disabling tracking.";
-	mutex_check = pthread_mutex_destroy(&mutex);
-	check_pthread_creation(mutex_check, mutex_error_message);
-	return_to_menu();
+		newtFormDestroy(form);
+		mutex_error_message = "Could not destroy the mutex while disabling tracking.";
+		mutex_check = pthread_mutex_destroy(&mutex);
+		check_pthread_creation(mutex_check, mutex_error_message);
+		return_to_menu();
 	
     }
-    else{ // Enable Tracking
-	if (user_input == disable_button)
-	    error_box("Tracking is already disabled.", nullptr);
+    else { // Enable Tracking
+		if (user_input == disable_button)
+			error_box("Tracking is already disabled.", nullptr);
 
-	int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
-	mutex_error_message = "Could not initialize the mutex.";
-	check_pthread_creation(mutex_check, mutex_error_message);
+		int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
+		mutex_error_message = "Could not initialize the mutex.";
+		check_pthread_creation(mutex_check, mutex_error_message);
 
 
-	pthread_mutex_lock(&mutex);
-	project_file->set_tracking_status(true);
-	end_all_threads = false;
-	pthread_mutex_unlock(&mutex);
+		pthread_mutex_lock(&mutex);
+		project_file->set_tracking_status(true);
+		end_all_threads = false;
+		pthread_mutex_unlock(&mutex);
 
-	newtFormDestroy(form);
-	mutex_error_message = "Could not destroy the mutex while enabling tracking.";
-	mutex_check = pthread_mutex_destroy(&mutex);
+		newtFormDestroy(form);
+		mutex_error_message = "Could not destroy the mutex while enabling tracking.";
+		mutex_check = pthread_mutex_destroy(&mutex);
 	
-	check_pthread_creation(mutex_check, mutex_error_message);
-	run_sensor_tracking(sd);
+		check_pthread_creation(mutex_check, mutex_error_message);
+		run_sensor_tracking(sd);
     }
 
 }
@@ -315,21 +315,21 @@ void search_logs(void){
     
     const string log_message = "Please enter a date in mm/dd/yyyy format.";
     log_message_label = newtLabel(((box_width / 2) - (log_message.size() / 2)),
-    		0, log_message.c_str());
+								  0, log_message.c_str());
 
     const char *button_text = "Return to Main Menu";
     
     back_but = newtCompactButton(((box_width / 2) - ((strlen(button_text) + 2) / 2) - 1),
-    		button_y, button_text);
+								 button_y, button_text);
 
     // Form
     int32_t search_len = 10;
     
     log_result = newtEntry(((box_width / 2) - (search_len / 2)),
-			   (box_height/4),
-			   "mm/dd/yyyy", search_len,
-			   reinterpret_cast<const char **>(message.get()),
-			   NEWT_FLAG_RETURNEXIT);
+						   (box_height/4),
+						   "mm/dd/yyyy", search_len,
+						   reinterpret_cast<const char **>(message.get()),
+						   NEWT_FLAG_RETURNEXIT);
     
 
 
@@ -352,18 +352,18 @@ void search_logs(void){
 
     // Shit hack to exit screen:
     if (result == "mm/dd/yyyy"){
-	newtResume();
-	return_to_menu();
+		newtResume();
+		return_to_menu();
     }
 	
     while (!verify_date(result)){
 
-	newtResume();
-	string error_message = "Make sure that the";
-	error_message += " date format is in mm/dd/yyyy and is valid.";
-	void (*function_pointer)() = search_logs;
-	error_box(error_message, function_pointer);
-	//goto confession;
+		newtResume();
+		string error_message = "Make sure that the";
+		error_message += " date format is in mm/dd/yyyy and is valid.";
+		void (*function_pointer)() = search_logs;
+		error_box(error_message, function_pointer);
+		//goto confession;
 		  
     }
 
@@ -389,17 +389,17 @@ void test_sensor_selection(const int &option){
     int32_t selection = (option + 'a');
     switch(selection){
     case 'a':
-	test_smtp();
-	break;
+		test_smtp();
+		break;
     case 'b':
-	test_connection();
-	break;
+		test_connection();
+		break;
     case 'c':
-	test_pthread();
-	break;
+		test_pthread();
+		break;
     default:
-	newtResume();
-	return_to_menu();
+		newtResume();
+		return_to_menu();
     }
     // Sleep for 3 seconds, clear the screen and return to menu.
     sleep(3);
@@ -428,15 +428,15 @@ void test_sensors(){
     vector<int> list(val);
 
     for (int i = 0; i < list.size(); i++)
-	list[i] = i;
+		list[i] = i;
 
     string temp;
 
     for (int i = 0; i < test_sensor_menu_options.size(); i++){
-	temp = static_cast<char>((i + 1) + '0');
-	newtListboxAppendEntry(list_box,
-			       string{temp + " " + test_sensor_menu_options[i]}.c_str(),
-			       reinterpret_cast<void *>(&list[i]));
+		temp = static_cast<char>((i + 1) + '0');
+		newtListboxAppendEntry(list_box,
+							   string{temp + " " + test_sensor_menu_options[i]}.c_str(),
+							   reinterpret_cast<void *>(&list[i]));
 
     }
 
@@ -447,7 +447,7 @@ void test_sensors(){
     last_option += "Return to Main Menu";
 
     newtListboxAppendEntry(list_box, last_option.c_str(),
-			   reinterpret_cast<void *>(&list[val - 1]));
+						   reinterpret_cast<void *>(&list[val - 1]));
 
     //Set up the form:
     form = newtForm(nullptr, nullptr, 0);
@@ -456,7 +456,7 @@ void test_sensors(){
     
     // Take the option, and make the selection:
     auto option_input =
-	*reinterpret_cast<int *>(newtListboxGetCurrent(list_box));
+		*reinterpret_cast<int *>(newtListboxGetCurrent(list_box));
 
     newtFormDestroy(form);
     test_sensor_selection(option_input);
@@ -482,19 +482,20 @@ void database_options(){
     pthread_mutex_lock(&temp_mutex);
     ostringstream os;
     
-     os  << "You are currently connected to the database "
-    	 << project_file->get_database_info().at("psql_database")
-    	 << " on " << project_file->get_database_info().at("psql_ip")
-    	 << endl;
+    os  << "You are currently connected to the database "
+		<< project_file->get_database_info().at("psql_database")
+		<< " on " << project_file->get_database_info().at("psql_ip")
+		<< endl;
      
     pthread_mutex_unlock(&temp_mutex);
     label = newtTextbox(0, 0, box_width - 1,
-    		box_height / 4, NEWT_FLAG_WRAP);
+						box_height / 4, NEWT_FLAG_WRAP);
     newtTextboxSetText(label, os.str().c_str());
     // Always create a new form for every screen.
     const char *ok = "Ok";
-    newtComponent button = newtCompactButton(((box_width / 2) -
-    		((strlen(ok) + 2) / 2) - 1), (box_height / 4), ok);
+    newtComponent button = newtCompactButton(((box_width / 2) - ((strlen(ok) + 2) / 2) - 1),
+											 (box_height / 4),
+											 ok);
     form = newtForm(nullptr, nullptr, 0);
 
     newtFormAddComponents(form, label, button, nullptr);
@@ -519,88 +520,84 @@ void email_selection(const int &option){
 
     switch(select){
     case 'a': // Change Recipient Email
-	cout << "Current email: " 
-	     << project_file->get_smtp_info().at("receiver_email")
-	     << endl;
+		cout << "Current email: " 
+			 << project_file->get_smtp_info().at("receiver_email")
+			 << endl;
 	
-	cout << "Enter a new recipient email:" << endl;
-	cin >> str;
+		cout << "Enter a new recipient email:" << endl;
+		cin >> str;
 	
-	while (!verify_username(regex_test, str)){
-	    cout << "Invalid address. "
-		 << "Username should follow "
-		 << "name@domain_name.domain." << endl;
+		while (!verify_username(regex_test, str)){
+			cout << "Invalid address. "
+				 << "Username should follow "
+				 << "name@domain_name.domain." << endl;
 	    
-	    cin >> str;
-	}
+			cin >> str;
+		}
 	    
-	// Otherwise set the recipient email
-	project_file->get_smtp_info().at("receiver_email") = str;
-	break;
-
-    case 'b': // Change Email Time
-	
-	cout << "A Daily report will be sent at "
-	     << project_file->get_email_time()
-	     << " ("
-	     << twelve_hour_clock(project_file->get_email_time())
-	     << ")"
-	     << endl;
+		// Otherwise set the recipient email
+		project_file->get_smtp_info().at("receiver_email") = str;
+		break;
+		
+    case 'b': // Change Email Time		
+		cout << "A Daily report will be sent at "
+			 << project_file->get_email_time()
+			 << " ("
+			 << twelve_hour_clock(project_file->get_email_time())
+			 << ")"
+			 << endl;
 	    	
-	cout << "Enter a new time to send the email:" << endl;
-	cin >> str;
+		cout << "Enter a new time to send the email:" << endl;
+		cin >> str;
 	
-	while (!verify_time(str)){
-	    cout << "Invalid time. Time should be in hh::mm"
-		 << " format and be in the range "
-		 << "00:00 to 23:59" << endl;
-	    cin >> str;
-	}
+		while (!verify_time(str)){
+			cout << "Invalid time. Time should be in hh::mm"
+				 << " format and be in the range "
+				 << "00:00 to 23:59" << endl;
+			cin >> str;
+		}
 
-	// Otherwise set email time
-	project_file->set_email_time(str);
-	break;
+		// Otherwise set email time
+		project_file->set_email_time(str);
+		break;
     case 'c': // Change Timezone
-	cout << "Current Timezone: UTC "
-	     << project_file->get_time_zone()
-	     << endl;
+		cout << "Current Timezone: UTC "
+			 << project_file->get_time_zone()
+			 << endl;
 	
-	cout << "Enter the timezone this device is on. Time zone should be in "
-	    "the range [-12: 12]." << endl;
-	cin >> val;
+		cout << "Enter the timezone this device is on. Time zone should be in "
+			"the range [-12: 12]." << endl;
+		cin >> val;
 	
-	while (!verify_time_zone(val)){
-	    cout << "Invalid time zone. Time zone should "
-		 << "be in the range [-12: 12]."
-		 << endl;
-	    cin >> val;
-	}
+		while (!verify_time_zone(val)){
+			cout << "Invalid time zone. Time zone should "
+				 << "be in the range [-12: 12]."
+				 << endl;
+			cin >> val;
+		}
 
-	// Otherwise set the time_zone
-	project_file->set_time_zone(val);
-	break;
+		// Otherwise set the time_zone
+		project_file->set_time_zone(val);
+		break;
     case 'd': // Change Email Type
-	cout << "Enter the email type that is sent [HTML or Text]" << endl;
-	cin >> str;
-	string_to_lower(str);
+		cout << "Enter the email type that is sent [HTML or Text]" << endl;
+		cin >> str;
+		string_to_lower(str);
 	
-	if (str == "html")
-	    project_file->set_email_type(0);
-	else if (str == "text")
-	    project_file->set_email_type(1);
-	else {
-	    cout << "Invalid input." << endl;
-	    break;
-	}
-	    
-	break;
-	
+		if (str == "html")
+			project_file->set_email_type(0);
+		else if (str == "text")
+			project_file->set_email_type(1);
+		else {
+			cout << "Invalid input." << endl;
+			break;
+		}	    
+		break;	
     default:
-	newtResume();
-	return_to_menu();
+		newtResume();
+		return_to_menu();
     }
     
-
     pthread_mutex_unlock(&temp_mutex);
     newtResume();
     project_file->save_file(xml_path);
@@ -636,13 +633,13 @@ void email_settings(){
     vector<int> list(val);
 
     for (int i = 0; i < list.size(); i++)
-	list[i] = i;
+		list[i] = i;
 
     std::string temp;
     for (int i = 0; i < email_menu_options.size(); i++) {
     	temp = static_cast<char>((i + 1) + '0');
     	newtListboxAppendEntry(window, string{temp + " " + email_menu_options[i]}.c_str(),
-			       reinterpret_cast<void *>((&list[i])));
+							   reinterpret_cast<void *>((&list[i])));
     }
     
     // Awful method to center last option and add a number to it:
@@ -661,7 +658,7 @@ void email_settings(){
     newtRunForm(form);
 
     auto option_point =
-	*reinterpret_cast<int *>(newtListboxGetCurrent(window));
+		*reinterpret_cast<int *>(newtListboxGetCurrent(window));
 
     // Destroy the form.
     newtFormDestroy(form);
@@ -676,8 +673,8 @@ void main_menu(){
     // Check this first.
     
     if (main_menu_options.size() != menu_pointers.size())
-	throw runtime_error("Error: Both the options and menu_pointer "
-					 "vectors have unequal lengths. Check them again.");
+		throw runtime_error("Error: Both the options and menu_pointer "
+							"vectors have unequal lengths. Check them again.");
     
     newtComponent form, window, n_list, exit;
 
@@ -698,8 +695,8 @@ void main_menu(){
     std::string temp;
     for (int i = 0; i < menu_pointers.size(); i++) {
     	temp = static_cast<char>((i + 1) + '0');
-	newtListboxAppendEntry(window, string{temp + " " + main_menu_options[i]}.c_str(),
-			       reinterpret_cast<void *>((menu_pointers[i])));
+		newtListboxAppendEntry(window, string{temp + " " + main_menu_options[i]}.c_str(),
+							   reinterpret_cast<void *>((menu_pointers[i])));
     }
 
     // Awful method to center last option and add a number to it:
@@ -714,20 +711,19 @@ void main_menu(){
     //strncpy(exit_name + 2, "Exit Program", 30);
 
     newtListboxAppendEntry(window, exit_name.c_str(),
-			   reinterpret_cast<void *>(exit_program));
+						   reinterpret_cast<void *>(exit_program));
 
 
     // Now add all the components and run them.
     newtFormAddComponents(form, window, nullptr);
     newtRunForm(form);
 
-	// First check if button is exit. if so, 
-    auto option_point =
-	reinterpret_cast<void (*) ()>(newtListboxGetCurrent(window));
-    // Destroy the form.
-    newtFormDestroy(form);
-    // newtFinished();
-    option_point();
+    // First check if button is exit. if so,
+	auto option_point = reinterpret_cast<void (*) ()>(newtListboxGetCurrent(window));
+	// Destroy the form.
+	newtFormDestroy(form);
+	// newtFinished();
+	option_point();
 	
 }
 
@@ -742,7 +738,7 @@ inline void return_to_menu(){
 //------------------------------------------------------------------------------
 // Menu(): This function initializes newt, and calls main_menu in order to
 // prevent newt from begin initialized constantly. 
-//------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------
 void menu(){
     newtInit();
     main_menu();

@@ -17,15 +17,15 @@
 //
 //------------------------------------------------------------------------------
 
-Log::Log(map<string, bool> &sensor, map<string, double> &levl,
-	 string comm, string time_stamp) {
+Log::Log(std::map<std::string, bool> &sensor, std::map<std::string, double> &levl,
+	 std::string comm, std::string time_stamp) {
     // Maps should be the same size as default. Error otherwise.
     if ((this->sensor_check.size() != sensor.size()) ||
         (this->level.size() != levl.size())){
-        ostringstream os;
+        std::ostringstream os;
         os << "Passed sensor and level arguments have different sizes"
            << " from the default maps in Log. Aborting.";
-        throw runtime_error(os.str());
+        throw std::runtime_error(os.str());
     }
     this->sensor_check = sensor;
     this->level = levl;
@@ -76,14 +76,14 @@ bool Log::operator==(const Log &b){
 //------------------------------------------------------------------------------
 bool Log::extract_row() {
     if (!raw_data){ // Prevent access of empty raw_data
-	cerr << "Warning: Log does not point to any row.\n";
+	std::cerr << "Warning: Log does not point to any row.\n";
         return false;
     }
 
     // First, fill the date and timestamp.
-    date = (raw_data->begin() + 1)->as(string{});
+    date = (raw_data->begin() + 1)->as(std::string{});
     auto it = raw_data->begin() + (log_offset - 1);
-    time_stamp = it->as(string{});
+    time_stamp = it->as(std::string{});
 
     it++;
 
@@ -101,7 +101,7 @@ bool Log::extract_row() {
 
     // This assumes that the column that it points to is a boolean value.
     if (it != raw_data->end()){
-        comment = it->as(string{});
+        comment = it->as(std::string{});
     }
 
     return true;
@@ -125,25 +125,25 @@ void extract_row_to_log(Log &l, pqxx::row &row){
 //------------------------------------------------------------------------------
 // operator<< - outputs all fields from log(except raw_data) to a ostream.
 //------------------------------------------------------------------------------
-ostream& operator<<(ostream &os, const Log &l){
-    string html_break = "<br>";
-    ostringstream o;
-    o << "Date: " << l.date << html_break << endl;
-    o << "Timestamp: " << l.time_stamp << html_break << endl;
+std::ostream& operator<<(std::ostream &os, const Log &l){
+    std::string html_break = "<br>";
+    std::ostringstream o;
+    o << "Date: " << l.date << html_break << std::endl;
+    o << "Timestamp: " << l.time_stamp << html_break << std::endl;
 
     for (auto & i : l.sensor_check){
         o << i.first << ": ";
         o << ((i.second) ? "Online" : "Offline");
-        o << html_break << endl;
+        o << html_break << std::endl;
     }
 
     // Battery level (In Percentage)
     double d = l.level.at("battery_level");
-    o << "Battery Level: " << d << "%" << html_break << endl;
+    o << "Battery Level: " << d << "%" << html_break << std::endl;
     d = l.level.at("rain_level");
     o << "Rain level: " << d << " inches (" << inches_to_cm(d) << " cm)"
-      << html_break << endl;
-    o << "Comment: " << l.comment << html_break << endl;
+      << html_break << std::endl;
+    o << "Comment: " << l.comment << html_break << std::endl;
     return os << o.str();
 
 }
@@ -160,8 +160,8 @@ ostream& operator<<(ostream &os, const Log &l){
 // add_log(): Add a Log to a database.
 //------------------------------------------------------------------------------
 void add_log(pqxx::transaction_base &trans, const Log &l){
-    ostringstream os;
-    os << boolalpha;
+    std::ostringstream os;
+    os << std::boolalpha;
     
     os << "INSERT INTO log(float_sensor_connected, rain_sensor_connected,"
        << " solar_panel_functional, battery_connected, battery_level, rain_level, log_comment)"
@@ -181,7 +181,7 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
     }
     os << trans.quote(l.comment) << ")";
 
-    string query = os.str();
+    std::string query = os.str();
     //cout << query;
     trans.exec0(query);
     
@@ -229,7 +229,7 @@ std::string create_date(void){
     char str[100];
     std::strftime(str, sizeof(str), "%a, %d %b %Y %T", std::localtime(&t));
 
-    return string{str};
+    return std::string{str};
 }
 
 //------------------------------------------------------------------------------
@@ -238,12 +238,12 @@ std::string create_date(void){
 // I can't use create_smtp_text_header to send a html email, so this method
 // has to be used instead.
 //------------------------------------------------------------------------------
-vector<std::string> create_html_header(string &message_type) {
+std::vector<std::string> create_html_header(std::string &message_type) {
 
-    ostringstream os;
+    std::ostringstream os;
     // find the newline:
     std::string date_str = create_date();
-    vector<std::string> header_data;
+    std::vector<std::string> header_data;
     header_data.push_back(std::string{"Date: " + date_str});
     header_data.push_back(std::string{"To: " + smtp_receiver_address});
     header_data.push_back(std::string{"From: " + smtp_username});
@@ -264,11 +264,11 @@ vector<std::string> create_html_header(string &message_type) {
 // \r\n
 //------------------------------------------------------------------------------
 
-std::string create_smtp_text_header(string &message_type) {
+std::string create_smtp_text_header(std::string &message_type) {
     const std::string end_line = "\r\n";
     std::string date_str = create_date();
 
-    ostringstream os;
+    std::ostringstream os;
 
     os << "Date: " << ""
        << date_str << end_line
@@ -287,7 +287,7 @@ void set_up_stmp_connection(CURL *curl) {
     curl_easy_setopt(curl, CURLOPT_PASSWORD, smtp_password.c_str());
 
     // Set URL of mailserver.
-    string url = "smtp://" + smtp_address + ":" + smtp_port;
+    std::string url = "smtp://" + smtp_address + ":" + smtp_port;
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
     // Use TLS
@@ -311,9 +311,9 @@ void set_up_stmp_connection(CURL *curl) {
 // This is then sent to the recipient address in smtp_recipient_address.
 //------------------------------------------------------------------------------
 
-void send_text_through_SMTP(ostringstream &oss, string &message_type) {
+void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type) {
 
-    ofstream ofs{text_file_path, ios_base::trunc};
+    std::ofstream ofs{text_file_path, std::ios_base::trunc};
     ofs << create_smtp_text_header(message_type);
     ofs << oss.str();
 
@@ -322,7 +322,7 @@ void send_text_through_SMTP(ostringstream &oss, string &message_type) {
     FILE *fs = fopen(text_file_path.c_str(), "r");
 
     if (!fs){
-        throw runtime_error("Could not open " + text_file_path);
+        throw std::runtime_error("Could not open " + text_file_path);
     }
 
     CURL *curl = curl_easy_init();
@@ -350,8 +350,8 @@ void send_text_through_SMTP(ostringstream &oss, string &message_type) {
 
         // Now check for errors:
         if (result != CURLE_OK)
-            cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
-                 << endl;
+            std::cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
+                 << std::endl;
 
         curl_slist_free_all(recipients);
 
@@ -368,7 +368,7 @@ void send_text_through_SMTP(ostringstream &oss, string &message_type) {
 // Send inline html email to the recipient address specified in
 // smtp_receiver_address.
 //------------------------------------------------------------------------------
-void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_type) {
+void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &message_type) {
     
     struct curl_slist *recipients = nullptr;
     struct curl_slist *headers = nullptr;
@@ -389,7 +389,7 @@ void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_ty
         recipients = curl_slist_append(recipients, smtp_receiver_address.c_str());
         curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
 
-        vector<std::string> header_list = create_html_header(message_type);
+        std::vector<std::string> header_list = create_html_header(message_type);
         // Create Header
         for (auto &i : header_list)
             headers = curl_slist_append(headers,i.c_str());
@@ -405,16 +405,16 @@ void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_ty
 
         /* HTML message. */
         part = curl_mime_addpart(alt);
-        string inline_html = oss.str();
+        std::string inline_html = oss.str();
         curl_mime_data(part, inline_html.c_str(), CURL_ZERO_TERMINATED);
         curl_mime_type(part, "text/html");
 
         /* Text message. */
         part = curl_mime_addpart(alt);
-        ostringstream text_section;
+        std::ostringstream text_section;
         text_section << "In case the inline html does not display correctly,"
-		     << "the text is displayed below:" << endl
-		     << l << endl;
+		     << "the text is displayed below:" << std::endl
+		     << l << std::endl;
 
         curl_mime_data(part, text_section.str().c_str(), CURL_ZERO_TERMINATED);
 
@@ -437,8 +437,8 @@ void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_ty
 
         // Now check for errors:
         if (result != CURLE_OK)
-            cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
-                 << endl;
+            std::cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
+                 << std::endl;
 
 	curl_slist_free_all(recipients);
         curl_slist_free_all(headers);
@@ -455,15 +455,15 @@ void send_html_through_SMTP(const Log &l, ostringstream &oss, string &message_ty
 
 }
 
-void send_log_as_HTML(const Log &l, string &message_type){
+void send_log_as_HTML(const Log &l, std::string &message_type){
     // Open the html template, append the log in it
     // and then pass it to the header.
-    string smtp_endl = "\r\n";
-    ifstream ifs{html_template_path};
+    std::string smtp_endl = "\r\n";
+    std::ifstream ifs{html_template_path};
     //fstream new_file{html_file_path, ios_base::trunc | ios_base::out };
-    ostringstream new_file{};
-    string check = "                <!--- INSERT MESSAGE :) -->";
-    string temp;
+    std::ostringstream new_file{};
+    std::string check = "                <!--- INSERT MESSAGE :) -->";
+    std::string temp;
     // Copy all data from html template to new file until the check is true.
     do{
         getline(ifs, temp);
@@ -471,15 +471,15 @@ void send_log_as_HTML(const Log &l, string &message_type){
     } while ((ifs.good() && temp != check));
 
     if (temp != check){
-	string error = "I couldn't insert the log into " + html_template_path;
+	std::string error = "I couldn't insert the log into " + html_template_path;
 	error += "Make sure that the check comment is included in the file.\n";
-        throw runtime_error(error);
+        throw std::runtime_error(error);
     }
     
     // <!--- INSERT MESSAGE :) -->
     // Insert header
     new_file << "<h1> Pi Rain Alert: " << message_type << " for "
-             << system_call_to_string("date \"+%d %b %Y\"") << "</h1>" << endl;
+             << system_call_to_string("date \"+%d %b %Y\"") << "</h1>" << std::endl;
     new_file << "<p>" << smtp_endl;
 
     // Make sure to
@@ -500,8 +500,8 @@ void send_log_as_HTML(const Log &l, string &message_type){
     send_html_through_SMTP(l, new_file, message_type);
 }
 
-void send_log_as_text(const Log &l, string &message_type) {
-    ostringstream new_file{};
+void send_log_as_text(const Log &l, std::string &message_type) {
+    std::ostringstream new_file{};
     new_file << l;
     send_text_through_SMTP(new_file, message_type);
 
@@ -512,8 +512,8 @@ void send_log_as_text(const Log &l, string &message_type) {
 // Username should follow name@domain_name.domain.
 //------------------------------------------------------------------------------
 
-bool verify_username(std::regex &test, const string &user_name) {
-    string regex_str = R"(^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$)";
+bool verify_username(std::regex &test, const std::string &user_name) {
+    std::string regex_str = R"(^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$)";
     // Use regex expressions to check for valid user_name.
     // ^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$
     test = std::regex{regex_str};
@@ -528,15 +528,15 @@ bool verify_username(std::regex &test, const string &user_name) {
 // specify the minimum amount (up to a max of 128 characters)
 //------------------------------------------------------------------------------
 
-bool verify_password(std::regex &test, const string &password) {
+bool verify_password(std::regex &test, const std::string &password) {
     // Password should at least be 6 characters.
-    string regex_str = "^[\\w | \\.]{6,}$";
+    std::string regex_str = "^[\\w | \\.]{6,}$";
     test = std::regex{regex_str};
     return regex_match(password, test);
 }
 
-[[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const string &password) {
-    ostringstream os;
+[[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const std::string &password) {
+    std::ostringstream os;
     os << R"("^[\\w | \\.]{)" << size << ",}$";
     test = std::regex{os.str()};
     return regex_match(password, test);
@@ -546,9 +546,9 @@ bool verify_password(std::regex &test, const string &password) {
 // This mainly exists in order to make get_smtp_credentials() shorter and
 // to better describe error messages.
 //------------------------------------------------------------------------------
-inline void check_credentials(bool check, string error) {
+inline void check_credentials(bool check, std::string error) {
     if (!check)
-        throw runtime_error(error);
+        throw std::runtime_error(error);
 }
 
 //------------------------------------------------------------------------------
@@ -562,18 +562,18 @@ inline void check_credentials(bool check, string error) {
 
 void get_smtp_credentials(void){
     // Read the data from
-    ifstream file{smtp_file_path};
+    std::ifstream file{smtp_file_path};
     if (!file){
-	    throw runtime_error("Cannot retrieve the SMTP credentials from " + smtp_file_path);
+	    throw std::runtime_error("Cannot retrieve the SMTP credentials from " + smtp_file_path);
     }
 
     // Now check if the file is empty.
     if (file.peek() == std::ifstream::traits_type::eof()){
-        throw runtime_error("smtp_info.txt is emtpy. Change that.");
+        throw std::runtime_error("smtp_info.txt is emtpy. Change that.");
     }
 
     // Retrieve the credentials and assign them
-    string smtp_us, smtp_pass, reciv_us;
+    std::string smtp_us, smtp_pass, reciv_us;
     getline(file, smtp_us);
     getline(file, smtp_pass);
     getline(file, reciv_us);
@@ -582,10 +582,10 @@ void get_smtp_credentials(void){
 
     // The file should ONLY have the eof flag enabled after reading the file to the end.
     // If it doesn't meet those requirements, throw an error.
-    if (file_status != ios_base::eofbit){
-        string error = "Could not populate all variables from smtp_info.txt.";
+    if (file_status != std::ios_base::eofbit){
+        std::string error = "Could not populate all variables from smtp_info.txt.";
         error += " Please make sure that smtp_info.txt is EXACTLY 3 lines.\n";
-        throw runtime_error(error);
+        throw std::runtime_error(error);
     }
 
     // Handle any issues regarding invalid email addresses/password.
@@ -615,7 +615,7 @@ void get_smtp_credentials(void){
 // Much simpler to use than using get_smtp_credentials
 //------------------------------------------------------------------------------
 
-void get_smtp_info_from_xml(const map<std::string, std::string> &smtp_info) {
+void get_smtp_info_from_xml(const std::map<std::string, std::string> &smtp_info) {
 	std::string smtp_us = smtp_info.at("sender_email");
 	std::string smtp_pass = smtp_info.at("sender_password");
 	std::string reciv_us = smtp_info.at("receiver_email");

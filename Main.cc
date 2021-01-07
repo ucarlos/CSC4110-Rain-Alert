@@ -12,7 +12,7 @@
  */
 
 #include "./Project.h"
-
+using namespace std;
 
 //------------------------------------------------------------------------------
 // Definition of external variables declared in Project.h
@@ -23,23 +23,23 @@ std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
 
 // Menu main_menu_options
 const vector<string> main_menu_options = {"Sensor Tracking",
-					  "Sensor Status",
-					  "Search Logs",
-					  "Test Sensors",
-					  "Database Information",
-					  "Email Options"};
+	"Sensor Status",
+	"Search Logs",
+	"Test Sensors",
+	"Database Information",
+	"Email Options"};
 
 // Global Log File
 Log project_log{};
 
 const vector<string> email_menu_options = {"Change Recipient Mail", "Change Time",
-					   "Change Timezone", "Change Email Type"};
+	"Change Timezone", "Change Email Type"};
 
 
 
 const vector<string> test_sensor_menu_options = {"Test Email Sending",
-												 "Test Database Connection",
-												 "Test Thread Creation"};
+	"Test Database Connection",
+	"Test Thread Creation"};
 					    
 
 //------------------------------------------------------------------------------

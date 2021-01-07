@@ -19,7 +19,7 @@
 //------------------------------------------------------------------------------
 void show_result_contents(pqxx::result &r){
 	if (r.empty()){
-		cerr << "No results found." << endl;
+		std::cerr << "No results found." << std::endl;
 		sleep(2);
 		return;
 	}
@@ -27,18 +27,18 @@ void show_result_contents(pqxx::result &r){
 
 	// Store into a file called Database_Results.txt
 	// and then open in less/nano.
-	ofstream ofs{database_results_path, ios_base::trunc};
-	ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
-	ofs << "The results are listed below." << endl << endl;
+	std::ofstream ofs{database_results_path, std::ios_base::trunc};
+	ofs << "You are in \"less\" mode. In order to escape, press q" << std::endl;
+	ofs << "The results are listed below." << std::endl << std::endl;
 	Log log;
 	for (auto const &row : r){
 		log.apply_raw_data(const_cast<pqxx::row &>(row));
 		log.extract_row();
-		ofs << log << endl;
+		ofs << log << std::endl;
 	}
 	// Now open up less.
 	system("clear");
-	string sys_call = "less ";
+	std::string sys_call = "less ";
 	sys_call = sys_call + " " + database_results_path;
 	system(sys_call.c_str());
 }
@@ -52,26 +52,26 @@ void show_result_contents(pqxx::result &r){
 bool test_log_reading(pqxx::connection &c){
     // Make sure that there's a connection:
     if (!c.is_open()){
-	cerr << "Warning: This connection is not open."
-	     << "Make sure that the connection is open before"
-	     << " testing log readings.\n";
-	return false;
+		std::cerr << "Warning: This connection is not open."
+				  << "Make sure that the connection is open before"
+				  << " testing log readings.\n";
+		return false;
     }
 
     pqxx::work trans{c};
     // Read the first log in the database.
     std::ostringstream query;
     query << "Select " << trans.quote("*") << "from log where log_comment = "
-       << trans.quote("This is a dummy log that will always be added "
-                      "to this table. Please ignore it.");
+		  << trans.quote("This is a dummy log that will always be added "
+						 "to this table. Please ignore it.");
 
     pqxx::result result = trans.exec(query.str());
     // Now check is result is empty.
     if (result.empty()){
-        cerr << "Warning: No result was return after executing a query "
-	     << "for the first entry in the database. Please make sure that "
-	     << "you add the first entry.\n";
-	return false;
+		std::cerr << "Warning: No result was return after executing a query "
+				  << "for the first entry in the database. Please make sure that "
+				  << "you add the first entry.\n";
+		return false;
     }
     return true;
     
@@ -82,7 +82,7 @@ bool test_log_reading(pqxx::connection &c){
 // server using the info from "./sql/database_info.txt".
 //------------------------------------------------------------------------------
 void test_connection(void){
-    cout << "Testing connection:" << endl;
+	std::cout << "Testing connection:" << std::endl;
     pqxx::connection connection;
     initialize_connection(connection);
     test_log_reading(connection);
@@ -97,19 +97,19 @@ void test_connection(void){
 //------------------------------------------------------------------------------
 void test_smtp(void){
     Log l;
-    ifstream ifs;
+	std::ifstream ifs;
     l.comment = "<b>This is intended to be a test of the SMTP client."
-                "Please disregard it.</b>";
+		"Please disregard it.</b>";
 
-    cout << "Testing SMTP HTML.." << endl;
+	std::cout << "Testing SMTP HTML.." << std::endl;
     sleep(2);
-    string type = "SMTP HTML TEST";
+	std::string type = "SMTP HTML TEST";
     send_log_as_HTML(l, type);
 
     type = "SMTP TEXT TEST";
     l.comment = "This is intended to be a test of the SMTP client."
-                "Please disregard it.";
-    cout << "Testing SMTP TEXT.." << endl;
+		"Please disregard it.";
+	std::cout << "Testing SMTP TEXT.." << std::endl;
     sleep(2);
     send_log_as_text(l, type);
 
@@ -119,20 +119,20 @@ void test_smtp(void){
 // test_pthread() : Tests creating a pthread and joining it.
 //------------------------------------------------------------------------------
 void * pthread_function1(void *val){
-    cout << "This is thread 1!" << endl;
-    cout << "Now, I'll make a basic loop for Thread 1:" << endl;
+	std::cout << "This is thread 1!" << std::endl;
+	std::cout << "Now, I'll make a basic loop for Thread 1:" << std::endl;
     for (int i = 0; i < 5; i++)
-	cout << "Message " << i << " in Thread 1!" << endl;
+		std::cout << "Message " << i << " in Thread 1!" << std::endl;
 
     return nullptr;
 
 }
 
 void * pthread_function2(void *val){
-    cout << "This is thread 2!" << endl;
-    cout << "Now, I'll make a basic loop for Thread 2:" << endl;
+	std::cout << "This is thread 2!" << std::endl;
+	std::cout << "Now, I'll make a basic loop for Thread 2:" << std::endl;
     for (int i = 0; i < 5; i++)
-	cout << "Message " << i << " in Thread 2!" << endl;
+		std::cout << "Message " << i << " in Thread 2!" << std::endl;
 
     return nullptr;
 }
@@ -143,14 +143,14 @@ void test_pthread(void){
     pthread_t thread1, thread2;
     int whatever_arg;
     int pthread_check = pthread_create(&thread1, nullptr, pthread_function1,
-				       static_cast<void *>(&whatever_arg));
+									   static_cast<void *>(&whatever_arg));
 
-    string error_message{"Could not create Pthread 1."};
+	std::string error_message{"Could not create Pthread 1."};
     check_pthread_creation(pthread_check, error_message);
     
     
     pthread_check = pthread_create(&thread2, nullptr, pthread_function2,
-				   static_cast<void *>(nullptr));
+								   static_cast<void *>(nullptr));
 
     error_message = "Could not create Pthread 2.";
     check_pthread_creation(pthread_check, error_message);

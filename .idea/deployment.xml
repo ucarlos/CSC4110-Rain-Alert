@@ -2,17 +2,14 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="Raspberry Pi 4 (GCC 10) (6ceeb482-f9e3-4838-b7a8-ffec181e1a88)">
+      <paths name="Raspberry Pi 4 (GCC 10) (30e57caf-d540-4190-bc9a-1bcb902836e5)">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/pi/CLionProjects/CSC4110_Project" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/uly/CLionProjects/CSC4110_Project" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-pi4" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-pi-4" />
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-default-c20" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-zero" />
           </excludedPaths>
         </serverdata>
       </paths>

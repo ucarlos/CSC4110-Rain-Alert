@@ -17,13 +17,13 @@
 // formats won't work.
 //------------------------------------------------------------------------------
 
-std::string twelve_hour_clock(const string &time){
-    ostringstream os;
+std::string twelve_hour_clock(const std::string &time){
+	std::ostringstream os;
     uint32_t hour_val = (10 * (time[0] - '0')) + (time[1] - '0');
     if (!hour_val)
-	os << "12:" << time[3] << time[4] << " AM";
+		os << "12:" << time[3] << time[4] << " AM";
     else if (hour_val >= 12)
-	os << (hour_val - 12) << ":" << time[3] << time[4] << " PM";
+		os << (hour_val - 12) << ":" << time[3] << time[4] << " PM";
     else os << hour_val << ":" << time[3] << time[4] << " AM";
 
     return os.str();
@@ -36,9 +36,9 @@ std::string twelve_hour_clock(const string &time){
 // To make things easier, use 24-hour clock (00:00 - 23:59)
 //------------------------------------------------------------------------------
 
-bool verify_time(const string &time){
+bool verify_time(const std::string &time){
     bool check;
-    string regex_str = "\\d{2}:\\d{2}";
+	std::string regex_str = "\\d{2}:\\d{2}";
     
     static std::regex test{regex_str};
     check = regex_match(time, test);
@@ -57,9 +57,9 @@ bool verify_time(const string &time){
 // verify_date(): Check whether the date is in the form mm/dd/yyyy using a
 // regex expression.
 //------------------------------------------------------------------------------
-bool verify_date(const string &date){
+bool verify_date(const std::string &date){
     bool check;
-    string regex_str{R"(^\d{2}[\/]\d{2}[\/]\d{4}$)"};
+	std::string regex_str{R"(^\d{2}[\/]\d{2}[\/]\d{4}$)"};
 
     static std::regex test{regex_str};
     check = regex_match(date, test);
@@ -69,7 +69,7 @@ bool verify_date(const string &date){
     uint32_t month = 10 * (date[0] - '0') + (date[1] - '0');
     uint32_t day = 10 * (date[3] - '0') + (date[4] - '0');
     uint32_t year = 1000 * (date[6] - '0') + 100 * (date[7] - '0')
-	+ 10 * (date[8] - '0') + (date[9] - '0');
+		+ 10 * (date[8] - '0') + (date[9] - '0');
 
     check = (1 <= month && month <= 12);
     check &= (1 <= day && day <= 31);
@@ -77,7 +77,7 @@ bool verify_date(const string &date){
 
     // Make sure that February has at most 29 days
     if ((month == 2 && day > 29))
-	check = false;
+		check = false;
     
     // Now check for leap years
     
@@ -85,15 +85,15 @@ bool verify_date(const string &date){
 
     // No Feb 29 on an non-leap year
     if (!is_leap_year && ((month == 2) && (day == 29)))
-	check = false;
+		check = false;
     
     // Make sure that the day is at most 30 on these months:
     // April, June, September, November
-    static array<uint32_t, 4> list_30 = {4, 6, 9, 11};
-    auto search = find(list_30.begin(), list_30.end(), month);
+    static std::array<uint32_t, 4> list_30 = {4, 6, 9, 11};
+    auto search = std::find(list_30.begin(), list_30.end(), month);
     
     if (search != list_30.end() && day > 30)
-	check = false;
+		check = false;
     
     return check;
 }
@@ -102,7 +102,7 @@ bool verify_date(const string &date){
 // verify_time_zone(): Check whether time zone is in range of UTC [-12: 12]
 // Please don't use this when in Australia or some country that has fractional
 // time zones or whatever. I know that Australia has something like UTC + 9 1/2 
-//------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------
 bool verify_time_zone(const int32_t &time_z){
     return -12 <= time_z && time_z <= 12;
 }
@@ -112,7 +112,7 @@ bool verify_time_zone(const int32_t &time_z){
 // to seconds for the std::chrono::seconds variable.
 // Assume that the string is valid.
 //------------------------------------------------------------------------------
-int64_t return_time_in_seconds(string &time){
+int64_t return_time_in_seconds(std::string &time){
     int64_t unit = 60; // 60 seconds;
     int64_t hour = 10 * (time[0] - '0') + (time[1] - '0');
     int64_t min = 10 * (time[3] - '0') + (time[4] - '0');
@@ -122,15 +122,15 @@ int64_t return_time_in_seconds(string &time){
     // Make sure that UTC - timezone fits 00: 23, so
     int64_t utc_time = (hour - project_file->get_time_zone());
     int64_t adjusted_hour = (utc_time > 23) ? ((utc_time % 24))
-    		: (utc_time < 0) ? (24 - utc_time) : utc_time;
+		: (utc_time < 0) ? (24 - utc_time) : utc_time;
 
 	return (!hour && !min) ? 0 :
-		   ((unit * unit * (adjusted_hour)) + (unit * min));
+		((unit * unit * (adjusted_hour)) + (unit * min));
 
 }
 
 [[maybe_unused]] std::string string_to_seconds(int64_t &sec){
-	ostringstream os;
+	std::ostringstream os;
 	int64_t hours = (sec / 3600) + project_file->get_time_zone();
 	int64_t minutes = ((sec % 3600) / 60);
 
@@ -159,15 +159,15 @@ void Sensor_Date::set_email_time(uint32_t &seconds){
     email_time = std::chrono::seconds{seconds};
 }
 
-void Sensor_Date::change_user_time(string &n_t){
+void Sensor_Date::change_user_time(std::string &n_t){
     // First check is n_t is valid;
     bool check = verify_time(n_t);
     if (!check)
-	reset_user_time();
+		reset_user_time();
     else {
     	user_time = n_t;
-	email_seconds = return_time_in_seconds(n_t);
-	set_email_time(email_seconds);
+		email_seconds = return_time_in_seconds(n_t);
+		set_email_time(email_seconds);
     }
 
 }
@@ -182,15 +182,15 @@ void Sensor_Date::reset_user_time(){
 }
 
 // Allows reading from cin and other istreams
-istream& operator>>(ifstream &ifs, Sensor_Date &sd){
-    string input;
+std::istream& operator>>(std::ifstream &ifs, Sensor_Date &sd){
+	std::string input;
     ifs >> input;
 
     bool check = verify_time(input);
     if (!check) // Make default time
-	sd = Sensor_Date();
+		sd = Sensor_Date();
     else  // Otherwise, set the user_time to input.
-	sd = Sensor_Date(input);	
+		sd = Sensor_Date(input);	
 
     return ifs;
 }
@@ -198,18 +198,18 @@ istream& operator>>(ifstream &ifs, Sensor_Date &sd){
 Sensor_Date& Sensor_Date::operator=(const Sensor_Date &sd)= default;
 
 void get_time_from_file(Sensor_Date &sd) {
-	ifstream ifs{time_path};
+	std::ifstream ifs{time_path};
 	if (!ifs){
-		throw runtime_error("Could not open " + time_path);
+		throw std::runtime_error("Could not open " + time_path);
 	}
-	string temp;
+	std::string temp;
 	getline(ifs, temp);
 	sd = Sensor_Date{temp};
 }
 
 void read_user_time(Sensor_Date &sd){
 	if (can_use_boost) {
-		string temp = project_file->get_email_time();
+		std::string temp = project_file->get_email_time();
 		sd = Sensor_Date{temp};
 	}
 	else

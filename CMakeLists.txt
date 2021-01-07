@@ -63,7 +63,7 @@ add_library(Configuration XML_Configuration.cc)
 #Add Subdirectories
 
 #Test with coverage:
-#set(NEWT_GUI FALSE)
+set(NEWT_GUI FALSE)
 if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"

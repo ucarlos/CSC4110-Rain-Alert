@@ -23,7 +23,6 @@
 // and float sensors. Comment it out if you can get the sensors connected
 // properly.
 #define SENSOR_READINGS_RNG
-
 #ifndef SENSOR_READINGS_RNG
 // Include whatever libraries needed.
     #include <cmath>

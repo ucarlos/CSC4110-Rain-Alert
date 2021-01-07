@@ -11,81 +11,93 @@
  */
 
 #include "./Project.h"
+using namespace std;
+
 void toggle_sensor_tracking(const Sensor_Date &s_d);
 void list_menu(const vector<string> &v);
-//------------------------------------------------------------------------------
-// return_to_menu(): Inline function to "return" to menu.
-//------------------------------------------------------------------------------
+
+/**
+ * @brief return_to_menu(): Inline function to "return" to menu.
+ * @param void
+ */
 inline void return_to_menu(void){
-	void (*function_pointer) (void) = menu;
+	void (*function_pointer) () = menu;
 	system("clear");
 	function_pointer();
 }
 
 
-//------------------------------------------------------------------------------
-// list_menu(): Display the items in vector<string> as an option.
-//------------------------------------------------------------------------------
+
+/**
+ * @brief list_menu(): Display the items in vector<string> as an option.
+ * @param v vector of strings that contain menu options
+ */
 void list_menu(const vector<string> & v){
     for (int i = 0;  i < v.size(); i++){
-	cout << static_cast<char>(('a' + i)) << ") "
-		 << v[i] << endl;
+		cout << static_cast<char>(('a' + i)) << ") "
+			 << v[i] << endl;
 	
     }
 
 }
-//------------------------------------------------------------------------------
-// toggle_sensor_tracking(): It's mainly a prompt before sensor_tracking is
-// called.
-//------------------------------------------------------------------------------
 
+
+/**
+ * \brief A prompt called before sensor_tracking is called to enable or disable
+ * sensor tracking for the program.
+ * @param s_d Sensor_Date object containing the time when emails are sent.
+ */
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
     cout << main_menu_options[0] << endl;
     string time = s_d.get_user_time();
     cout << "Current Sensor Status: " << project_file->get_tracking_status() << endl;
     cout << "Daily reports will be sent every day at "
-	 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
+		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
     
     cout << "Input \"Enable\" to enable Sensor Checking."
-	 << endl
-	 << "Input \"Disable\" to disable Sensor Checking."
-	 << endl
-	 << "To return to the main menu, input \"back\"."
-	 << endl
-	 << "Enter any letter to continue."
-	 << endl;
+		 << endl
+		 << "Input \"Disable\" to disable Sensor Checking."
+		 << endl
+		 << "To return to the main menu, input \"back\"."
+		 << endl
+		 << "Enter any letter to continue."
+		 << endl;
 
     string input;
     cin >> input;
     string_to_lower(input);
     
     if (input == "back")
-	return_to_menu();
+		return_to_menu();
     else if (input == "enable"){
-	if (project_file->get_tracking_status())
-	    cerr << "Tracking is already enabled.\n";
-	else
-	    project_file->set_tracking_status(true);
+		if (project_file->get_tracking_status())
+			cerr << "Tracking is already enabled.\n";
+		else
+			project_file->set_tracking_status(true);
     }
     else if (input == "disable"){
-	if (!project_file->get_tracking_status())
-	    cerr << "Tracking is already disabled.\n";
-	else
-	    project_file->set_tracking_status(false);
+		if (!project_file->get_tracking_status())
+			cerr << "Tracking is already disabled.\n";
+		else
+			project_file->set_tracking_status(false);
     }
     else
-	cerr << "Continuing...";
+		cerr << "Continuing...";
 
 }
 
-//------------------------------------------------------------------------------
-// Tracking() : Enables / Disable Sensor Tracking
-// When Tracking is enabled, Make a pthread that handles reading the values
-// Of the Float Sensor/Rain Sensor. When an error occurs or when it is time
-// To send a daily report, send an email.
-// When Tracking is disabled, close the pthread.
-// TODO: Allow both threads to run in the background.
-//------------------------------------------------------------------------------
+
+
+/**
+ * \brief Enables or disables sensor tracking
+ * When Tracking is enabled, a pthread is created that handles reading values from
+ * the rain sensor. Daily sensor reports are sent at the time specified by the
+ * sensor date. Errors that occur are also logged and sent as a Error email.
+ * When Tracking is disabled, pthread_join is called, ending the thread.
+ * TODO: Allow both threads to run in the background.
+ * @param void
+ * @returns void
+ */
 void sensor_tracking(void){
     Sensor_Date sd;
     read_user_time(sd);
@@ -93,9 +105,9 @@ void sensor_tracking(void){
     toggle_sensor_tracking(sd);
 
     if (!project_file->get_tracking_status()){
-	cerr << "Tracking is currently disabled. Return back to the"
-	     << " main menu.\n";
-	return_to_menu();
+		cerr << "Tracking is currently disabled. Returning back to the"
+			 << " main menu.\n";
+		return_to_menu();
 	
     }
 
@@ -108,8 +120,8 @@ void sensor_tracking(void){
     Log temp_log;
     int pthread_check;
     pthread_check = pthread_create(&sensor, nullptr,
-				   handle_sensor_thread,
-				   static_cast<void*>(&temp_log));
+								   handle_sensor_thread,
+								   static_cast<void*>(&temp_log));
 
 
 
@@ -120,8 +132,8 @@ void sensor_tracking(void){
     // Now create the pthread for email sending.
     
     pthread_check = pthread_create(&email, nullptr,
-				   send_email_thread,
-				   static_cast<void *>(&sd));
+								   send_email_thread,
+								   static_cast<void *>(&sd));
 
     error_msg = "Could not create a pthread for sending email.";
     check_pthread_creation(pthread_check, error_msg);
@@ -166,6 +178,13 @@ void show_status(void){
 // If found, output the result to a file/stdout. Otherwise, display "Not Found."
 //
 //------------------------------------------------------------------------------
+/**
+ * Given a date in (mm/dd/yyyy) format, search the database for any logs.
+ * If found, output the result to file or display it to stdout. Otherwise,
+ * display "Not Found."
+ * @param void
+ * @returns void
+ */
 void search_logs(void){
     cout << main_menu_options[2] << endl;
     string input;
@@ -177,10 +196,10 @@ void search_logs(void){
     bool check;
 
     while (!(check = verify_date(date))){
-	cout << "Invalid date. Remember to input a date in "
-	     << "mm/dd/yyyy format and make sure that it is a valid date "
-	     << "(i.e no Feb 29 on an non leap year).\n";
-	cin >> date;
+		cout << "Invalid date. Remember to input a date in "
+			 << "mm/dd/yyyy format and make sure that it is a valid date "
+			 << "(i.e no Feb 29 on an non leap year).\n";
+		cin >> date;
     }
 	
     // Now send the query.
@@ -193,19 +212,20 @@ void search_logs(void){
     return_to_menu();
 }
 
-
-//------------------------------------------------------------------------------
-// test_sensors(): Provides the user to test the project components, such as
-//     * Testing whether the SMTP server can send an test email
-//     * Connecting to the database and retrieving a query.
-//     * Testing whether two pthreads can be made.
-//------------------------------------------------------------------------------
+/**
+ * Allows the user to test the project components. This includes:
+ *     - Testing whether the SMTP server can send an test email
+ *     - Connecting to the database and retrieving a query
+ *     - Testing whether two pthreads can be made.
+ * @param void
+ * @returns void
+ */
 void test_sensors(void){
 #ifdef SENSOR_READINGS_RNG
     cerr << "This project currently uses a random number generator "
     	 << "to simulate sensor output.\nThis is intended to be used "
     	 << "as a last resort or for debugging purposes.\nI apologize "
-	 << "for the inconvenience.\n" << endl;
+		 << "for the inconvenience.\n" << endl;
 #endif
     
     cout << main_menu_options[3] << endl;
@@ -220,28 +240,28 @@ void test_sensors(void){
     
     //cin >> input;
     while ((cin >> input && input != 'r')){
-	switch (input){
-	case 'a': // Test Email Sending:
-	    test_smtp();
-	    break;
-	case 'b': // Test Database Connection:
-	    test_connection();
-	    break;
-	case 'c': // Test Thread creation:
-	    test_pthread();
-	    break;
-	case 'r': // Return
-	    break;
-	default:
-	    cout << "Invalid Selection. Try again." << endl;
-	}
+		switch (input){
+		case 'a': // Test Email Sending:
+			test_smtp();
+			break;
+		case 'b': // Test Database Connection:
+			test_connection();
+			break;
+		case 'c': // Test Thread creation:
+			test_pthread();
+			break;
+		case 'r': // Return
+			break;
+		default:
+			cout << "Invalid Selection. Try again." << endl;
+		}
 	
-	system("clear");	
-	cout << main_menu_options[3] << endl;
-	list_menu(test_sensor_menu_options);
-	cout << "\n";
-	cout << "r) Return to Main Menu" << endl;
-	cout << "Please choose a selection." << endl;
+		system("clear");	
+		cout << main_menu_options[3] << endl;
+		list_menu(test_sensor_menu_options);
+		cout << "\n";
+		cout << "r) Return to Main Menu" << endl;
+		cout << "Please choose a selection." << endl;
     
     }
 
@@ -252,10 +272,11 @@ void test_sensors(void){
     
 }
 
-//------------------------------------------------------------------------------
-// database_options(): Function handles the current log information and
-// a connection test to the database.
-//------------------------------------------------------------------------------
+/**
+ * Option function that displays current log and database information.
+ * @param void
+ * @returns void
+ */
 void database_options(){
     cout << main_menu_options[4] << endl;
     // Lock project_file.
@@ -279,6 +300,13 @@ void database_options(){
 // email_menu_options() : Handles what email address the log is sent to, as well
 // as the type of email sent (HTML or Basic Text)
 //------------------------------------------------------------------------------
+
+/**
+ * Allows the user to alter the email address logs are sent to, as well as the
+ * type of email sent (HTML or Basic Text)
+ * @param void
+ * @returns void
+ */
 void email_settings(){
 	cout << version_info() << endl;
 
@@ -290,95 +318,95 @@ void email_settings(){
     int32_t val;
  
     do {
-	cout << main_menu_options[5] << endl;
-	list_menu(email_menu_options);
-	cout << "r) Return to main menu" << endl;
-	cout << "\n";
-	cout << "Please choose an option." << endl;
-	cin >> input;
-	switch(input){
-	case 'a': // Change Recipient Email
-	    cout << "Current email: " 
-		 << project_file->get_smtp_info().at("receiver_email")
-		 << endl;
+		cout << main_menu_options[5] << endl;
+		list_menu(email_menu_options);
+		cout << "r) Return to main menu" << endl;
+		cout << "\n";
+		cout << "Please choose an option." << endl;
+		cin >> input;
+		switch(input){
+		case 'a': // Change Recipient Email
+			cout << "Current email: " 
+				 << project_file->get_smtp_info().at("receiver_email")
+				 << endl;
 	    
-	    cout << "Enter a new recipient email:" << endl;
-	    cin >> str;
+			cout << "Enter a new recipient email:" << endl;
+			cin >> str;
 
-	    while (!verify_username(regex_test, str)){
-		cout << "Invalid address. "
-		     << "Username should follow "
-		     << "name@domain_name.domain." << endl;
+			while (!verify_username(regex_test, str)){
+				cout << "Invalid address. "
+					 << "Username should follow "
+					 << "name@domain_name.domain." << endl;
 		
-		cin >> str;
-	    }
+				cin >> str;
+			}
 
-	    // Otherwise set the recipient email
-	    project_file->get_smtp_info().at("receiver_email") = str;
-	    break;
+			// Otherwise set the recipient email
+			project_file->get_smtp_info().at("receiver_email") = str;
+			break;
 	    
-	case 'b': // Change Email Time
+		case 'b': // Change Email Time
 
-	    cout << "A Daily report will be sent at "
-		 << project_file->get_email_time()
-		 << " ("
-		 << twelve_hour_clock(project_file->get_email_time())
-		 << ")"
-		 << endl;
+			cout << "A Daily report will be sent at "
+				 << project_file->get_email_time()
+				 << " ("
+				 << twelve_hour_clock(project_file->get_email_time())
+				 << ")"
+				 << endl;
 	    		    
-	    cout << "Enter a new time to send the email:" << endl;
-	    cin >> str;
+			cout << "Enter a new time to send the email:" << endl;
+			cin >> str;
 
-	    while (!verify_time(str)){
-		cout << "Invalid time. Time should be in hh::mm"
-		     << " format and be in the range "
-		     << "00:00 to 23:59" << endl;
-		cin >> str;
-	    }
+			while (!verify_time(str)){
+				cout << "Invalid time. Time should be in hh::mm"
+					 << " format and be in the range "
+					 << "00:00 to 23:59" << endl;
+				cin >> str;
+			}
 
-	    // Otherwise set email time
-	    project_file->set_email_time(str);
-	    break;
-	case 'c': // Change Timezone
-	    cout << "Current Timezone: UTC "
-		 << project_file->get_time_zone()
-		 << endl;
+			// Otherwise set email time
+			project_file->set_email_time(str);
+			break;
+		case 'c': // Change Timezone
+			cout << "Current Timezone: UTC "
+				 << project_file->get_time_zone()
+				 << endl;
 	    
-	    cout << "Enter the timezone this device is on. Time zone should be in "
-			 "the range [-12: 12]." << endl;
-	    cin >> val;
+			cout << "Enter the timezone this device is on. Time zone should be in "
+				"the range [-12: 12]." << endl;
+			cin >> val;
 
-	    while (!verify_time_zone(val)){
-		cout << "Invalid time zone. Time zone should "
-		     << "be in the range [-12: 12]."
-		     << endl;
-		cin >> val;
-	    }
+			while (!verify_time_zone(val)){
+				cout << "Invalid time zone. Time zone should "
+					 << "be in the range [-12: 12]."
+					 << endl;
+				cin >> val;
+			}
 	   
-	    // Otherwise set the time_zone
-	    project_file->set_time_zone(val);
-	    break;
-	case 'd': // Change Email Type
-	    cout << "Enter the email type that is sent [HTML or Text]" << endl;
-	    cin >> str;
-	    string_to_lower(str);
+			// Otherwise set the time_zone
+			project_file->set_time_zone(val);
+			break;
+		case 'd': // Change Email Type
+			cout << "Enter the email type that is sent [HTML or Text]" << endl;
+			cin >> str;
+			string_to_lower(str);
 	    
-	    if (str == "html")
-		project_file->set_email_type(0);
-	    else if (str == "text")
-		project_file->set_email_type(1);
-	    else {
-		cout << "Invalid input." << endl;
-		break;
-	    }
+			if (str == "html")
+				project_file->set_email_type(0);
+			else if (str == "text")
+				project_file->set_email_type(1);
+			else {
+				cout << "Invalid input." << endl;
+				break;
+			}
 
-	    break;
+			break;
 
-	case 'r': // Return
-	    break;
-	default:
-	    cout << "Invalid input. Try again." << endl;
-	}
+		case 'r': // Return
+			break;
+		default:
+			cout << "Invalid input. Try again." << endl;
+		}
 
     } while (input != 'r');
 
@@ -388,6 +416,11 @@ void email_settings(){
     return_to_menu();
 }
 
+/**
+ * \brief Basic Text menu that displays all program options.
+ * @param void
+ * @returns void
+ */
 void menu(void){
     cout << version_info() << endl;
     list_menu(main_menu_options);
@@ -398,7 +431,7 @@ void menu(void){
 
     cout << endl;
     cout << "Please choose a selection. To quit, press \"q\"."
-	 << endl;
+		 << endl;
 
     char input;
     cin >> input;
@@ -406,30 +439,30 @@ void menu(void){
     char max = static_cast<char>('a' + main_menu_options.size() - 1);
     // Make sure that input is a valid selection.
     while (!('a' <= input && input <= max) && (input != 'q')){
-	cout << "Invalid input. Try again." << endl;
-	cin >> input;
+		cout << "Invalid input. Try again." << endl;
+		cin >> input;
     }
 
     switch(input){
-        case 'a':
+	case 'a':
 	    function_pointer = sensor_tracking;
 	    break;
-        case 'b':
+	case 'b':
 	    function_pointer = show_status;
 	    break;
-        case 'c':
+	case 'c':
 	    function_pointer = search_logs;
 	    break;
-        case 'd':
+	case 'd':
 	    function_pointer = test_sensors;
 	    break;
-        case 'e':
+	case 'e':
 	    function_pointer = database_options;
 	    break;
-        case 'f':
+	case 'f':
 	    function_pointer = email_settings;
 	    break;
-        default:
+	default:
 	    exit(EXIT_SUCCESS);
     }
     

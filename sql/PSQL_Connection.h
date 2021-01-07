@@ -1,24 +1,24 @@
 #ifndef CSC4110_CONNECTION
 #define CSC4110_CONNECTION
-#include <string>
+
+// Default Project Include
+#include "../Project_Base.h"
 #include <pqxx/pqxx>
-#include <sstream>
-#include <ctime>
-#include <fstream>
-using namespace std;
+
+//using namespace std;
 
 //------------------------------------------------------------------------------
 // Database Variables
 //------------------------------------------------------------------------------
 // Change depending on which system to compile to:
-const string database_info_path = "../settings/database_info.txt";
+const std::string database_info_path = "../settings/database_info.txt";
 
 
-static string database_address;
-static string database_name;
-static string database_table;
+static std::string database_address;
+static std::string database_name;
+static std::string database_table;
 
-static string database_path;
+static std::string database_path;
 void get_database_info_from_file(void);
 
 //------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ void open_connection(pqxx::connection &c){
     if (database_path.empty()){
         std::string error{"Database path has not been initialized."};
         error += " Please run initialize_connection() first.";
-        throw runtime_error(error);
+        throw std::runtime_error(error);
     }
     c = pqxx::connection(database_path);
 }
@@ -63,7 +63,7 @@ pqxx::result search_database(pqxx::connection &c, const std::string &date) {
     pqxx::work work(c);
 
     // For now, only return one query,
-    ostringstream os;
+    std::ostringstream os;
 
 
     // TODO: Make sure query executes if (time + 1) rounds up a minute, hour, or day
@@ -80,20 +80,20 @@ pqxx::result search_database(pqxx::connection &c, const std::string &date) {
 //------------------------------------------------------------------------------
 void get_database_info_from_file(void){
     // Read the data from
-    ifstream file{database_info_path};
+    std::ifstream file{database_info_path};
     if (!file){
         std::string error = "Cannot open " + database_info_path;
         error += " in order to retrive database credentials. Aborting.";
-        throw runtime_error(error);
+        throw std::runtime_error(error);
     }
 
     // Now check if the file is empty.
     if (file.peek() == std::ifstream::traits_type::eof()){
-        throw runtime_error(database_info_path + "is emtpy.");
+        throw std::runtime_error(database_info_path + "is emtpy.");
     }
 
     // Retrieve the credentials and assign them
-    string db_address, db_name, db_table;
+    std::string db_address, db_name, db_table;
     getline(file, db_address);
     getline(file, db_name);
     getline(file, db_table);
@@ -102,10 +102,10 @@ void get_database_info_from_file(void){
 
     // The file should only have the eof flag enabled after reading the file to the end.
     // If it doesn't meet those requirements, throw an error.
-    if (file_status != ios_base::eofbit){
-        string error = "Could not populate all variables from " + database_info_path + " .";
+    if (file_status != std::ios_base::eofbit){
+        std::string error = "Could not populate all variables from " + database_info_path + " .";
         error += " Please make sure that " + database_info_path + " is EXACTLY 3 lines.\n";
-        throw runtime_error(error);
+        throw std::runtime_error(error);
     }
     database_address = db_address;
     database_name = db_name;
@@ -121,7 +121,7 @@ void get_database_info_from_file(void){
 // get_database_info_from_xml(): Using the Configuration class's database info
 // map, populate the database information.
 //------------------------------------------------------------------------------
-void get_database_info_from_xml(const map<std::string, std::string> &db_info) {
+void get_database_info_from_xml(const std::map<std::string, std::string> &db_info) {
 	database_address = db_info.at("psql_ip");
 	database_name = db_info.at("psql_login");
 	database_table = db_info.at("psql_database");
