@@ -19,6 +19,7 @@
  */
 // Project Base Libary:
 #include "Project_Base.h"
+#include <pthread.h>
 #include <ncurses.h>
 // Log Library
 #include "./log/Log.h"
@@ -50,6 +51,8 @@ extern std::unique_ptr<settings_file> project_file;
 // Menu Functions and variables
 //------------------------------------------------------------------------------
 void sensor_tracking();
+void end_threads();
+void quit_program();
 extern inline void return_to_menu();
 void show_status();
 void search_logs();

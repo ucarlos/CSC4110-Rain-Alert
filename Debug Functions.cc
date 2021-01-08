@@ -103,6 +103,7 @@ void test_smtp(){
 
 	std::cout << "Testing SMTP HTML.." << std::endl;
     sleep(2);
+
 	std::string type = "SMTP HTML TEST";
     send_log_as_HTML(l, type);
 

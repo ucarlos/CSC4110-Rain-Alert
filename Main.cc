@@ -71,6 +71,34 @@ void get_credentials(){
 }
 
 
+/**
+ * Kills all currently running threads.
+ * @param void
+ */
+void end_threads() {
+	if (project_file->get_tracking_status()) {
+		project_file->disable_threads();
+		// Force the threads to join.
+		pthread_join(email, nullptr);
+		pthread_join(sensor, nullptr);
+
+		// Disable tracking and then reenable threads
+		project_file->set_tracking_status(false);
+		project_file->enable_threads();
+
+		// Now unlock and destroy the mutex.
+		//pthread_mutex_unlock(&log_mutex);
+		int mutex_check = pthread_mutex_destroy(&log_mutex);
+		string error_msg = "Could not destroy the mutex for some reason.";
+		check_pthread_creation(mutex_check, error_msg);
+	}
+}
+
+void quit_program() {
+	end_threads();
+	exit(EXIT_SUCCESS);
+}
+
 int main(){
     // First, retrieve the credentials and then call menu.
     get_credentials();

@@ -10,6 +10,8 @@
  */
 
 #ifndef PROJECT_BASE_H
+#define PROJECT_BASE_H
+
 #include <iostream>
 #include <vector>
 #include <string>

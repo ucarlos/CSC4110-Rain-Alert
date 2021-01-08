@@ -11,16 +11,13 @@
 #ifndef CSC4110_PROJECT_LOG_H
 #define CSC4110_PROJECT_LOG_H
 
-// Macro and inline functions
 // Include Project Base
 #include "../Project_Base.h"
 #include <cmath>
-#include <regex>
 #include <unistd.h>
 
 // Postgresql library headers
 #include <pqxx/pqxx>
-//#include <pqxx/field>
 
 // SMTP Library (C++ Wrapper)
 // Requires Openssl to be to the system; Usually installed on Linux

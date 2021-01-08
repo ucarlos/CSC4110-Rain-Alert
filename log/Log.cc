@@ -442,15 +442,16 @@ void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &
             std::cerr << "curl_easy_preform() failed : " << curl_easy_strerror(result)
                  << std::endl;
 
-	curl_slist_free_all(recipients);
+		curl_slist_free_all(recipients);
         curl_slist_free_all(headers);
-
-        // Always cleanup:
-        curl_easy_cleanup(curl);
-        //fclose(fs);
 
         /* Free multipart message. */
         curl_mime_free(mime);
+
+		// Always cleanup:
+		curl_easy_cleanup(curl);
+		//fclose(fs);
+
     }
     
 

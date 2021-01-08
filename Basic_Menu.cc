@@ -70,16 +70,21 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
     if (input == "back")
 		return_to_menu();
     else if (input == "enable"){
-		if (project_file->get_tracking_status())
+		if (project_file->get_tracking_status()) {
 			cerr << "Tracking is already enabled.\n";
+			return_to_menu();
+		}
 		else
 			project_file->set_tracking_status(true);
     }
     else if (input == "disable"){
 		if (!project_file->get_tracking_status())
 			cerr << "Tracking is already disabled.\n";
-		else
-			project_file->set_tracking_status(false);
+		else {
+			cout << "Disabling all threads.\n";
+			end_threads();
+			return_to_menu();
+		}
     }
     else
 		cerr << "Continuing...";
@@ -140,12 +145,12 @@ void sensor_tracking(){
 
     
     //Now join them at the end.
-    pthread_join(email, nullptr);
-    pthread_join(sensor, nullptr);
+    //pthread_join(email, nullptr);
+    //pthread_join(sensor, nullptr);
 
-    mutex_check = pthread_mutex_destroy(&log_mutex);
-    error_msg = "Could not destroy the mutex for some reason.";
-    check_pthread_creation(mutex_check, error_msg);
+    //mutex_check = pthread_mutex_destroy(&log_mutex);
+    //error_msg = "Could not destroy the mutex for some reason.";
+    //check_pthread_creation(mutex_check, error_msg);
     return_to_menu();
 }
 
@@ -425,7 +430,7 @@ void menu(){
     // Quit Option
     cout << "q) Quit" << endl;
     // Function Pointer to each option.
-    void (*function_pointer)(void);
+    void (*function_pointer)(void) = nullptr;
 
     cout << endl;
     cout << "Please choose a selection. To quit, press \"q\"."
@@ -461,7 +466,7 @@ void menu(){
 	    function_pointer = email_settings;
 	    break;
 	default:
-	    exit(EXIT_SUCCESS);
+	    quit_program();
     }
     
     // Clear screen and go to the function:
