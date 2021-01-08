@@ -56,12 +56,12 @@ public:
     void load_file(const std::string &filename);
     void save_file(const std::string &filename);
     void set_email_type(int val);
-    [[nodiscard]] bool get_tracking_status() const { return tracking_status; }
+    [[nodiscard]] bool is_tracking_disabled() const { return tracking_status; }
     void set_tracking_status(bool t_s) { tracking_status = t_s; }
 
     void enable_threads() { kill_threads = false; }
     void disable_threads() { kill_threads = true; }
-    [[nodiscard]] bool get_thread_status() const { return kill_threads; }
+    [[nodiscard]] bool threads_are_disabled() const { return kill_threads; }
 private:
     std::map<std::string, std::string>smtp_info;
     std::map<std::string, std::string> database_info;

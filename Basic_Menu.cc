@@ -26,8 +26,6 @@ inline void return_to_menu(){
 	function_pointer();
 }
 
-
-
 /**
  * @brief list_menu(): Display the items in vector<string> as an option.
  * @param v vector of strings that contain menu options
@@ -41,7 +39,6 @@ void list_menu(const vector<string> & v){
 
 }
 
-
 /**
  * \brief A prompt called before sensor_tracking is called to enable or disable
  * sensor tracking for the program.
@@ -50,7 +47,7 @@ void list_menu(const vector<string> & v){
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
     cout << main_menu_options[0] << endl;
     string time = s_d.get_user_time();
-    cout << "Current Sensor Status: " << project_file->get_tracking_status() << endl;
+    cout << "Current Sensor Status: " << project_file->is_tracking_disabled() << endl;
     cout << "Daily reports will be sent every day at "
 		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
     
@@ -70,15 +67,17 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
     if (input == "back")
 		return_to_menu();
     else if (input == "enable"){
-		if (project_file->get_tracking_status()) {
+		if (project_file->is_tracking_disabled()) {
 			cerr << "Tracking is already enabled.\n";
 			return_to_menu();
 		}
-		else
+		else {
 			project_file->set_tracking_status(true);
+			project_file->enable_threads();
+		}
     }
     else if (input == "disable"){
-		if (!project_file->get_tracking_status())
+		if (!project_file->is_tracking_disabled())
 			cerr << "Tracking is already disabled.\n";
 		else {
 			cout << "Disabling all threads.\n";
@@ -86,8 +85,10 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 			return_to_menu();
 		}
     }
-    else
-		cerr << "Continuing...";
+    else {
+    	cerr << "Invalid input. Returning to main menu...\n";
+    	return_to_menu();
+    }
 
 }
 
@@ -109,7 +110,7 @@ void sensor_tracking(){
     
     toggle_sensor_tracking(sd);
 
-    if (!project_file->get_tracking_status()){
+    if (!project_file->is_tracking_disabled()){
 		cerr << "Tracking is currently disabled. Returning back to the"
 			 << " main menu.\n";
 		return_to_menu();
@@ -124,6 +125,7 @@ void sensor_tracking(){
 
     Log temp_log;
     int pthread_check;
+    cout << "Creating sensor thread..." << endl;
     pthread_check = pthread_create(&sensor, nullptr,
 								   handle_sensor_thread,
 								   static_cast<void*>(&temp_log));
@@ -135,7 +137,7 @@ void sensor_tracking(){
     check_pthread_creation(pthread_check, error_msg);
 	
     // Now create the pthread for email sending.
-    
+    cout << "Creating email thread..." << endl;
     pthread_check = pthread_create(&email, nullptr,
 								   send_email_thread,
 								   static_cast<void *>(&sd));

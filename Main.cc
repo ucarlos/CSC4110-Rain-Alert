@@ -76,20 +76,26 @@ void get_credentials(){
  * @param void
  */
 void end_threads() {
-	if (project_file->get_tracking_status()) {
+	if (project_file->is_tracking_disabled()) {
 		project_file->disable_threads();
+		string error_msg;
 		// Force the threads to join.
-		pthread_join(email, nullptr);
-		pthread_join(sensor, nullptr);
+		/*
+		int thread_check = pthread_join(email, nullptr);
+		string error_msg = "Could not terminate the email thread.";
+		check_pthread_creation(thread_check, error_msg);
 
+		error_msg = "Could not terminate the sensor thread.";
+		thread_check = pthread_join(sensor, nullptr);
+		check_pthread_creation(thread_check, error_msg);
+		*/
 		// Disable tracking and then reenable threads
 		project_file->set_tracking_status(false);
-		project_file->enable_threads();
 
 		// Now unlock and destroy the mutex.
 		//pthread_mutex_unlock(&log_mutex);
 		int mutex_check = pthread_mutex_destroy(&log_mutex);
-		string error_msg = "Could not destroy the mutex for some reason.";
+		error_msg = "Could not destroy the mutex for some reason.";
 		check_pthread_creation(mutex_check, error_msg);
 	}
 }

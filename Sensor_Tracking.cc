@@ -109,7 +109,7 @@ void* handle_sensor_thread(void *temp_log){
 		// If another function needs to disable tracking (For example, Test_Sensors),
 		// do so.
 		pthread_mutex_lock(&log_mutex);	
-		if (project_file->get_thread_status())
+		if (project_file->threads_are_disabled())
 			break;
 	
 		pthread_mutex_unlock(&log_mutex);
@@ -119,7 +119,7 @@ void* handle_sensor_thread(void *temp_log){
 
     // Repeat of above:
     pthread_mutex_lock(&log_mutex);
-    if (project_file->get_thread_status()){
+    if (project_file->threads_are_disabled()){
 		std::cerr << "Disabling Tracking.." << std::endl;
     	return nullptr;
     }
@@ -237,7 +237,7 @@ void* send_email_thread(void *s_d){
 		}
 		// If the other thread is closed, close this one too.
 	
-		if (project_file->get_thread_status())
+		if (project_file->threads_are_disabled())
 			break;
 	    
     }
