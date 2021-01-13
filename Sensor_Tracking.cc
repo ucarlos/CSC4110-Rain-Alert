@@ -114,9 +114,9 @@ void *handle_sensor_thread(void *args_struct) {
 		// Send daily email report at the user provided time.
 		if (check == sdate->get_email_time().count()){
 			email_thread_check = pthread_create(&email,
-									   	nullptr,
-									   	send_email,
-									   	static_cast<void*>(args));
+												nullptr,
+												send_email_thread,
+												static_cast<void *>(args));
 			error_message = "Could not create email thread.";
 			check_pthread_creation(email_thread_check, error_message);
 			pthread_join(email, nullptr);
@@ -149,7 +149,7 @@ void *handle_sensor_thread(void *args_struct) {
 		sleep(1);
     } while (true);
 
-	email_thread_check = pthread_create(&email, nullptr, send_email, args);
+	email_thread_check = pthread_create(&email, nullptr, send_email_thread, args);
 	std::string str = "Could not create email thread.";
 	check_pthread_creation(email_thread_check, str);
 	pthread_join(email, nullptr);
@@ -159,33 +159,14 @@ void *handle_sensor_thread(void *args_struct) {
     
 }
 
-//------------------------------------------------------------------------------
 /**
-// time_since_midnight(): Obnoxious function that returns a
-// chrono::system_clock object with
-// the amount of time since midnight(of any date). Used for sending email at
-// the appropriate time. 
-//------------------------------------------------------------------------------
+ * \brief Thread function that handles sending an email.
+ * @param args_struct Thread_Args object that contains a Sensor_Date and
+ * Log pointer. This is used since pthread_create only accepts a single argument.
+ *
+ * @returns nullptr
  */
-std::chrono::system_clock::duration time_since_midnight() {
-    auto now = std::chrono::system_clock::now();
-    
-    time_t tnow = std::chrono::system_clock::to_time_t(now);
-    tm *date = std::localtime(&tnow);
-    date->tm_hour = 0;
-    date->tm_min = 0;
-    date->tm_sec = 0;
-    auto midnight = std::chrono::system_clock::from_time_t(std::mktime(date));
-
-    return now-midnight;
-}
-
-//------------------------------------------------------------------------------
-// send_email_thread(): Pthread function that handles sending email at the specified
-// time 
-//------------------------------------------------------------------------------
-
-void * send_email(void *args_struct) {
+void * send_email_thread(void *args_struct) {
 
 	Thread_Args *thread_args = static_cast<Thread_Args*>(args_struct);
 	Sensor_Date *sdate = thread_args->sensor_date;
@@ -228,66 +209,5 @@ void * send_email(void *args_struct) {
 	pthread_mutex_unlock(&log_mutex);
 
 	return nullptr;
-}
-
-
-void* send_email_thread(void *s_d){
-    auto *sdate = static_cast<Sensor_Date*>(s_d);
-
-	std::string message = "Daily Report";
-    time_t current_time;
-    uint64_t check;
-	std::ostringstream os;
-	
-    // Place mutex here
-    pthread_mutex_lock(&log_mutex);
-    open_connection(db_connect);
-    pthread_mutex_unlock(&log_mutex);
-    //end mutex
-
-    
-    // First, get the current time.
-    // If the clock % Seconds ==
-    while (true){
-		// Convert all the dates
-		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		check = current_time % MAX_SECONDS_IN_DAY;
-		// auto val = sdate->get_email_time().count();
-		if (check == sdate->get_email_time().count()){
-			// First lock the resources
-			pthread_mutex_lock(&log_mutex);
-			open_connection(db_connect);
-			pqxx::work transaction{db_connect};
-	    
-			// Add date and timestamp to log.
-			// Now use current_time again.
-			current_time = std::time(nullptr);
-			os << std::put_time(std::localtime(&current_time), "%c");
-			project_log.time_stamp = os.str();
-			os.str("");
-			os << std::put_time(std::localtime(&current_time), "%B %d %Y");
-			project_log.date = os.str();
-			project_log.comment = "This is the daily report generated at ";
-			project_log.comment += sdate->get_user_time();
-			// Update database
-			add_log(transaction, project_log);
-			// Now send email (HTML or Plain Text)
-			if (project_file->get_email_type() == email_type::html)
-				send_log_as_HTML(project_log, message);
-			else
-				send_log_as_text(project_log, message);
-			// Unlock the resources.
-			pthread_mutex_unlock(&log_mutex);
-		}
-		// If the other thread is closed, close this one too.
-	
-		if (project_file->threads_are_disabled())
-			break;
-	    
-    }
-
- 
-    return nullptr;
-
 }
 
