@@ -125,10 +125,12 @@ void sensor_tracking(){
 
     Log temp_log;
     int pthread_check;
+    Thread_Args args{&temp_log, &sd};
     cout << "Creating sensor thread..." << endl;
-    pthread_check = pthread_create(&sensor, nullptr,
+    pthread_check = pthread_create(&sensor,
+								   nullptr,
 								   handle_sensor_thread,
-								   static_cast<void*>(&temp_log));
+								   static_cast<void*>(&args));
 
 
 
@@ -137,6 +139,7 @@ void sensor_tracking(){
     check_pthread_creation(pthread_check, error_msg);
 	
     // Now create the pthread for email sending.
+    /*
     cout << "Creating email thread..." << endl;
     pthread_check = pthread_create(&email, nullptr,
 								   send_email_thread,
@@ -144,7 +147,7 @@ void sensor_tracking(){
 
     error_msg = "Could not create a pthread for sending email.";
     check_pthread_creation(pthread_check, error_msg);
-
+	*/
     
     //Now join them at the end.
     //pthread_join(email, nullptr);

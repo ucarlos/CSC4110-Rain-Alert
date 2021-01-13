@@ -96,12 +96,21 @@ public:
     pqxx::row& row(){ return *raw_data; }
     [[nodiscard]] const pqxx::row& row() const { return *raw_data; }
 
+
     bool extract_row();
     void write_to_file(std::ofstream &ofs) { ofs << this; }
     friend std::ostream& operator<<(std::ostream &os, const Log &l);
 	void apply_raw_data(pqxx::row &r_data){ raw_data = &r_data; this->extract_row(); }
+
+	
+	void set_error_message(std::string s) { error_message = s; }
+	std::string get_error_message() { return error_message; }
+	bool has_error_ocurred() { return error_occurred; }
+	void set_error(bool b) { error_occurred = b; }
 private:
     pqxx::row *raw_data {nullptr};
+	bool error_occurred{false};
+	std::string error_message{};
 };
 
 void add_log(pqxx::transaction_base &trans, const Log &l);

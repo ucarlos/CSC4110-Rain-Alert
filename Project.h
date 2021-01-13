@@ -97,8 +97,16 @@ static bool end_all_threads = false;
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
-void* handle_sensor_thread(void *temp_log);
+
+
+
+
+bool read_alternative_sensor_values(Log *log,
+									std::mt19937 merse,
+									std::uniform_real_distribution<double> rain_values);
+void *handle_sensor_thread(void *args_struct);
 void* send_email_thread(void *s_d);
+void * send_email(void *args_struct);
 // False: Disabled, True: Enabled
 
 inline void check_pthread_creation(int &return_val, std::string &error_msg){
@@ -155,7 +163,14 @@ private:
 
 
 };
-
+//------------------------------------------------------------------------------
+// Structure to hold arguments for handle_sensor_thread:
+//------------------------------------------------------------------------------
+struct Thread_Args {
+	Thread_Args(Log *l, Sensor_Date *sd) : log{l}, sensor_date{sd} { }
+	Log *log;
+	Sensor_Date *sensor_date;
+};
 
 //------------------------------------------------------------------------------
 // Sensor_Date functions
