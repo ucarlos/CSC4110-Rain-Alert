@@ -41,7 +41,7 @@ void list_menu(const vector<string> & v){
 
 /**
  * \brief A prompt called before sensor_tracking is called to enable or disable
- * sensor tracking for the program.
+ * sensor_thread tracking for the program.
  * @param s_d Sensor_Date object containing the time when emails are sent.
  */
 void toggle_sensor_tracking(const Sensor_Date &s_d) {
@@ -93,12 +93,11 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 }
 
 
-
 /**
- * \brief Enables or disables sensor tracking
+ * \brief Enables or disables sensor_thread tracking
  * When Tracking is enabled, a pthread is created that handles reading values from
- * the rain sensor. Daily sensor reports are sent at the time specified by the
- * sensor date. Errors that occur are also logged and sent as a Error email.
+ * the rain sensor_thread. Daily sensor_thread reports are sent at the time specified by the
+ * sensor_thread date. Errors that occur are also logged and sent as a Error email.
  * When Tracking is disabled, pthread_join is called, ending the thread.
  * TODO: Allow both threads to run in the background.
  * @param void
@@ -121,41 +120,27 @@ void sensor_tracking(){
     int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
 
     string error_msg = "Could not initialize the mutex for some reason.";
-    check_pthread_creation(mutex_check, error_msg);
+	check_error_code(mutex_check, error_msg);
 
     Log temp_log;
     int pthread_check;
     Thread_Args args{&temp_log, &sd};
-    cout << "Creating sensor thread..." << endl;
-    pthread_check = pthread_create(&sensor,
+    cout << "Creating sensor_thread thread..." << endl;
+
+    sensor_thread = thread{handle_sensor_thread, std::ref(args)};
+
+
+	/*
+    pthread_check = pthread_create(&sensor_thread,
 								   nullptr,
 								   handle_sensor_thread,
 								   static_cast<void*>(&args));
-
-
-
-    error_msg = "Could not create pthread for sensor tracking.";
-    
-    check_pthread_creation(pthread_check, error_msg);
-	
-    // Now create the pthread for email sending.
-    /*
-    cout << "Creating email thread..." << endl;
-    pthread_check = pthread_create(&email, nullptr,
-								   send_email_thread,
-								   static_cast<void *>(&sd));
-
-    error_msg = "Could not create a pthread for sending email.";
-    check_pthread_creation(pthread_check, error_msg);
 	*/
-    
-    //Now join them at the end.
-    //pthread_join(email, nullptr);
-    //pthread_join(sensor, nullptr);
 
-    //mutex_check = pthread_mutex_destroy(&log_mutex);
-    //error_msg = "Could not destroy the mutex for some reason.";
-    //check_pthread_creation(mutex_check, error_msg);
+
+    //error_msg = "Could not create pthread for sensor_thread tracking.";
+	//check_error_code(pthread_check, error_msg);
+
     return_to_menu();
 }
 
@@ -231,7 +216,7 @@ void search_logs(){
 void test_sensors(){
 #ifdef SENSOR_READINGS_RNG
     cerr << "This project currently uses a random number generator "
-    	 << "to simulate sensor output.\nThis is intended to be used "
+    	 << "to simulate sensor_thread output.\nThis is intended to be used "
     	 << "as a last resort or for debugging purposes.\nI apologize "
 		 << "for the inconvenience.\n" << endl;
 #endif
@@ -276,8 +261,6 @@ void test_sensors(){
     system("clear");
     return_to_menu();
 
-    
-    
 }
 
 /**
@@ -321,8 +304,8 @@ void email_settings(){
     char input;
     string str;
     std::regex regex_test;
-    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_lock(&temp_mutex);
+
+    pthread_mutex_lock(&log_mutex);
     int32_t val;
  
     do {
@@ -418,7 +401,7 @@ void email_settings(){
 
     } while (input != 'r');
 
-    pthread_mutex_unlock(&temp_mutex);
+    pthread_mutex_unlock(&log_mutex);
     
     project_file->save_file(xml_path);
     return_to_menu();

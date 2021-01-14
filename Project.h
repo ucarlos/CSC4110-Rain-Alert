@@ -10,16 +10,10 @@
 #ifndef CSC4110_PROJECT
 #define CSC4110_PROJECT
 // Standard Library Headers
-/*
-#include <iostream>
-#include <pthread.h>
-#include <memory>
-#include <chrono>
-#include <ctime>
- */
-// Project Base Libary:
+// Project Base Library:
 #include "Project_Base.h"
-#include <pthread.h>
+//#include <pthread.h>
+#include <thread>
 #include <ncurses.h>
 // Log Library
 #include "./log/Log.h"
@@ -62,7 +56,7 @@ void email_settings();
 void string_to_lower(std::string &str);
 void menu();
 std::string version_info();
-inline void check_pthread_creation(int &return_val, std::string &error_msg);
+inline void check_error_code(int &return_val, std::string &error_msg);
 void get_credentials();
 
 
@@ -89,7 +83,9 @@ static pqxx::connection db_connect;
 // They are only to be used for the Sensor Tracking and Emailing Sending
 // Functions.
 //------------------------------------------------------------------------------
-static pthread_t sensor, email;
+//static pthread_t sensor_thread, email_thread;
+
+extern std::thread sensor_thread, email_thread;
 
 // This mutex is used to prevent reading/writing to a log class
 static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -97,18 +93,16 @@ static bool end_all_threads = false;
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
-
-
-
+struct Thread_Args;
 
 bool read_alternative_sensor_values(Log *log,
 									std::mt19937 merse,
 									std::uniform_real_distribution<double> rain_values);
-void *handle_sensor_thread(void *args_struct);
-void * send_email_thread(void *args_struct);
+void * handle_sensor_thread(Thread_Args &args_struct);
+void * send_email_thread(Thread_Args &args_struct);
 // False: Disabled, True: Enabled
 
-inline void check_pthread_creation(int &return_val, std::string &error_msg){
+inline void check_error_code(int &return_val, std::string &error_msg){
 	if (return_val)
 	    throw std::runtime_error(error_msg);
 	else

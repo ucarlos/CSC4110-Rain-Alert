@@ -23,7 +23,7 @@ Log::Log(std::map<std::string, bool> &sensor, std::map<std::string, double> &lev
     if ((this->sensor_check.size() != sensor.size()) ||
         (this->level.size() != levl.size())){
         std::ostringstream os;
-        os << "Passed sensor and level arguments have different sizes"
+        os << "Passed sensor_thread and level arguments have different sizes"
            << " from the default maps in Log. Aborting.";
         throw std::runtime_error(os.str());
     }

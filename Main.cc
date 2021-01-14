@@ -41,7 +41,7 @@ const vector<string> test_sensor_menu_options = {"Test Email Sending",
 	"Test Database Connection",
 	"Test Thread Creation"};
 					    
-
+std::thread sensor_thread, email_thread;
 //------------------------------------------------------------------------------
 // Function Definitions
 //------------------------------------------------------------------------------
@@ -78,25 +78,30 @@ void get_credentials(){
 void end_threads() {
 	if (project_file->is_tracking_disabled()) {
 		project_file->disable_threads();
+		project_file->set_tracking_status(false);
+
 		string error_msg;
+		if (sensor_thread.joinable())
+			sensor_thread.join();
+
+		if (email_thread.joinable())
+			email_thread.join();
 		// Force the threads to join.
 		/*
 		int thread_check = pthread_join(email, nullptr);
 		string error_msg = "Could not terminate the email thread.";
 		check_pthread_creation(thread_check, error_msg);
 
-		error_msg = "Could not terminate the sensor thread.";
-		thread_check = pthread_join(sensor, nullptr);
-		check_pthread_creation(thread_check, error_msg);
+		error_msg = "Could not terminate the sensor_thread thread.";
+		thread_check = pthread_join(sensor_thread, nullptr);
+		check_error_code(thread_check, error_msg);
 		*/
 		// Disable tracking and then reenable threads
-		project_file->set_tracking_status(false);
 
 		// Now unlock and destroy the mutex.
-		//pthread_mutex_unlock(&log_mutex);
 		int mutex_check = pthread_mutex_destroy(&log_mutex);
 		error_msg = "Could not destroy the mutex for some reason.";
-		check_pthread_creation(mutex_check, error_msg);
+		check_error_code(mutex_check, error_msg);
 	}
 }
 

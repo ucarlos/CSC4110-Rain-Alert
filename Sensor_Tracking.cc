@@ -4,7 +4,7 @@
  * 
  * Sensor_Tracking.cc
  * 
- * I've separated all the functions related to the sensor tracking into
+ * I've separated all the functions related to the sensor_thread tracking into
  * a single c++ file.
  * -----------------------------------------------------------------------------
  */
@@ -14,7 +14,7 @@
 
 
 //------------------------------------------------------------------------------
-// string_to_lower() : Pretty self-explanatory, used for toggling sensor
+// string_to_lower() : Pretty self-explanatory, used for toggling sensor_thread
 // tracking on/off and any other function where strings need to be turned
 // lowercase.
 //------------------------------------------------------------------------------
@@ -50,10 +50,10 @@ bool read_alternative_sensor_values(Log *log,
 	log->sensor_check["Rain Sensor"] = check_rain_sensor;
 	log->sensor_check["Float Sensor"] = static_cast<bool>(check_float_sensor);
 
-	// Done if sensor connection cannot be made.
+	// Done if sensor_thread connection cannot be made.
 	if (!check_sensors) {
 		const char *comment = "<strong>Critical Error: Cannot read from the "
-							  "rain sensor. Please send a technician to inspect the system."
+							  "rain sensor_thread. Please send a technician to inspect the system."
 							  "</strong>";
 		const char *error_message = "<strong>CRITICAL ERROR</strong>";
 		log->comment = comment;
@@ -81,17 +81,17 @@ bool read_alternative_sensor_values(Log *log,
 
 
 /**
- * \brief Function handled by the sensor thread that sends emails and reads sensor data.
+ * \brief Function handled by the sensor_thread thread that sends emails and reads sensor_thread data.
  * Function that handles reading data from connected sensors and sending
  * an email at a specified date.
  * @param args_struct object containing a Log object that used to send emails
  * in the event of an error or for a daily update and a Sensor_Date object that
- * specifes when an daily email is to be sent.
+ * specifies when an daily email is to be sent.
  * @returns nullptr
  */
-void *handle_sensor_thread(void *args_struct) {
+void *handle_sensor_thread(Thread_Args &args_struct) {
     // Now convert the temp_log back to a Log
-    Thread_Args *args = static_cast<Thread_Args*>(args_struct);
+    Thread_Args *args = &args_struct;
 
     Log *log = args->log;
     Sensor_Date *sdate = args->sensor_date;
@@ -110,51 +110,47 @@ void *handle_sensor_thread(void *args_struct) {
     do {
 		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		check = current_time % MAX_SECONDS_IN_DAY;
-
+		auto ll = sdate->get_email_time().count();
 		// Send daily email report at the user provided time.
 		if (check == sdate->get_email_time().count()){
-			email_thread_check = pthread_create(&email,
-												nullptr,
-												send_email_thread,
-												static_cast<void *>(args));
-			error_message = "Could not create email thread.";
-			check_pthread_creation(email_thread_check, error_message);
-			pthread_join(email, nullptr);
-			sleep(1);
+			std::cout << "Writing Email" << std::endl;
+			email_thread = std::thread{send_email_thread, std::ref(*args)};
+			email_thread.join();
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			continue;
 		}
 
 		pthread_mutex_lock(&log_mutex);
 		read_check = read_alternative_sensor_values(log, merse, rain_values);
-		pthread_mutex_unlock(&log_mutex);
+
 
 		// If read_check is false, create a email thread and wait for it to join.
 		if (!read_check){
+			pthread_mutex_unlock(&log_mutex);
 			error_message = log->get_error_message();
 			break;
 		}
 
 		// If another function needs to disable tracking (For example, Test_Sensors),
 		// do so.
-		pthread_mutex_lock(&log_mutex);	
-		if (project_file->threads_are_disabled())
-			break;
-	
-		pthread_mutex_unlock(&log_mutex);
-		if (project_file->threads_are_disabled()){
+		if (project_file->threads_are_disabled() || project_file->is_tracking_disabled()){
+			pthread_mutex_unlock(&log_mutex);
 			return nullptr;
 		}
 
+		pthread_mutex_unlock(&log_mutex);
 		// Now sleep for 1 second.
-		sleep(1);
+		std::this_thread::sleep_for(std::chrono::milliseconds (500));
+		std::cout << "Looping again!" << std::endl;
     } while (true);
 
-	email_thread_check = pthread_create(&email, nullptr, send_email_thread, args);
-	std::string str = "Could not create email thread.";
-	check_pthread_creation(email_thread_check, str);
-	pthread_join(email, nullptr);
-
-	// TODO: Attempt to get the main thread to return
+	//email_thread_check = pthread_create(&email_thread, nullptr, send_email_thread, args);
+	//std::string str = "Could not create email thread.";
+	//check_error_code(email_thread_check, str);
+	email_thread = std::thread{send_email_thread, std::ref(*args)};
+	email_thread.join();
+	//pthread_join(email_thread, nullptr);
+	std::cout << "Exiting..." << std::endl;
     return nullptr;
     
 }
@@ -166,9 +162,9 @@ void *handle_sensor_thread(void *args_struct) {
  *
  * @returns nullptr
  */
-void * send_email_thread(void *args_struct) {
+void * send_email_thread(Thread_Args &args_struct) {
 
-	Thread_Args *thread_args = static_cast<Thread_Args*>(args_struct);
+	Thread_Args *thread_args = &args_struct;
 	Sensor_Date *sdate = thread_args->sensor_date;
 	Log *log = thread_args->log;
 
@@ -210,4 +206,3 @@ void * send_email_thread(void *args_struct) {
 
 	return nullptr;
 }
-

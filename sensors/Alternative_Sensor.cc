@@ -3,7 +3,7 @@
  * Created by Ulysses Carlos on 03/05/2020
  * 
  * Alternative_Sensor.cc
- * This file provides random output that can be read by the sensor tracking
+ * This file provides random output that can be read by the sensor_thread tracking
  * functions in Basic_Menu/Menu.cc. This is a system of last resort that 
  * should provide the needed functionality.
  * -----------------------------------------------------------------------------
@@ -19,7 +19,7 @@
 
 
 //------------------------------------------------------------------------------
-// check_rain_connection() : Simulates whether the sensor is connected.
+// check_rain_connection() : Simulates whether the sensor_thread is connected.
 // Use it to test how the system works when not connected/connected.
 //------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ bool check_rain_connection(){ return rain_sensor_status; }
 
 //------------------------------------------------------------------------------
 // Initialize_rain_sensor(): Creates a distribution that gets random double
-// values for the rain sensor.
+// values for the rain sensor_thread.
 //------------------------------------------------------------------------------
 
 void initialize_rain_sensor(std::mt19937 &merse,
@@ -57,7 +57,7 @@ double get_rain_sensor_readings(std::mt19937 &merse,
 
 //------------------------------------------------------------------------------
 // initialize_float_sensor(): Creates a distribution that get random int
-// values for the float sensor (If needed).
+// values for the float sensor_thread (If needed).
 //------------------------------------------------------------------------------
 
 void initialize_float_sensor(std::mt19937 &merse,
@@ -75,7 +75,7 @@ void initialize_float_sensor(std::mt19937 &merse,
 // float_sensor_status. Use it if you just want the component to work/not work
 //
 // int get_float_sensor_readings(merse, distribution): Just returns a value
-// between 0 and 1. Useful if you want to simulate a sensor that works half
+// between 0 and 1. Useful if you want to simulate a sensor_thread that works half
 // of the time. 
 //------------------------------------------------------------------------------
 

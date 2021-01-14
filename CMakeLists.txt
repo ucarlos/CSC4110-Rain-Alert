@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CSC4110_Project VERSION 0.57)
+project(CSC4110_Project VERSION 0.60)
 
 
 # Add version number to program
@@ -50,7 +50,7 @@ add_library(Log log/Log.cc)
 
 # Set as false if you can get output from the sensors.
 # Otherwise use a random-number generator to provide values for both
-# the float sensor and the rain guage.
+# the float sensor_thread and the rain guage.
 set(SENSORS_OUTPUT_IS_RNG TRUE)
 
 if (SENSORS_OUTPUT_IS_RNG)
@@ -68,6 +68,7 @@ if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
             ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/PSQL_Connection.cc)
+    target_compile_features(CSC4110_Project PUBLIC cxx_std_17)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto
             pthread Log Connection ncurses newt Sensors Configuration)
@@ -75,7 +76,7 @@ else()
     message("Using the Default Basic Menu UI for the Project.")
     add_executable(CSC4110_Project Main.cc Basic_Menu.cc ./Sensor_Tracking.cc "Debug Functions.cc"
             ./Sensor_Date.cc  log/Log.cc sql/PSQL_Connection.cc)
-
+    target_compile_features(CSC4110_Project PUBLIC cxx_std_17)
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq
             ssl crypto pthread Log Connection Sensors Configuration)
 endif()

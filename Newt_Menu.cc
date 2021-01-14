@@ -110,42 +110,42 @@ void run_sensor_tracking(Sensor_Date &sd){
     mutex_error_message = "Could not initialize the mutex while creating";
     mutex_error_message += " the pthreads.";
     int32_t mutex_check = pthread_mutex_init(&log_mutex, nullptr);
-    
-    check_pthread_creation(mutex_check, mutex_error_message);
+
+	check_error_code(mutex_check, mutex_error_message);
 
     // Create a temp log
     Log temp_log;
+    /*
     int32_t pthread_check = pthread_create(&sensor, nullptr,
 										   handle_sensor_thread,
 										   static_cast<void*>(&temp_log));
-    
+    */
     string pthread_error_message;
     pthread_error_message = "Could not create the Sensor reading pthread.";
     
-    check_pthread_creation(pthread_check, pthread_error_message);
+    //check_error_code(pthread_check, pthread_error_message);
 
     // Now create the Email Sending pthread
     pthread_error_message = "Could not create the Email Sending pthread.";
-    pthread_check = pthread_create(&email, nullptr, send_email_thread,
+    //pthread_check = pthread_create(&email, nullptr, send_email_thread,
 								   static_cast<void*>(&sd));
     
-    check_pthread_creation(pthread_check, pthread_error_message);
+    //check_error_code(pthread_check, pthread_error_message);
 
     // Now join both pthreads at the end.
-    pthread_join(email, nullptr);
-    pthread_join(sensor, nullptr);
+    //pthread_join(email, nullptr);
+    //pthread_join(sensor, nullptr);
 
     mutex_check = pthread_mutex_destroy(&log_mutex);
     mutex_error_message  = "Could not destroy the mutex while";
     mutex_error_message += " creating the pthreads.";
-    check_pthread_creation(mutex_check, mutex_error_message);
+    check_error_code(mutex_check, mutex_error_message);
 
     // Now resume newt.
     newtResume();
     return_to_menu();
 
 }
-
 
 //------------------------------------------------------------------------------
 // sensor_tracking(): Handles Enabling/Disabling Tracking. 
@@ -187,7 +187,7 @@ void sensor_tracking(void){
     const string disabled_str = "Disable Tracking";
 
     // Set which radio button is selected by default:
-    bool current_status = project_file->get_tracking_status();
+    //bool current_status = project_file->get_tracking_status();
     // Set where the enable radio will be placed
 
     int32_t align = (3 * (box_width / 8));
@@ -230,7 +230,7 @@ void sensor_tracking(void){
 	
 		int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
 		mutex_error_message = "Could not initialize the mutex.";
-		check_pthread_creation(mutex_check, mutex_error_message);
+		check_error_code(mutex_check, mutex_error_message);
 	
 		pthread_mutex_lock(&mutex);
 		project_file->set_tracking_status(false);
@@ -240,7 +240,7 @@ void sensor_tracking(void){
 		newtFormDestroy(form);
 		mutex_error_message = "Could not destroy the mutex while disabling tracking.";
 		mutex_check = pthread_mutex_destroy(&mutex);
-		check_pthread_creation(mutex_check, mutex_error_message);
+		check_error_code(mutex_check, mutex_error_message);
 		return_to_menu();
 	
     }
@@ -250,7 +250,7 @@ void sensor_tracking(void){
 
 		int32_t mutex_check = pthread_mutex_init(&mutex, nullptr);
 		mutex_error_message = "Could not initialize the mutex.";
-		check_pthread_creation(mutex_check, mutex_error_message);
+		check_error_code(mutex_check, mutex_error_message);
 
 
 		pthread_mutex_lock(&mutex);
@@ -262,7 +262,7 @@ void sensor_tracking(void){
 		mutex_error_message = "Could not destroy the mutex while enabling tracking.";
 		mutex_check = pthread_mutex_destroy(&mutex);
 	
-		check_pthread_creation(mutex_check, mutex_error_message);
+		check_error_code(mutex_check, mutex_error_message);
 		run_sensor_tracking(sd);
     }
 
@@ -357,7 +357,6 @@ void search_logs(void){
     }
 	
     while (!verify_date(result)){
-
 		newtResume();
 		string error_message = "Make sure that the";
 		error_message += " date format is in mm/dd/yyyy and is valid.";

@@ -70,7 +70,7 @@ private:
     int16_t time_zone {-4}; // Eastern Standard Time as default, can be changed?
     enum email_type e_t;
     bool tracking_status{false}; // Determines whether tracking is on or off.
-    // Determines whether both email sending and sensor checking are killed/disabled.
+    // Determines whether both email sending and sensor_thread checking are killed/disabled.
     bool kill_threads{false}; 
 };
 

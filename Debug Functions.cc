@@ -119,45 +119,48 @@ void test_smtp(){
 //------------------------------------------------------------------------------
 // test_pthread() : Tests creating a pthread and joining it.
 //------------------------------------------------------------------------------
-void * pthread_function1(void *val){
+void *pthread_function1() {
 	std::cout << "This is thread 1!" << std::endl;
 	std::cout << "Now, I'll make a basic loop for Thread 1:" << std::endl;
     for (int i = 0; i < 5; i++)
 		std::cout << "Message " << i << " in Thread 1!" << std::endl;
-
+	sleep(1);
     return nullptr;
 
 }
 
-void * pthread_function2(void *val){
+void *pthread_function2() {
 	std::cout << "This is thread 2!" << std::endl;
 	std::cout << "Now, I'll make a basic loop for Thread 2:" << std::endl;
     for (int i = 0; i < 5; i++)
 		std::cout << "Message " << i << " in Thread 2!" << std::endl;
-
+	sleep(1);
     return nullptr;
 }
 
 
 void test_pthread(){
     // First create a pthread_t
-    pthread_t thread1, thread2;
     int whatever_arg;
-    int pthread_check = pthread_create(&thread1, nullptr, pthread_function1,
-									   static_cast<void *>(&whatever_arg));
+    std::thread thread1, thread2;
 
-	std::string error_message{"Could not create Pthread 1."};
-    check_pthread_creation(pthread_check, error_message);
-    
-    
-    pthread_check = pthread_create(&thread2, nullptr, pthread_function2,
-								   static_cast<void *>(nullptr));
+    try {
+    	thread1 = std::thread(pthread_function1);
+    	thread2 = std::thread(pthread_function2);
+    }
+    catch (const std::system_error &e) {
+    	std::cerr << "Could not create test threads because " << e.what() << "\n";
+    	quit_program();
+    }
 
-    error_message = "Could not create Pthread 2.";
-    check_pthread_creation(pthread_check, error_message);
-    
-    // Now join both
-    pthread_join(email, nullptr);
-    pthread_join(sensor, nullptr);
-
+    // Now join both threads.
+    try {
+		thread1.join();
+		thread2.join();
+	}
+    catch (const std::system_error &e) {
+    	std::cerr << "Could not join test threads because " << e.what() << "\n";
+    	quit_program();
+    }
+    sleep(1);
 }
