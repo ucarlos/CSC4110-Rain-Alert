@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * Created by Ulysses Carlos on 04/01/2020 at 11:41 PM
  * 
- * [Test.cc]
+ * Debug Functions.cc
  * 
  * This file is to simply hold all the tests that are needed by
  * Basic_Menu.cc/Menu.cc.
@@ -11,12 +11,11 @@
 
 #include "./Project.h"
 
-//------------------------------------------------------------------------------
-// show_result_contents(): Given a pqxx::result variable, output
-// all its contents into a file specified by database_results_path.
-// Initially, this was used for testing, but I've modified it to work
-// for the Basic Menu.
-//------------------------------------------------------------------------------
+
+/**
+ * Given a pqxx::result variable, output all its contents into a file specified by database_results_path. Initially, this was used for testing, but I've modified it to work for the Basic Menu.
+ * @param r An pqxx:result object that contains any rows found from a query.
+ */
 void show_result_contents(pqxx::result &r){
 	if (r.empty()){
 		std::cerr << "No results found." << std::endl;
@@ -44,11 +43,14 @@ void show_result_contents(pqxx::result &r){
 }
 
 
-//------------------------------------------------------------------------------
-// test_log_reading(): Function opens a connection to the database and
-// searches for the first entry in the database. If found, everything's good.
-// If not, please add the first entry specified in "./sql/db_populate.sql"
-//------------------------------------------------------------------------------
+
+/**
+ * Tests whether a connection can be made to the remote database stored in the
+project's setting file and whether the database has been initialized with the
+dummy row specified in sql/db_populate.sql.
+ * @param c A pqxx::connection that represents a connection to a database.
+ * @returns A boolean value indicating if the operation succeeded or not.
+ */
 bool test_log_reading(pqxx::connection &c){
     // Make sure that there's a connection:
     if (!c.is_open()){
@@ -77,10 +79,10 @@ bool test_log_reading(pqxx::connection &c){
     
 }
 
-//------------------------------------------------------------------------------
-// test_connection(): Make sure that a connection can be made to the database
-// server using the info from "./sql/database_info.txt".
-//------------------------------------------------------------------------------
+/**
+ * Make sure that a connection can be made to the database server using the info from "./sql/database_info.txt".
+ *
+ */
 void test_connection(){
 	std::cout << "Testing connection:" << std::endl;
     pqxx::connection connection;
@@ -90,11 +92,9 @@ void test_connection(){
 
 }
 
-
-//------------------------------------------------------------------------------
-// test_smtp(): Tests whether an sample log can be sent to a recipient
-// addresses specified by smtp_receiver_address.
-//------------------------------------------------------------------------------
+/**
+ * Tests whether an sample log can be sent to a recipient addresses specified by smtp_receiver_address.
+ */
 void test_smtp(){
     Log l;
 	std::ifstream ifs;
@@ -116,9 +116,7 @@ void test_smtp(){
 
 }
 
-//------------------------------------------------------------------------------
-// test_pthread() : Tests creating a pthread and joining it.
-//------------------------------------------------------------------------------
+
 void * pthread_function1(void *val){
 	std::cout << "This is thread 1!" << std::endl;
 	std::cout << "Now, I'll make a basic loop for Thread 1:" << std::endl;
@@ -139,6 +137,9 @@ void * pthread_function2(void *val){
 }
 
 
+/**
+ * Tests pthread creation and joining.
+ */
 void test_pthread(){
     // First create a pthread_t
     pthread_t thread1, thread2;

@@ -6,7 +6,7 @@
  * 
  * -----------------------------------------------------------------------------
  */
-
+#pragma once
 #ifndef CSC4110_PROJECT
 #define CSC4110_PROJECT
 // Standard Library Headers

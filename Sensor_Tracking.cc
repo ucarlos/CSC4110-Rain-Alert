@@ -13,11 +13,10 @@
 #include "sensors/Sensor.h"
 
 
-//------------------------------------------------------------------------------
-// string_to_lower() : Pretty self-explanatory, used for toggling sensor
-// tracking on/off and any other function where strings need to be turned
-// lowercase.
-//------------------------------------------------------------------------------
+/**
+ * Convert all characters in a string to lowercase.
+ * @param str String to convert to lowercase.
+ */
 void string_to_lower(std::string &str){
     char temp;
     for (char &ch : str){

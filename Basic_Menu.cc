@@ -159,10 +159,13 @@ void sensor_tracking(){
     return_to_menu();
 }
 
-//------------------------------------------------------------------------------
-// show_status(): Show the current values of the sensors (Enabled /Disabled)
-// alongside the current rain/battery levels.
-//------------------------------------------------------------------------------
+
+
+/**
+ * Show the current values of the sensors (Enabled / Disabled) alongside the
+ * current rain/battery levels.
+ * @returns void
+ */
 void show_status(){
     cout << main_menu_options[1] << endl;
 
@@ -182,11 +185,6 @@ void show_status(){
     return_to_menu();
 }
 
-//------------------------------------------------------------------------------
-// search_logs(): Given a date (mm/dd/yyyy), search the database for that log.
-// If found, output the result to a file/stdout. Otherwise, display "Not Found."
-//
-//------------------------------------------------------------------------------
 /**
  * Given a date in (mm/dd/yyyy) format, search the database for any logs.
  * If found, output the result to file or display it to stdout. Otherwise,
@@ -304,10 +302,6 @@ void database_options(){
     return_to_menu();
 }
 
-//------------------------------------------------------------------------------
-// email_menu_options() : Handles what email address the log is sent to, as well
-// as the type of email sent (HTML or Basic Text)
-//------------------------------------------------------------------------------
 
 /**
  * Allows the user to alter the email address logs are sent to, as well as the

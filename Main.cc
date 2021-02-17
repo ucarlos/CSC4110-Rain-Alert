@@ -64,6 +64,11 @@ std::string version_info(){
 // will be read from a xml file or various txt files.
 //------------------------------------------------------------------------------
 
+/**
+ * Function to get all the variables needed for the project. Depending on
+whether boost is installed, either the credentials will be read from a xml file
+or various txt files.
+ */
 void get_credentials(){
     // Just use Boost
     get_smtp_info_from_xml(project_file->get_smtp_info());

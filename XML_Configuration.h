@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * Created by Ulysses Carlos on 04/26/2020 at 10:33 PM
  * 
- * Configuration.h
+ * XML_Configuration.h
  *
  * This class handles reading the needed information from Project_Settings.xml
  * This method replaces reading from smtp_info.txt, settings.txt, and 

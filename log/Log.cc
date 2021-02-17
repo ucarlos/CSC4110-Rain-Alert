@@ -61,9 +61,12 @@ bool Log::operator==(const Log &b){
 	&& (level == b.level) && (raw_data == b.raw_data);
 
 }
-//------------------------------------------------------------------------------
-// extract_row() -- extracts the appropriate fields from raw_data.
-//------------------------------------------------------------------------------
+
+/**
+ * Extracts a row from the pqxx::row member variable and populates the
+ * maps containing sensor data.
+ * @returns A boolean determining whether the operation succeeded or not.
+ */
 bool Log::extract_row() {
     if (!raw_data){ // Prevent access of empty raw_data
 	std::cerr << "Warning: Log does not point to any row.\n";
@@ -98,9 +101,13 @@ bool Log::extract_row() {
 
 
 }
-//------------------------------------------------------------------------------
-// extract_row_to_log - For any row
-//------------------------------------------------------------------------------
+
+/**
+ * Enables setting a psqxx::row object to a log object and then immediately
+ * calls the log object's extract_row.
+ * @param l An object of type Log.
+ * @param row An object of type row
+ */
 void extract_row_to_log(Log &l, pqxx::row &row){
     if (l.row() == row){
         l.extract_row();
@@ -112,9 +119,13 @@ void extract_row_to_log(Log &l, pqxx::row &row){
 
 }
 
-//------------------------------------------------------------------------------
-// operator<< - outputs all fields from log(except raw_data) to a ostream.
-//------------------------------------------------------------------------------
+
+/**
+ * Outputs all sensor data information from a log object to a ostream.
+ * @param os An ostream object that will be written to
+ * @param l A constant reference to a log object
+ * @returns A reference to a ostream object.
+ */
 std::ostream& operator<<(std::ostream &os, const Log &l){
     std::string html_break = "<br>";
     std::ostringstream o;
@@ -146,9 +157,12 @@ std::ostream& operator<<(std::ostream &os, const Log &l){
 
 
 
-//------------------------------------------------------------------------------
-// add_log(): Add a Log to a database.
-//------------------------------------------------------------------------------
+/**
+ * Inserts a log row into a database via a pqxx::transaction_base object.
+ *
+ * @param trans An pqxx::transaction_base object that establishes a database connection.
+ * @param l The log object whose sensor data will be inserted into a database.
+ */
 void add_log(pqxx::transaction_base &trans, const Log &l){
     std::ostringstream os;
     os << std::boolalpha;
@@ -186,34 +200,11 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
 //
 //------------------------------------------------------------------------------
 
-
-//------------------------------------------------------------------------------
-// system_all_to_string(const char * cmd):
-// This function takes the result of a system call and stores it into a
-// string. Shamelessly taken from Stackoverflow.
-//------------------------------------------------------------------------------
-[[maybe_unused]] std::string system_call_to_string(const char* cmd) {
-    std::array<char, 128> buffer{};
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-
-    // Strip the newline.
-    result.pop_back();
-    return result;
-}
-
-
-//------------------------------------------------------------------------------
-// create_date() : Do a system call to get the current date in
-// month day year hh::mm:ss 
-//------------------------------------------------------------------------------
-
+/**
+ * Returns a string displaying the current time. The string is formatted as
+ * follows: [Day_Name], Day, Month Year [Date in HH:MM:SS]
+ * @returns A std::string object containing the date in the above format.
+ */
 std::string create_date(){
     std::time_t t = std::time(nullptr);
     char str[100];
@@ -222,6 +213,13 @@ std::string create_date(){
     return std::string{str};
 }
 
+/**
+ * Returns a string displaying the current time, following the format
+ * specified in the format_string argument.
+ * @param format_string Contains the format that will be passed in order to
+ * generate a date string.
+ * @returns A std::string object containing the date in a specified format.
+ */
 std::string create_date(std::string format_string) {
 	std::time_t time1 = std::time(nullptr);
 	char c_string[100];
@@ -234,12 +232,14 @@ std::string create_date(std::string format_string) {
 
 }
 
-//------------------------------------------------------------------------------
-// create_smtp_html_header():
-// Populates a vector of std::string containing a smtp header.
-// I can't use create_smtp_text_header to send a html email, so this method
-// has to be used instead.
-//------------------------------------------------------------------------------
+
+/**
+ * Populates a vector of std::string containing a stmp header formatted for an
+ * HTML email.
+ * @param message_type A std::string object that specifies the type of message passed.
+ *
+ * @returns A vector of strings that represent a SMTP header for an HTML email.
+ */
 std::vector<std::string> create_html_header(std::string &message_type) {
 
     std::ostringstream os;
@@ -254,18 +254,22 @@ std::vector<std::string> create_html_header(std::string &message_type) {
     return header_data;
 }
 
-//------------------------------------------------------------------------------
-// string create_stmp_text_header(void)
-// Creates the appropriate smtp header in preparation of sending an email.
-// STMP Headers are structured as so:
-// Date: \r\n
-// To: \r\n
-// From: \r\n
-// Message-ID:
-// Subject:
-// \r\n
-//------------------------------------------------------------------------------
-
+/**
+ * Creates a SMTP Header to be used when sending a text only email.
+ * Each line must be ended with '\r\n' to follow SMTP specifications.
+ * 
+ * SMTP Headers are structured in the following format:
+ * Date: [CONTENT] \r\n
+ * From: [CONTENT] \r\n
+ * Message-ID:
+ * Subject: [CONTENT] \r\n
+ * Email Body:
+ * \r\n
+ *
+ * @param message_type A std::string object that specifies the type of message
+passed.
+ * @returns a std::string object containing the SMTP Header.
+ */
 std::string create_smtp_text_header(std::string &message_type) {
     const std::string end_line = "\r\n";
     std::string date_str = create_date();
@@ -282,7 +286,11 @@ std::string create_smtp_text_header(std::string &message_type) {
     return os.str();
 }
 
-
+/**
+ * Establish a SMTP Connection by providing the credentials found in the
+settings file.
+ * @param curl A CURL object to be used to prepare the connection.
+ */
 void set_up_stmp_connection(CURL *curl) {
     // Set up username and password:
     curl_easy_setopt(curl, CURLOPT_USERNAME, smtp_username.c_str());
@@ -305,16 +313,20 @@ void set_up_stmp_connection(CURL *curl) {
 
 
 }
-//------------------------------------------------------------------------------
-// send_html_through_SMTP():
-// Write the following to the file in text_file_path:
-// * SMTP Header Specifying the appropriate information
-// * Output of Log
-// This is then sent to the recipient address in smtp_recipient_address.
-//------------------------------------------------------------------------------
 
+/**
+ * Send an purely text-based email to the recipient address through SMTP.
+ * This is done by opening up a connection, filling in the required fields,
+ * and then sending the email.
+ * @param oss An ostringstream object containing the text of the email.
+ * @param message_type A std::string object that specifies the type of message
+passed.
+ * 
+ */
 void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type) {
-
+	// Write the following to the file in text_file_path:
+	// * SMTP Header Specifying the appropriate information
+	// * Output of Log
     std::ofstream ofs{text_file_path, std::ios_base::trunc};
     ofs << create_smtp_text_header(message_type);
     ofs << oss.str();
@@ -365,11 +377,18 @@ void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type) 
 }
 
 
-//------------------------------------------------------------------------------
-// send_html_through_SMTP():
-// Send inline html email to the recipient address specified in
-// smtp_receiver_address.
-//------------------------------------------------------------------------------
+/**
+ * Send an HTML based email to the recipient address through SMTP.
+ * This is done by opening up a connection, filling in the required fields,
+ * and then sending the email. If in the event that the HTML cannot be viewed,
+ * the log object will call its operator<< to output its message contents as
+ * text.
+ * @param l An log object containing sensor information.
+ * @param oss An ostringstream object containing the text of the email.
+ * @param message_type A std::string object that specifies the type of message
+passed.
+ * 
+ */
 void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &message_type) {
     
     struct curl_slist *recipients = nullptr;
@@ -457,7 +476,15 @@ void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &
 
 
 }
-
+/**
+ * Sends the contents of a log object as a HTML email. This is done by
+ * creating the header and sensor information and then sending the email.
+ *
+ * @param l An log object containing sensor information.
+ * @param message_type A std::string object that specifies the type of message
+to be passed.
+ * 
+ */
 void send_log_as_HTML(const Log &l, std::string &message_type){
     // Open the html template, append the log in it
     // and then pass it to the header.
@@ -503,6 +530,13 @@ void send_log_as_HTML(const Log &l, std::string &message_type){
     send_html_through_SMTP(l, new_file, message_type);
 }
 
+
+/**
+ * Sends the contents of a log object as a Text-only email.
+ * @param l An log object containing sensor information.
+ * @param message_type A std::string object that specifies the type of message
+to be passed.
+ */
 void send_log_as_text(const Log &l, std::string &message_type) {
     std::ostringstream new_file{};
     new_file << l;
@@ -515,6 +549,12 @@ void send_log_as_text(const Log &l, std::string &message_type) {
 // Username should follow name@domain_name.domain.
 //------------------------------------------------------------------------------
 
+/**
+ * Verifies whether a username is valid through the use of regular expressions.
+ * @param test The Regex object to be used
+ * @param user_name String containing the user_name to be checked.
+ * @returns A boolean determining if the username was valid or not.
+ */
 bool verify_username(std::regex &test, const std::string &user_name) {
     std::string regex_str = R"(^[A-z][\w|\.]*@\w+\.+[\w | .]*[a-zA-Z]$)";
     // Use regex expressions to check for valid user_name.
@@ -525,11 +565,14 @@ bool verify_username(std::regex &test, const std::string &user_name) {
 }
 
 
-//------------------------------------------------------------------------------
-// verify_password(): Very basic function to verify a password.
-// The minimum size of the password is 6 characters, but the user can
-// specify the minimum amount (up to a max of 128 characters)
-//------------------------------------------------------------------------------
+
+/**
+ * Verifies whether a password is valid through the use of regular expressions.
+ * The password must be at least six characters.
+ * @param test The Regex object to be used
+ * @param password String containing the password to be checked.
+ * @returns A boolean determining if the password was valid or not.
+ */
 
 bool verify_password(std::regex &test, const std::string &password) {
     // Password should at least be 6 characters.
@@ -538,31 +581,49 @@ bool verify_password(std::regex &test, const std::string &password) {
     return regex_match(password, test);
 }
 
+/**
+ * Verifies whether a password is valid through the use of regular expressions.
+ * The user can specify the minimum amount of characters for the password.
+ * @param test The Regex object to be used
+ * @param size The minimum amount of characters for the password. The maximum
+size is 127 characters.
+ * 
+ * @param password String containing the password to be checked.
+ * @returns A boolean determining if the password was valid or not.
+ */
 [[maybe_unused]] bool verify_password(std::regex &test, int8_t &size, const std::string &password) {
     std::ostringstream os;
     os << R"("^[\\w | \\.]{)" << size << ",}$";
     test = std::regex{os.str()};
     return regex_match(password, test);
 }
+
 //------------------------------------------------------------------------------
 // Creck_credentials : Quick check of booleans for SMTP reading
 // This mainly exists in order to make get_smtp_credentials() shorter and
 // to better describe error messages.
 //------------------------------------------------------------------------------
+/**
+ * Determines if the SMTP credentials can be read or not.
+ */
 inline void check_credentials(bool check, std::string error) {
     if (!check)
         throw std::runtime_error(error);
 }
 
-//------------------------------------------------------------------------------
-// get_smtp_credentials(): Read the smtp credentials from log/smtp_info.txt
-// Please place your info in that file. For security reasons, I won't provide
-// mine. The file should have exactly three lines:
-// Line 1: sender email address
-// Line 2: sender email password
-// Line 3: recipient email address
-//------------------------------------------------------------------------------
 
+
+/**
+ * Read the SMTP credentials stored in smtp_info.txt. The file should be
+ * formatted in the following way:
+ * Line 1: sender email address
+ * Line 2: sender email password
+ * Line 3: recipient email address
+ * @deprecated This function has been superseded by get_smtp_info_from_xml as
+all settings have been merged into a single file. This should be used if the
+Boost C++ Library cannot be installed on your system.
+ *
+ */
 [[maybe_unused]] void get_smtp_credentials(){
     // Read the data from
     std::ifstream file{smtp_file_path};
@@ -612,12 +673,12 @@ inline void check_credentials(bool check, std::string error) {
 
 
 }
-//------------------------------------------------------------------------------
-// get_smtp_info_from_xml(): Read the smtp credentials
-// from Project_Dir/Project_Settings.xml
-// Much simpler to use than using get_smtp_credentials
-//------------------------------------------------------------------------------
 
+/**
+ * Retrieve the SMTP credentials from the project's settings file. If this cannot
+ * be done, a runtime exception will be thrown.
+ * @param smtp_info A map object containing the project settings
+ */
 void get_smtp_info_from_xml(const std::map<std::string, std::string> &smtp_info) {
 	std::string smtp_us = smtp_info.at("sender_email");
 	std::string smtp_pass = smtp_info.at("sender_password");
@@ -643,4 +704,3 @@ void get_smtp_info_from_xml(const std::map<std::string, std::string> &smtp_info)
 	smtp_password = smtp_pass;
 	smtp_receiver_address = reciv_us;
 }
-

@@ -23,12 +23,7 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96">
-        <schema name="pg_catalog" object-types="view, table" />
-        <schema name="public" object-types="view, column, table" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96">
@@ -79,7 +74,7 @@
           <description value="" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
-          <database-version value="11.9" />
+          <database-version value="11.1" />
           <driver-source value="BUILTIN" />
           <driver-library value="" />
           <driver value="" />

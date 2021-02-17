@@ -7,7 +7,7 @@
  * -----------------------------------------------------------------------------
  */
 
-
+#pragma once
 #ifndef CSC4110_PROJECT_LOG_H
 #define CSC4110_PROJECT_LOG_H
 

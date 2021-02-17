@@ -9,11 +9,9 @@
  * an random-number generator.
  * -----------------------------------------------------------------------------
  */
-
-#ifndef CSC4110_SENSORS
-#define CSC4110_SENSORS
-
-
+#pragma once
+#ifndef CSC4110_SENSORS_H
+#define CSC4110_SENSORS_H
 
 //------------------------------------------------------------------------------
 // Libraries (For alternative sensors)

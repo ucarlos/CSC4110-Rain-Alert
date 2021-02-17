@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * Created by Ulysses Carlos on 04/26/2020 at 10:14 PM
  * 
- * Configuration.cc
+ * XML_Configuration.cc
  * 
  * Reads from configuration.xml instead of the three files used for the project
  * (smtp_info.txt, database_info.txt, settings.txt). Adapted from the Boost
@@ -13,7 +13,12 @@
 #include "./XML_Configuration.h"
 
 
-
+/**
+ * Load the contents of the xml file located in filename into
+ * a settings_file object.
+ * @param filename The path of the file to load from.
+ * 
+ */
 void settings_file::load_file(const std::string &filename){
     
     boost::property_tree::ptree tree;
@@ -46,6 +51,11 @@ void settings_file::load_file(const std::string &filename){
 
 }
 
+/**
+ * Saves the contents of a settings_file object into an xml file located
+ * in the path specified in filename.
+ * @param filename Name of the file to save information to.
+ */
 void settings_file::save_file(const std::string &filename){
     
     boost::property_tree::ptree tree;
@@ -77,10 +87,15 @@ void settings_file::save_file(const std::string &filename){
     //write_xml(filename, tree);
 }
 
-//------------------------------------------------------------------------------
-// set_email_type() : Toggle between HTML or Plain_text
-//------------------------------------------------------------------------------
+
+/**
+ * Toggle between sending an HTML email or a Plain text HTML.
+ * @param val integer value between 0 and 1.
+ */
 void settings_file::set_email_type(int val){
+	// Do nothing if the value is out of range.
+	if (val != 0 && val != 1) return;
+
     e_t = (!val) ? email_type::html : email_type::plain_text;
 }
 

@@ -15,6 +15,12 @@
 // initialize_connection(): Handles retrieving database info and
 // then opens the postgresql connection.
 //------------------------------------------------------------------------------
+
+/**
+ * Retrieves retrieving database information and then opens a postgresql
+ * connection.
+ * @param c A pqxx::connection object that handles a connection to a database.
+ */
 void initialize_connection(pqxx::connection &c){
     //get_database_info_from_file();
     open_connection(c);
@@ -22,11 +28,14 @@ void initialize_connection(pqxx::connection &c){
 
 
 
-//------------------------------------------------------------------------------
-// open_connections() : Handles opening a pqxx::connection to the database
-// specified in database_path.
-//------------------------------------------------------------------------------
+
+
+/**
+ * Opens a postgresql connection to the database specified in database_path.
+ * @param c A pqxx::connection object that handles a connection to a database.
+ */
 void open_connection(pqxx::connection &c){
+	// Close an open connection.
     if (c.is_open()){
         c.close();
     }
@@ -44,17 +53,23 @@ void open_connection(pqxx::connection &c){
 // 
 //------------------------------------------------------------------------------
 
+/**
+ * Thin wrapper around connection.close().
+ * @param c A pqxx::connection object that handles a connection to a database.
+ */
 void close_connection(pqxx::connection &c){
     c.close();
     // Anything else?
 }
 
-//------------------------------------------------------------------------------
-// search_database() : returns a pqxx::result contains any rows that contain
-// the specified date and time of a query. The returned pqxx::result may
-// contain no rows at all.
-//------------------------------------------------------------------------------
 
+/**
+ * Retrieve any rows that satify the specified date and time of a query. This
+ * information is stored in a pqxx::result object.
+ * @param c A pqxx::connection object that handles a connection to a database.
+ * @param date A string containing a date in yyyy/mm/dd format.
+ * @returns A pqxx::result object containing any rows or none at all.
+ */
 pqxx::result search_database(pqxx::connection &c, const std::string &date) {
     // Time format should be default (yyyy/mm/dd)
     // Some form of checking for time
@@ -73,11 +88,12 @@ pqxx::result search_database(pqxx::connection &c, const std::string &date) {
 
 }
 
-//------------------------------------------------------------------------------
-// get_database_info_from_file() : Read the credentials into the database.
-// The credentials are contained the path specified by database_info_path.
-// TODO: Create an encryption/decryption function
-//------------------------------------------------------------------------------
+
+/**
+ * Read the credentials into the database. The credentials are contained the
+ * path specified by database_info_path.
+ * @deprecated Use get_database_info_from_xml instead as the project's settings are stored in a single XML file.
+ */
 void get_database_info_from_file(void){
     // Read the data from
     std::ifstream file{database_info_path};
@@ -117,10 +133,12 @@ void get_database_info_from_file(void){
 
 }
 
-//------------------------------------------------------------------------------
-// get_database_info_from_xml(): Using the Configuration class's database info
-// map, populate the database information.
-//------------------------------------------------------------------------------
+/**
+ * Populate the database information using the project setting file's database
+ * information.
+ * @param db_info A Map object containing all database information stored in the project's setting file.
+ *
+ */
 void get_database_info_from_xml(const std::map<std::string, std::string> &db_info) {
 	database_address = db_info.at("psql_ip");
 	database_name = db_info.at("psql_login");
