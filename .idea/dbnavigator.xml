@@ -23,12 +23,7 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216">
-        <schema name="pg_catalog" object-types="view, table" />
-        <schema name="public" object-types="view, table, column" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="4f3ca1f9-be20-44c8-8179-6482a5c2a216">
@@ -44,9 +39,12 @@
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
   </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
+  </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/sql/db_populate.sql" connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" session-id="MAIN" current-schema="public" />
-    <mapping file-url="file://$PROJECT_DIR$/sql/csc4110_project.sql" connection-id="4f3ca1f9-be20-44c8-8179-6482a5c2a216" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/sql/db_populate.sql" connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/sql/csc4110_project.sql" connection-id="df32dbef-8900-49b0-a2a8-1ff6c2f50e96" session-id="MAIN" current-schema="public" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -114,6 +112,7 @@
           <restore-workspace value="true" />
           <restore-workspace-deep value="true" />
           <environment-type value="default" />
+          <connectivity-timeout value="5" />
           <idle-time-to-disconnect value="30" />
           <idle-time-to-disconnect-pool value="5" />
           <credential-expiry-time value="10" />
@@ -286,7 +285,6 @@
           <content-type name="JSON" enabled="true" />
           <content-type name="JSON5" enabled="true" />
           <content-type name="YAML" enabled="true" />
-          <content-type name="Bash" enabled="true" />
         </content-types>
       </qualified-text-editor>
       <record-navigation>
