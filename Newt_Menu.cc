@@ -300,7 +300,7 @@ void show_status(void){
 // search_logs(): Allows the user to search the database for logs on
 // a specified date (mm/dd/yyyy).
 //------------------------------------------------------------------------------
-void search_logs(void){
+void search_logs_by_date(void){
     // Wait a moment to refresh screen
     newtPopWindow();
     newtCls();

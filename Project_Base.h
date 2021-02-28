@@ -8,7 +8,7 @@
  * are to be used by the project.
  * -----------------------------------------------------------------------------
  */
-
+#pragma once
 #ifndef PROJECT_BASE_H
 #define PROJECT_BASE_H
 

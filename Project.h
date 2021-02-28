@@ -56,6 +56,8 @@ void quit_program();
 extern inline void return_to_menu();
 void show_status();
 void search_logs();
+void search_logs_by_date();
+void search_logs_by_range();
 void test_sensors();
 void database_options();
 void email_settings();
@@ -70,6 +72,7 @@ void get_credentials();
 extern Log project_log;
 extern const std::vector<std::string> main_menu_options;
 extern const std::vector<std::string> email_menu_options;
+extern const std::vector<std::string> search_log_options;
 extern const std::vector<std::string> test_sensor_menu_options;
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.

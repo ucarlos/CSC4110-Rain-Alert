@@ -32,6 +32,9 @@ const vector<string> main_menu_options = {"Sensor Tracking",
 // Global Log File
 Log project_log{};
 
+// Search log options
+const vector<string> search_log_options = {"By Date", "By Date Range"};
+
 const vector<string> email_menu_options = {"Change Recipient Mail", "Change Time",
 	"Change Timezone", "Change Email Type"};
 

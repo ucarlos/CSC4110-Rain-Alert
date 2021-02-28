@@ -10,7 +10,7 @@
  * If boost can't be installed on your system.
  * -----------------------------------------------------------------------------
  */
-
+#pragma once
 #ifndef CSC4110_PROJECT_XML_CONFIGURATION_H
 #define CSC4110_PROJECT_XML_CONFIGURATION_H
 

@@ -186,13 +186,55 @@ void show_status(){
 }
 
 /**
+ * Given two date ranges, search the database for any logs within the range.
+ * If found, output to the result to a file and display it to stdout. Otherwise,
+ * display "Not found."
+ */
+void search_logs_by_range() {
+	cout << main_menu_options[2] << endl;
+	string start_date, end_date;
+
+	cout << "This function will search between a start and end date for logs.\n";
+	cout << "Please enter a date (mm/dd/yyyy) for the starting interval:\n";
+	cin >> start_date;
+
+	// Start Date
+	while (!(verify_date(start_date))) {
+		cout << "Invalid date. Remember to input a date in "
+			 << "mm/dd/yyyy format and make sure that it is a valid date "
+			 << "(i.e no Feb 29 on an non leap year).\n";
+		cin >> start_date;
+	}
+
+	// End Date.
+	cout << "Please enter a date (mm/dd/yyyy) for the ending interval:\n";
+	cin >> end_date;
+	
+	while (!(verify_date(end_date))) {
+		cout << "Invalid date. Remember to input a date in "
+			 << "mm/dd/yyyy format and make sure that it is a valid date "
+			 << "(i.e no Feb 29 on an non leap year).\n";
+		cin >> end_date;
+	}
+    // Now send the query:
+
+	open_connection(db_connect);
+	cout << "Sending Query..." << endl;
+	pqxx::result query = search_database_range(db_connect, start_date, end_date);
+	show_result_contents(query);
+	close_connection(db_connect);
+	return_to_menu();
+}
+
+
+/**
  * Given a date in (mm/dd/yyyy) format, search the database for any logs.
  * If found, output the result to file or display it to stdout. Otherwise,
  * display "Not Found."
  * @param void
  * @returns void
  */
-void search_logs(){
+void search_logs_by_date(){
     cout << main_menu_options[2] << endl;
     string input;
     
@@ -217,6 +259,43 @@ void search_logs(){
     close_connection(db_connect);
     return_to_menu();
 }
+/**
+ * Menu Interface to allow the user to search for logs given a specific date or a
+ * date range.
+ */
+void search_logs() {
+	cout << main_menu_options[2] << endl;
+	list_menu(search_log_options);
+	cout << "r) Return to Main Menu\n\n";
+	cout << "Please choose a selection." << endl;
+
+	// Options should be a, b, and r.
+
+	char input;
+	while ((cin >> input && input != 'r')){
+		switch (input){
+			case 'a': // Test Email Sending:
+				search_logs_by_date();
+				break;
+			case 'b': // Test Database Connection:
+				search_logs_by_range();
+				break;
+			case 'r': // Return
+				break;
+			default:
+				cout << "Invalid Selection. Try again." << endl;
+		}
+
+		system("clear");
+		cout << main_menu_options[2] << endl;
+		list_menu(search_log_options);
+		cout << "r) Return to Main Menu\n\n";
+		cout << "Please choose a selection.\n";
+	}
+
+	system("clear");
+	return_to_menu();
+}
 
 /**
  * Allows the user to test the project components. This includes:
@@ -236,8 +315,7 @@ void test_sensors(){
     
     cout << main_menu_options[3] << endl;
     list_menu(test_sensor_menu_options);
-    cout << "\n";
-    cout << "r) Return to Main Menu" << endl;
+    cout << "r) Return to Main Menu\n" << endl;
     cout << "Please choose a selection." << endl;
     
     // Options should be a, b, c, r, and default:
@@ -266,7 +344,7 @@ void test_sensors(){
 		cout << main_menu_options[3] << endl;
 		list_menu(test_sensor_menu_options);
 		cout << "\n";
-		cout << "r) Return to Main Menu" << endl;
+		cout << "r) Return to Main Menu\n" << endl;
 		cout << "Please choose a selection." << endl;
     
     }
@@ -274,8 +352,6 @@ void test_sensors(){
     system("clear");
     return_to_menu();
 
-    
-    
 }
 
 /**

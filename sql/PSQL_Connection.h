@@ -29,6 +29,9 @@ void initialize_connection(pqxx::connection &c);
 void close_connection(pqxx::connection &c);
 void open_connection(pqxx::connection &c);
 pqxx::result search_database(pqxx::connection &c, const std::string &date);
+pqxx::result search_database_range(pqxx::connection &c,
+								   const std::string &start_date,
+								   const std::string &end_date);
 
 //------------------------------------------------------------------------------
 // Project_Settings.xml functions

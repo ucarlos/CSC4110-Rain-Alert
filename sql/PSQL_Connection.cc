@@ -64,6 +64,28 @@ void close_connection(pqxx::connection &c){
 
 
 /**
+ * Retrieve any rows from the database in the interval defined by a start and
+ * end date.
+ * @param c A pqxx::connection object that handles a connection to a database.
+ * @param start_date A string representing the start date in yyyy/mm/dd format.
+ * @param end_date A string representing the end date in yyyy/mm/dd format.
+ * @returns A pqxx::result object containing any rows that were found or none at all.
+ */
+pqxx::result search_database_range(pqxx::connection &c,
+								   const std::string &start_date,
+								   const std::string &end_date) {
+
+	// Establish a work connection
+	pqxx::work work(c);
+
+	static std::ostringstream query;
+	query << "SELECT * FROM log WHERE log_date between " << work.quote(start_date)
+		  << " AND " << work.quote(end_date);
+	
+	return work.exec(query.str());
+}
+
+/**
  * Retrieve any rows that satify the specified date and time of a query. This
  * information is stored in a pqxx::result object.
  * @param c A pqxx::connection object that handles a connection to a database.
@@ -78,16 +100,12 @@ pqxx::result search_database(pqxx::connection &c, const std::string &date) {
     pqxx::work work(c);
 
     // For now, only return one query,
-    std::ostringstream os;
-
-
+    static std::ostringstream os;
     // TODO: Make sure query executes if (time + 1) rounds up a minute, hour, or day
     os << "SELECT * FROM log WHERE log_date = " << work.quote(date);
 
     return work.exec(os.str());
-
 }
-
 
 /**
  * Read the credentials into the database. The credentials are contained the
