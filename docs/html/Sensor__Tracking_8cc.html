@@ -87,22 +87,22 @@ Functions</h2></td></tr>
 <tr class="separator:a8e507aaeaf39b83a0852bb5085db33e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d4fcee0ef682408a17fa24d8e356c09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sensor__Tracking_8cc.html#a3d4fcee0ef682408a17fa24d8e356c09">read_alternative_sensor_values</a> (<a class="el" href="classLog.html">Log</a> *log, std::mt19937 merse, std::uniform_real_distribution&lt; double &gt; rain_values)</td></tr>
 <tr class="separator:a3d4fcee0ef682408a17fa24d8e356c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab128dda027d2cc08f39cf2b53b1e567"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sensor__Tracking_8cc.html#aab128dda027d2cc08f39cf2b53b1e567">handle_sensor_thread</a> (void *args_struct)</td></tr>
+<tr class="memitem:aab128dda027d2cc08f39cf2b53b1e567"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sensor__Tracking_8cc.html#aab128dda027d2cc08f39cf2b53b1e567">handle_sensor</a> (void *args_struct)</td></tr>
 <tr class="memdesc:aab128dda027d2cc08f39cf2b53b1e567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function handled by the sensor thread that sends emails and reads sensor data. Function that handles reading data from connected sensors and sending an email at a specified date.  <a href="#aab128dda027d2cc08f39cf2b53b1e567">More...</a><br /></td></tr>
 <tr class="separator:aab128dda027d2cc08f39cf2b53b1e567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a206cdaa400a2b5777bf93c6a064cd799"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sensor__Tracking_8cc.html#a206cdaa400a2b5777bf93c6a064cd799">send_email_thread</a> (void *args_struct)</td></tr>
+<tr class="memitem:a206cdaa400a2b5777bf93c6a064cd799"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sensor__Tracking_8cc.html#a206cdaa400a2b5777bf93c6a064cd799">send_email</a> (void *args_struct)</td></tr>
 <tr class="memdesc:a206cdaa400a2b5777bf93c6a064cd799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread function that handles sending an email.  <a href="#a206cdaa400a2b5777bf93c6a064cd799">More...</a><br /></td></tr>
 <tr class="separator:a206cdaa400a2b5777bf93c6a064cd799"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aab128dda027d2cc08f39cf2b53b1e567"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab128dda027d2cc08f39cf2b53b1e567">&#9670;&nbsp;</a></span>handle_sensor_thread()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aab128dda027d2cc08f39cf2b53b1e567">&#9670;&nbsp;</a></span>handle_sensor()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* handle_sensor_thread </td>
+          <td class="memname">void* handle_sensor </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>args_struct</em></td><td>)</td>
@@ -114,7 +114,7 @@ Functions</h2></td></tr>
 <p>Function handled by the sensor thread that sends emails and reads sensor data. Function that handles reading data from connected sensors and sending an email at a specified date. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args_struct</td><td>object containing a <a class="el" href="classLog.html">Log</a> object that used to send emails in the event of an error or for a daily update and a <a class="el" href="classSensor__Date.html">Sensor_Date</a> object that specifes when an daily email is to be sent. </td></tr>
+    <tr><td class="paramname">args_struct</td><td>object containing a <a class="el" href="classLog.html">Log</a> object that used to send emails in the event of an error or for a daily update and a <a class="el" href="classSensor__Date.html">SensorDate</a> object that specifes when an daily email is to be sent. </td></tr>
   </table>
   </dd>
 </dl>
@@ -167,13 +167,13 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a206cdaa400a2b5777bf93c6a064cd799"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a206cdaa400a2b5777bf93c6a064cd799">&#9670;&nbsp;</a></span>send_email_thread()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a206cdaa400a2b5777bf93c6a064cd799">&#9670;&nbsp;</a></span>send_email()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* send_email_thread </td>
+          <td class="memname">void* send_email </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>args_struct</em></td><td>)</td>
@@ -185,7 +185,7 @@ Functions</h2></td></tr>
 <p>Thread function that handles sending an email. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args_struct</td><td><a class="el" href="structThread__Args.html">Thread_Args</a> object that contains a <a class="el" href="classSensor__Date.html">Sensor_Date</a> and <a class="el" href="classLog.html">Log</a> pointer. This is used since pthread_create only accepts a single argument.</td></tr>
+    <tr><td class="paramname">args_struct</td><td><a class="el" href="structThread__Args.html">Thread_Args</a> object that contains a <a class="el" href="classSensor__Date.html">SensorDate</a> and <a class="el" href="classLog.html">Log</a> pointer. This is used since pthread_create only accepts a single argument.</td></tr>
   </table>
   </dd>
 </dl>

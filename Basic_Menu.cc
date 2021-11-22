@@ -13,7 +13,7 @@
 #include "./Project.h"
 using namespace std;
 
-void toggle_sensor_tracking(const Sensor_Date &s_d);
+void toggle_sensor_tracking(const SensorDate &s_d);
 void list_menu(const vector<string> &v);
 
 /**
@@ -42,12 +42,12 @@ void list_menu(const vector<string> & v){
 /**
  * \brief A prompt called before sensor_tracking is called to enable or disable
  * sensor tracking for the program.
- * @param s_d Sensor_Date object containing the time when emails are sent.
+ * @param s_d SensorDate object containing the time when emails are sent.
  */
-void toggle_sensor_tracking(const Sensor_Date &s_d) {
+void toggle_sensor_tracking(const SensorDate &s_d) {
     cout << main_menu_options[0] << endl;
     string time = s_d.get_user_time();
-    cout << "Current Sensor Status: " << project_file->is_tracking_disabled() << endl;
+    cout << "Current Sensor Status: " << project_file->is_tracking() << endl;
     cout << "Daily reports will be sent every day at "
 		 << time << " (" << twelve_hour_clock(time) <<")" << endl << endl;
     
@@ -67,7 +67,7 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
     if (input == "back")
 		return_to_menu();
     else if (input == "enable"){
-		if (project_file->is_tracking_disabled()) {
+		if (project_file->is_tracking()) {
 			cerr << "Tracking is already enabled.\n";
 			return_to_menu();
 		}
@@ -77,7 +77,7 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
 		}
     }
     else if (input == "disable"){
-		if (!project_file->is_tracking_disabled())
+		if (!project_file->is_tracking())
 			cerr << "Tracking is already disabled.\n";
 		else {
 			cout << "Disabling all threads.\n";
@@ -105,12 +105,13 @@ void toggle_sensor_tracking(const Sensor_Date &s_d) {
  * @returns void
  */
 void sensor_tracking(){
-    Sensor_Date sd;
+    ofstream example{"../BasicMenuDebug.txt", ios_base::app};
+    SensorDate sd;
     read_user_time(sd);
     
     toggle_sensor_tracking(sd);
 
-    if (!project_file->is_tracking_disabled()){
+    if (!project_file->is_tracking()){
 		cerr << "Tracking is currently disabled. Returning back to the"
 			 << " main menu.\n";
 		return_to_menu();
@@ -118,44 +119,12 @@ void sensor_tracking(){
     }
 
     //Initialize the mutex first
-    int mutex_check = pthread_mutex_init(&log_mutex, nullptr);
-
-    string error_msg = "Could not initialize the mutex for some reason.";
-    check_pthread_creation(mutex_check, error_msg);
-
     Log temp_log;
-    int pthread_check;
     Thread_Args args{&temp_log, &sd};
     cout << "Creating sensor thread..." << endl;
-    pthread_check = pthread_create(&sensor,
-								   nullptr,
-								   handle_sensor_thread,
-								   static_cast<void*>(&args));
-
-
-
-    error_msg = "Could not create pthread for sensor tracking.";
-    
-    check_pthread_creation(pthread_check, error_msg);
-	
-    // Now create the pthread for email sending.
-    /*
-    cout << "Creating email thread..." << endl;
-    pthread_check = pthread_create(&email, nullptr,
-								   send_email_thread,
-								   static_cast<void *>(&sd));
-
-    error_msg = "Could not create a pthread for sending email.";
-    check_pthread_creation(pthread_check, error_msg);
-	*/
-    
-    //Now join them at the end.
-    //pthread_join(email, nullptr);
-    //pthread_join(sensor, nullptr);
-
-    //mutex_check = pthread_mutex_destroy(&log_mutex);
-    //error_msg = "Could not destroy the mutex for some reason.";
-    //check_pthread_creation(mutex_check, error_msg);
+    sensor_thread = std::thread{handle_sensor, std::ref(project_log), std::ref(sd)};
+    sensor_thread.detach();
+    example << "sensor_tracking(): is Sensor thread joinable?: " << sensor_thread.joinable() << std::endl;
     return_to_menu();
 }
 
@@ -167,16 +136,17 @@ void sensor_tracking(){
  * @returns void
  */
 void show_status(){
+
     cout << main_menu_options[1] << endl;
 
 	ofstream ofs{log_status_path, ios_base::trunc};
     ofs << "You are in \"less\" mode. In order to escape, press q" << endl;
     ofs << "Current Status: " << endl;
-    
-    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_lock(&temp_mutex);
-    ofs << project_log << endl;
-    pthread_mutex_unlock(&temp_mutex);
+
+    {
+        std::lock_guard<std::mutex> lock{main_mutex};
+        ofs << project_log << endl;
+    }
 
     string sys_call = "less ";
     sys_call = sys_call + " " + log_status_path;

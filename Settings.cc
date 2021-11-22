@@ -10,16 +10,16 @@
  * -----------------------------------------------------------------------------
  */
 
-#include "./XML_Configuration.h"
+#include "./Settings.h"
 
 
 /**
  * Load the contents of the xml file located in filename into
- * a settings_file object.
+ * a Settings object.
  * @param filename The path of the file to load from.
  * 
  */
-void settings_file::load_file(const std::string &filename){
+void Settings::load_file(const std::string &filename){
     
     boost::property_tree::ptree tree;
 
@@ -52,11 +52,11 @@ void settings_file::load_file(const std::string &filename){
 }
 
 /**
- * Saves the contents of a settings_file object into an xml file located
+ * Saves the contents of a Settings object into an xml file located
  * in the path specified in filename.
  * @param filename Name of the file to save information to.
  */
-void settings_file::save_file(const std::string &filename){
+void Settings::save_file(const std::string &filename){
     
     boost::property_tree::ptree tree;
 
@@ -92,7 +92,7 @@ void settings_file::save_file(const std::string &filename){
  * Toggle between sending an HTML email or a Plain text HTML.
  * @param val integer value between 0 and 1.
  */
-void settings_file::set_email_type(int val){
+void Settings::set_email_type(int val){
 	// Do nothing if the value is out of range.
 	if (val != 0 && val != 1) return;
 

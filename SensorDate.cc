@@ -2,9 +2,9 @@
  * -----------------------------------------------------------------------------
  * Created by Ulysses Carlos on 04/22/2020 at 05:22 PM
  * 
- * Sensor_Date.cc
+ * SensorDate.cc
  * Definition of member functions and operator functions for the
- * Sensor_Date class.
+ * SensorDate class.
  * -----------------------------------------------------------------------------
  */
 
@@ -143,23 +143,23 @@ int64_t return_time_in_seconds(std::string &time){
 	return os.str();
 }
 //------------------------------------------------------------------------------
-// Sensor_Date class definitions
+// SensorDate class definitions
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 // Copy Constructor:
-Sensor_Date::Sensor_Date(const Sensor_Date &s_d) {
+SensorDate::SensorDate(const SensorDate &s_d) {
 	user_time = s_d.user_time;
 	default_time = s_d.default_time;
 	email_time = s_d.email_time;
 	email_seconds = s_d.email_seconds;
 }
 
-void Sensor_Date::set_email_time(uint32_t &seconds){
+void SensorDate::set_email_time(uint32_t &seconds){
     email_time = std::chrono::seconds{seconds};
 }
 
-void Sensor_Date::change_user_time(std::string &n_t){
+void SensorDate::change_user_time(std::string &n_t){
     // First check is n_t is valid;
     bool check = verify_time(n_t);
     if (!check)
@@ -174,7 +174,7 @@ void Sensor_Date::change_user_time(std::string &n_t){
 //------------------------------------------------------------------------------
 // reset_user_time() : Resets the time back to 12:00am (00:00)
 //------------------------------------------------------------------------------
-void Sensor_Date::reset_user_time(){
+void SensorDate::reset_user_time(){
     user_time = default_time;
     email_seconds = MAX_SECONDS_IN_DAY;
     set_email_time(email_seconds);
@@ -182,35 +182,35 @@ void Sensor_Date::reset_user_time(){
 }
 
 // Allows reading from cin and other istreams
-std::istream& operator>>(std::ifstream &ifs, Sensor_Date &sd){
+std::istream& operator>>(std::ifstream &ifs, SensorDate &sd){
 	std::string input;
     ifs >> input;
 
     bool check = verify_time(input);
     if (!check) // Make default time
-		sd = Sensor_Date();
+		sd = SensorDate();
     else  // Otherwise, set the user_time to input.
-		sd = Sensor_Date(input);	
+		sd = SensorDate(input);
 
     return ifs;
 }
 // Copy Assignment
-Sensor_Date& Sensor_Date::operator=(const Sensor_Date &sd)= default;
+SensorDate& SensorDate::operator=(const SensorDate &sd)= default;
 
-void get_time_from_file(Sensor_Date &sd) {
+void get_time_from_file(SensorDate &sd) {
 	std::ifstream ifs{time_path};
 	if (!ifs){
 		throw std::runtime_error("Could not open " + time_path);
 	}
 	std::string temp;
 	getline(ifs, temp);
-	sd = Sensor_Date{temp};
+	sd = SensorDate{temp};
 }
 
-void read_user_time(Sensor_Date &sd){
+void read_user_time(SensorDate &sd){
 	if (can_use_boost) {
 		std::string temp = project_file->get_email_time();
-		sd = Sensor_Date{temp};
+		sd = SensorDate{temp};
 	}
 	else
 		get_time_from_file(sd);

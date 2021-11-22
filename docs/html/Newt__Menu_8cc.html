@@ -94,7 +94,7 @@ Functions</h2></td></tr>
 <tr class="separator:af29d4d5a62eac9259fe7c7f158eb3297"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a732019bbee098e43025e6e117a45c485"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Newt__Menu_8cc.html#a732019bbee098e43025e6e117a45c485">error_box</a> (const string &amp;error_message, void(*function_pointer)())</td></tr>
 <tr class="separator:a732019bbee098e43025e6e117a45c485"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2a06926a1a9b501a3b85e35f4aeb87e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Newt__Menu_8cc.html#aa2a06926a1a9b501a3b85e35f4aeb87e">run_sensor_tracking</a> (<a class="el" href="classSensor__Date.html">Sensor_Date</a> &amp;sd)</td></tr>
+<tr class="memitem:aa2a06926a1a9b501a3b85e35f4aeb87e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Newt__Menu_8cc.html#aa2a06926a1a9b501a3b85e35f4aeb87e">run_sensor_tracking</a> (<a class="el" href="classSensor__Date.html">SensorDate</a> &amp;sd)</td></tr>
 <tr class="separator:aa2a06926a1a9b501a3b85e35f4aeb87e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1c99d1d705f020af8122e502e62ed36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Newt__Menu_8cc.html#ac1c99d1d705f020af8122e502e62ed36">sensor_tracking</a> (void)</td></tr>
 <tr class="memdesc:ac1c99d1d705f020af8122e502e62ed36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables sensor tracking When Tracking is enabled, a pthread is created that handles reading values from the rain sensor. Daily sensor reports are sent at the time specified by the sensor date. Errors that occur are also logged and sent as a Error email. When Tracking is disabled, pthread_join is called, ending the thread. TODO: Allow both threads to run in the background.  <a href="#ac1c99d1d705f020af8122e502e62ed36">More...</a><br /></td></tr>
@@ -393,7 +393,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void run_sensor_tracking </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classSensor__Date.html">Sensor_Date</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classSensor__Date.html">SensorDate</a> &amp;&#160;</td>
           <td class="paramname"><em>sd</em></td><td>)</td>
           <td></td>
         </tr>

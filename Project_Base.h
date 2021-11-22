@@ -22,8 +22,12 @@
 #include <cstdint>
 #include <regex>
 #include <map>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <stdexcept>
 
 // Common Macros
-#define MAX_SECONDS_IN_DAY (86400)
+//#define MAX_SECONDS_IN_DAY (86400)
+const int32_t MAX_SECONDS_IN_DAY = 86400;
 #endif

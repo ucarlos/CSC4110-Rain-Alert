@@ -11,8 +11,8 @@
  * -----------------------------------------------------------------------------
  */
 #pragma once
-#ifndef CSC4110_PROJECT_XML_CONFIGURATION_H
-#define CSC4110_PROJECT_XML_CONFIGURATION_H
+#ifndef CSC4110_PROJECT_SETTINGS_H
+#define CSC4110_PROJECT_SETTINGS_H
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -28,10 +28,10 @@ enum class email_type{
     html = 0, plain_text
 };
 
-class settings_file{
+class Settings{
 public:
     
-    explicit settings_file(const std::string &filename){
+    explicit Settings(const std::string &filename){
 	bool check = verify_xml_path(filename);
 	if (!check) {
 	    throw std::runtime_error(filename + " could not be found. "
@@ -56,12 +56,12 @@ public:
     void load_file(const std::string &filename);
     void save_file(const std::string &filename);
     void set_email_type(int val);
-    [[nodiscard]] bool is_tracking_disabled() const { return tracking_status; }
+    [[nodiscard]] bool is_tracking() const { return tracking_status; }
     void set_tracking_status(bool t_s) { tracking_status = t_s; }
 
     void enable_threads() { kill_threads = false; }
     void disable_threads() { kill_threads = true; }
-    [[nodiscard]] bool threads_are_disabled() const { return kill_threads; }
+    [[nodiscard]] bool are_threads_disabled() const { return kill_threads; }
 private:
     std::map<std::string, std::string>smtp_info;
     std::map<std::string, std::string> database_info;
@@ -75,4 +75,4 @@ private:
 };
 
 
-#endif //CSC4110_PROJECT_XML_CONFIGURATION_H
+#endif //CSC4110_PROJECT_SETTINGS_H

@@ -59,7 +59,7 @@ else()
     add_library(Sensors ./sensors/Float_Sensor.cc ./sensors/Check_Sensors.cc ./sensors/Rain_Gauge.cc)
 endif()
 
-add_library(Configuration XML_Configuration.cc)
+add_library(Configuration Settings.cc)
 #Add Subdirectories
 
 #Test with coverage:
@@ -67,14 +67,14 @@ set(NEWT_GUI FALSE)
 if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
-            ./Sensor_Date.cc ./Sensor_Tracking.cc  log/Log.cc sql/PSQL_Connection.cc)
+            SensorDate.cc SensorTracking.cc log/Log.cc sql/PSQL_Connection.cc)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto
             pthread Log Connection ncurses newt Sensors Configuration)
 else()
     message("Using the Default Basic Menu UI for the Project.")
-    add_executable(CSC4110_Project Main.cc Basic_Menu.cc ./Sensor_Tracking.cc "Debug Functions.cc"
-            ./Sensor_Date.cc  log/Log.cc sql/PSQL_Connection.cc)
+    add_executable(CSC4110_Project Main.cc Basic_Menu.cc SensorTracking.cc "Debug Functions.cc"
+            SensorDate.cc log/Log.cc sql/PSQL_Connection.cc)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq
             ssl crypto pthread Log Connection Sensors Configuration)

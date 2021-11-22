@@ -97,7 +97,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <area shape="rect" id="node3" href="Debug_01Functions_8cc.html" title="Debug Functions.cc" alt="" coords="141,80,280,107"/>
 <area shape="rect" id="node4" href="Main_8cc.html" title="Main.cc" alt="" coords="305,80,373,107"/>
 <area shape="rect" id="node5" href="Newt__Menu_8cc.html" title="Newt_Menu.cc" alt="" coords="397,80,507,107"/>
-<area shape="rect" id="node6" href="Sensor__Date_8cc.html" title="Sensor_Date.cc" alt="" coords="531,80,647,107"/>
+<area shape="rect" id="node6" href="Sensor__Date_8cc.html" title="SensorDate.cc" alt="" coords="531,80,647,107"/>
 <area shape="rect" id="node7" href="Sensor__Tracking_8cc.html" title="Sensor_Tracking.cc" alt="" coords="672,80,811,107"/>
 </map>
 </div>
@@ -106,7 +106,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSensor__Date.html">Sensor_Date</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSensor__Date.html">SensorDate</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structThread__Args.html">Thread_Args</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,15 +165,15 @@ Functions</h2></td></tr>
 <tr class="separator:ac39e14928e667d35bc8444b8d11eeb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d4fcee0ef682408a17fa24d8e356c09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#a3d4fcee0ef682408a17fa24d8e356c09">read_alternative_sensor_values</a> (<a class="el" href="classLog.html">Log</a> *log, std::mt19937 merse, std::uniform_real_distribution&lt; double &gt; rain_values)</td></tr>
 <tr class="separator:a3d4fcee0ef682408a17fa24d8e356c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab128dda027d2cc08f39cf2b53b1e567"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#aab128dda027d2cc08f39cf2b53b1e567">handle_sensor_thread</a> (void *args_struct)</td></tr>
+<tr class="memitem:aab128dda027d2cc08f39cf2b53b1e567"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#aab128dda027d2cc08f39cf2b53b1e567">handle_sensor</a> (void *args_struct)</td></tr>
 <tr class="memdesc:aab128dda027d2cc08f39cf2b53b1e567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function handled by the sensor thread that sends emails and reads sensor data. Function that handles reading data from connected sensors and sending an email at a specified date.  <a href="#aab128dda027d2cc08f39cf2b53b1e567">More...</a><br /></td></tr>
 <tr class="separator:aab128dda027d2cc08f39cf2b53b1e567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a206cdaa400a2b5777bf93c6a064cd799"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#a206cdaa400a2b5777bf93c6a064cd799">send_email_thread</a> (void *args_struct)</td></tr>
+<tr class="memitem:a206cdaa400a2b5777bf93c6a064cd799"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#a206cdaa400a2b5777bf93c6a064cd799">send_email</a> (void *args_struct)</td></tr>
 <tr class="memdesc:a206cdaa400a2b5777bf93c6a064cd799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread function that handles sending an email.  <a href="#a206cdaa400a2b5777bf93c6a064cd799">More...</a><br /></td></tr>
 <tr class="separator:a206cdaa400a2b5777bf93c6a064cd799"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cf0ca92c797d6ffe7427cef1f663e55"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#a0cf0ca92c797d6ffe7427cef1f663e55">return_time_in_seconds</a> (std::string &amp;time)</td></tr>
 <tr class="separator:a0cf0ca92c797d6ffe7427cef1f663e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac077030cecedacf35f531ebd4f7815c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#ac077030cecedacf35f531ebd4f7815c0">read_user_time</a> (<a class="el" href="classSensor__Date.html">Sensor_Date</a> &amp;sd)</td></tr>
+<tr class="memitem:ac077030cecedacf35f531ebd4f7815c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#ac077030cecedacf35f531ebd4f7815c0">read_user_time</a> (<a class="el" href="classSensor__Date.html">SensorDate</a> &amp;sd)</td></tr>
 <tr class="separator:ac077030cecedacf35f531ebd4f7815c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aace382a9a01b96d2221c404301a8dc26"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#aace382a9a01b96d2221c404301a8dc26">verify_time_zone</a> (const int32_t &amp;time_zone)</td></tr>
 <tr class="separator:aace382a9a01b96d2221c404301a8dc26"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,7 +198,7 @@ Variables</h2></td></tr>
 <tr class="separator:a3c7dc57418826192b3388aa24dfed113"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbfba37bfd6ee8d1810b793070b907cb"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#afbfba37bfd6ee8d1810b793070b907cb">log_status_path</a> = &quot;../log_status.txt&quot;</td></tr>
 <tr class="separator:afbfba37bfd6ee8d1810b793070b907cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca459c10a994019d511357efa3ba4811"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsettings__file.html">settings_file</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#aca459c10a994019d511357efa3ba4811">project_file</a></td></tr>
+<tr class="memitem:aca459c10a994019d511357efa3ba4811"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsettings__file.html">Settings</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#aca459c10a994019d511357efa3ba4811">project_file</a></td></tr>
 <tr class="separator:aca459c10a994019d511357efa3ba4811"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ef390e438e5558db1ce30fbc34bfb8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLog.html">Log</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Project_8h.html#a3ef390e438e5558db1ce30fbc34bfb8c">project_log</a></td></tr>
 <tr class="separator:a3ef390e438e5558db1ce30fbc34bfb8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -367,13 +367,13 @@ Variables</h2></td></tr>
 </div>
 </div>
 <a id="aab128dda027d2cc08f39cf2b53b1e567"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab128dda027d2cc08f39cf2b53b1e567">&#9670;&nbsp;</a></span>handle_sensor_thread()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aab128dda027d2cc08f39cf2b53b1e567">&#9670;&nbsp;</a></span>handle_sensor()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* handle_sensor_thread </td>
+          <td class="memname">void* handle_sensor </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>args_struct</em></td><td>)</td>
@@ -385,7 +385,7 @@ Variables</h2></td></tr>
 <p>Function handled by the sensor thread that sends emails and reads sensor data. Function that handles reading data from connected sensors and sending an email at a specified date. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args_struct</td><td>object containing a <a class="el" href="classLog.html">Log</a> object that used to send emails in the event of an error or for a daily update and a <a class="el" href="classSensor__Date.html">Sensor_Date</a> object that specifes when an daily email is to be sent. </td></tr>
+    <tr><td class="paramname">args_struct</td><td>object containing a <a class="el" href="classLog.html">Log</a> object that used to send emails in the event of an error or for a daily update and a <a class="el" href="classSensor__Date.html">SensorDate</a> object that specifes when an daily email is to be sent. </td></tr>
   </table>
   </dd>
 </dl>
@@ -489,7 +489,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void read_user_time </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classSensor__Date.html">Sensor_Date</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classSensor__Date.html">SensorDate</a> &amp;&#160;</td>
           <td class="paramname"><em>sd</em></td><td>)</td>
           <td></td>
         </tr>
@@ -611,13 +611,13 @@ Variables</h2></td></tr>
 </div>
 </div>
 <a id="a206cdaa400a2b5777bf93c6a064cd799"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a206cdaa400a2b5777bf93c6a064cd799">&#9670;&nbsp;</a></span>send_email_thread()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a206cdaa400a2b5777bf93c6a064cd799">&#9670;&nbsp;</a></span>send_email()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* send_email_thread </td>
+          <td class="memname">void* send_email </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>args_struct</em></td><td>)</td>
@@ -629,7 +629,7 @@ Variables</h2></td></tr>
 <p>Thread function that handles sending an email. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args_struct</td><td><a class="el" href="structThread__Args.html">Thread_Args</a> object that contains a <a class="el" href="classSensor__Date.html">Sensor_Date</a> and <a class="el" href="classLog.html">Log</a> pointer. This is used since pthread_create only accepts a single argument.</td></tr>
+    <tr><td class="paramname">args_struct</td><td><a class="el" href="structThread__Args.html">Thread_Args</a> object that contains a <a class="el" href="classSensor__Date.html">SensorDate</a> and <a class="el" href="classLog.html">Log</a> pointer. This is used since pthread_create only accepts a single argument.</td></tr>
   </table>
   </dd>
 </dl>
@@ -999,7 +999,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classsettings__file.html">settings_file</a>&gt; project_file</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classsettings__file.html">Settings</a>&gt; project_file</td>
         </tr>
       </table>
 </div><div class="memdoc">

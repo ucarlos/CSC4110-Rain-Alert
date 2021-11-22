@@ -19,7 +19,7 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 // Settings file used throughout the program
-std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
+std::unique_ptr<Settings> project_file(new Settings{xml_path});
 
 // Menu main_menu_options
 const vector<string> main_menu_options = {"Sensor Tracking",
@@ -43,7 +43,8 @@ const vector<string> email_menu_options = {"Change Recipient Mail", "Change Time
 const vector<string> test_sensor_menu_options = {"Test Email Sending",
 	"Test Database Connection",
 	"Test Thread Creation"};
-					    
+
+
 
 //------------------------------------------------------------------------------
 // Function Definitions
@@ -81,30 +82,25 @@ void get_credentials(){
 
 /**
  * Kills all currently running threads.
- * @param void
  */
 void end_threads() {
-	if (project_file->is_tracking_disabled()) {
+    std::lock_guard<std::mutex> lock(main_mutex);
+	if (project_file->is_tracking()) {
 		project_file->disable_threads();
-		string error_msg;
-		// Force the threads to join.
-		/*
-		int thread_check = pthread_join(email, nullptr);
-		string error_msg = "Could not terminate the email thread.";
-		check_pthread_creation(thread_check, error_msg);
 
-		error_msg = "Could not terminate the sensor thread.";
-		thread_check = pthread_join(sensor, nullptr);
-		check_pthread_creation(thread_check, error_msg);
-		*/
+        cout << boolalpha;
+        cout << "Is Email Thread Joinable? " << email_thread.joinable() << endl;
+        if (email_thread.joinable()) {
+            email_thread.join();
+        }
+
+        cout << "Is Sensor Thread Joinable? " << sensor_thread.joinable() << endl;
+        if (sensor_thread.joinable())
+            sensor_thread.join();
+
 		// Disable tracking and then reenable threads
 		project_file->set_tracking_status(false);
 
-		// Now unlock and destroy the mutex.
-		//pthread_mutex_unlock(&log_mutex);
-		int mutex_check = pthread_mutex_destroy(&log_mutex);
-		error_msg = "Could not destroy the mutex for some reason.";
-		check_pthread_creation(mutex_check, error_msg);
 	}
 }
 

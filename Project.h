@@ -10,15 +10,9 @@
 #ifndef CSC4110_PROJECT
 #define CSC4110_PROJECT
 // Standard Library Headers
-/*
-#include <iostream>
-#include <pthread.h>
-#include <memory>
-#include <chrono>
-#include <ctime>
- */
-// Project Base Libary:
+// Project Base Lirbary:
 #include "Project_Base.h"
+#include "SensorDate.h"
 #include <pthread.h>
 #include <ncurses.h>
 // Log Library
@@ -31,7 +25,7 @@
 // Project version number
 #include "./include/Project_Version.h"
 // XML Parsing Library
-#include "./XML_Configuration.h"
+#include "./Settings.h"
 // Macros
 #define MAX_SECONDS_IN_DAY (86400)
 
@@ -45,8 +39,8 @@ const std::string xml_path = "../settings/Project_Settings.xml";
 const std::string database_results_path = "../Database_results.txt";
 const std::string log_status_path = "../log_status.txt";
 
-//extern std::unique_ptr<settings_file> project_file(new settings_file{xml_path});
-extern std::unique_ptr<settings_file> project_file;
+//extern std::unique_ptr<Settings> project_file(new Settings{xml_path});
+extern std::unique_ptr<Settings> project_file;
 //------------------------------------------------------------------------------
 // Menu Functions and variables
 //------------------------------------------------------------------------------
@@ -92,23 +86,34 @@ static pqxx::connection db_connect;
 // They are only to be used for the Sensor Tracking and Emailing Sending
 // Functions.
 //------------------------------------------------------------------------------
+
+static std::thread sensor_thread{};
+static std::thread email_thread{};
+
 static pthread_t sensor, email;
 
 // This mutex is used to prevent reading/writing to a log class
 static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static std::mutex main_mutex{};
 static bool end_all_threads = false;
+
+//------------------------------------------------------------------------------
+// Class Declarations
+//------------------------------------------------------------------------------
+class SensorDate;
+
 //------------------------------------------------------------------------------
 // Sensor Tracking functions
 //------------------------------------------------------------------------------
 
-
-
-
 bool read_alternative_sensor_values(Log *log,
 									std::mt19937 merse,
 									std::uniform_real_distribution<double> rain_values);
-void *handle_sensor_thread(void *args_struct);
-void * send_email_thread(void *args_struct);
+void handle_sensor(Log &log, SensorDate &sensorDate);
+void send_email(Log &log, SensorDate &sensor_date);
+void * pthread_handle_sensor(void *args_struct);
+
 // False: Disabled, True: Enabled
 
 inline void check_pthread_creation(int &return_val, std::string &error_msg){
@@ -119,80 +124,15 @@ inline void check_pthread_creation(int &return_val, std::string &error_msg){
 }
 
 
+
 //------------------------------------------------------------------------------
-// Date class
-// This class handles the user-specified email date (As in when the daily email
-// is supposed to be sent). The default time is at midnight every day (12:00am)
-// and is stored in default_time. user_time is defined in a text file
-// (Haven't implemented a encryption/decryption function yet)
-//------------------------------------------------------------------------------
-class Sensor_Date{
-public:
-	// Default Constructor
-    Sensor_Date(){
-	user_time = default_time;
-    }
-
-    explicit Sensor_Date(std::string &d_t, std::string &u_t) :
-    	default_time{d_t}{
-	// Set seconds:
-	change_user_time(u_t);
-
-	}
-    // String constructor
-    explicit Sensor_Date(std::string &defined_user_time){
-    	change_user_time(defined_user_time);
-    }
-
-    // Copy Constructor:
-    Sensor_Date(const Sensor_Date &s_d);
-
-    void change_user_time(std::string &n_t);
-    void reset_user_time();
-
-    // Handle reading from ifstreams
-    friend std::istream& operator>>(std::ifstream &ifs, Sensor_Date &sd);
-    Sensor_Date& operator=(const Sensor_Date &sd); // Copy Assignment
-
-    std::chrono::seconds& get_email_time() { return email_time; }
-    [[nodiscard]] std::string get_user_time() const { return user_time; }
-private:
-	std::string default_time{"00:00"};
-	std::string user_time{};
-    std::chrono::seconds email_time{MAX_SECONDS_IN_DAY};
-    uint32_t email_seconds{MAX_SECONDS_IN_DAY};
-    void set_email_time(uint32_t &seconds);
-
-
-};
-//------------------------------------------------------------------------------
-// Structure to hold arguments for handle_sensor_thread:
+// Structure to hold arguments for handle_sensor:
 //------------------------------------------------------------------------------
 struct Thread_Args {
-	Thread_Args(Log *l, Sensor_Date *sd) : log{l}, sensor_date{sd} { }
+	Thread_Args(Log *l, SensorDate *sd) : log{l}, sensor_date{sd} { }
 	Log *log;
-	Sensor_Date *sensor_date;
+	SensorDate *sensor_date;
 };
 
-//------------------------------------------------------------------------------
-// Sensor_Date functions
-//------------------------------------------------------------------------------
-// HEY! YOU NEED TO MAKE SURE THAT THE TIME ZONE IS SET BEFORE
-// DOING ANYTHING WITH THE SENSOR DATE! OTHERWISE, THE EMAIL WON'T BE
-// SENT AT THE RIGHT TIME!
 
-//static int8_t time_zone = -4; // We're in Eastern Standard Time. (UTC -4)
-int64_t return_time_in_seconds(std::string &time);
-void read_user_time(Sensor_Date &sd);
-bool verify_time_zone(const int32_t &time_zone);
-std::string twelve_hour_clock(const std::string &time);
-bool verify_time(const std::string &time);
-bool verify_date(const std::string &date);
-
-[[maybe_unused]] std::string string_to_seconds(int64_t &sec);
-
-//------------------------------------------------------------------------------
-// Project_Settings.xml functions can be found in Log.h and PSQL_Connection.h
-//
-//------------------------------------------------------------------------------
 #endif
