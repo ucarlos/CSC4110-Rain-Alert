@@ -13,7 +13,8 @@
 
 
 /**
- * Given a pqxx::result variable, output all its contents into a file specified by database_results_path. Initially, this was used for testing, but I've modified it to work for the Basic Menu.
+ * Given a pqxx::result variable, output all its contents into a file specified by database_results_path.
+ * Initially, this was used for testing, but I've modified it to work for the Basic Menu.
  * @param r An pqxx:result object that contains any rows found from a query.
  */
 void show_result_contents(pqxx::result &r){

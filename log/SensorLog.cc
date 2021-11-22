@@ -472,10 +472,9 @@ void send_html_through_SMTP(const SensorLog &l, std::ostringstream &oss, std::st
 		//fclose(fs);
 
     }
-    
-
 
 }
+
 /**
  * Sends the contents of a log object as a HTML email. This is done by
  * creating the header and sensor information and then sending the email.

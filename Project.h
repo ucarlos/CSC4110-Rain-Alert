@@ -115,8 +115,6 @@ static std::thread email_thread{};
 
 static pthread_t sensor, email;
 
-// This mutex is used to prevent reading/writing to a log class
-static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static std::mutex main_mutex{};
 static bool end_all_threads = false;

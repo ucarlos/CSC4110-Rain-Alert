@@ -66,7 +66,7 @@ const std::string html_template_path = "../log/html_template.html";
 constexpr int log_offset = 4;
 
 
-class SensorLog{
+class SensorLog {
 public:
     // Default constructor
     SensorLog()=default;

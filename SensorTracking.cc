@@ -119,6 +119,7 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
 
 	int email_thread_check;
 	bool read_check;
+
 	time_t current_time;
 	uint64_t check;
 	std::ostringstream os;
@@ -128,6 +129,7 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
     std::uniform_real_distribution<double> rain_values;
     initialize_rain_sensor(merse, rain_values);
 
+    bool active;
     do {
 		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         debug_file << DebugLevel::INFO
@@ -171,7 +173,9 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
             debug_file << DebugLevel::INFO
                        <<  ": handle_sensor(): Checking if Threads are disabled:"
                        << std::endl;
-            if (project_file->are_threads_disabled()) {
+
+            active = project_file->are_threads_disabled();
+            if (active) {
                 debug_file << DebugLevel::INFO
                            << ": handle_sensor(): Threads are disabled; Returning."
                            << std::endl;
@@ -184,7 +188,7 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
         debug_file << DebugLevel::DEBUG << ": handle_sensor(): Sleeping for 500ms" << std::endl;
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    } while (true);
+    } while (!active);
 
     debug_file << DebugLevel::DEBUG << ": handle_sensor(): Now sending one last email.." << std::endl;
 

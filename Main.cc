@@ -117,5 +117,6 @@ void quit_program() {
 int main(){
     // First, retrieve the credentials and then call menu.
     get_credentials();
+    DebugLog::instance() << boolalpha;
     menu();
 }
