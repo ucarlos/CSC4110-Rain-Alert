@@ -14,7 +14,7 @@
 // and is stored in default_time. user_time is defined in a text file
 // (Haven't implemented a encryption/decryption function yet)
 //------------------------------------------------------------------------------
-class SensorDate{
+class SensorDate {
 public:
     // Default Constructor
     SensorDate(){

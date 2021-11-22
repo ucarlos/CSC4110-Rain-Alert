@@ -29,7 +29,7 @@ void show_result_contents(pqxx::result &r){
 	std::ofstream ofs{database_results_path, std::ios_base::trunc};
 	ofs << "You are in \"less\" mode. In order to escape, press q" << std::endl;
 	ofs << "The results are listed below." << std::endl << std::endl;
-	Log log;
+	SensorLog log;
 	for (auto const &row : r){
 		log.apply_raw_data(const_cast<pqxx::row &>(row));
 		log.extract_row();
@@ -96,7 +96,7 @@ void test_connection(){
  * Tests whether an sample log can be sent to a recipient addresses specified by smtp_receiver_address.
  */
 void test_smtp(){
-    Log l;
+    SensorLog l;
 	std::ifstream ifs;
     l.comment = "<b>This is intended to be a test of the SMTP client."
 		"Please disregard it.</b>";

@@ -9,25 +9,38 @@
 #pragma once
 #ifndef CSC4110_PROJECT
 #define CSC4110_PROJECT
-// Standard Library Headers
-// Project Base Lirbary:
+
+
+//------------------------------------------------------------------------------
+// Include Headers
+//------------------------------------------------------------------------------
+
+
 #include "Project_Base.h"
 #include "SensorDate.h"
 #include <pthread.h>
 #include <ncurses.h>
-// Log Library
-#include "./log/Log.h"
+
+// SensorLog Library
+#include "./log/SensorLog.h"
+
 // Sensor Library
 #include "./sensors/Sensor.h"
+
 // Connection Library
 #include "./sql/PSQL_Connection.h"
 
 // Project version number
 #include "./include/Project_Version.h"
+
 // XML Parsing Library
 #include "./Settings.h"
+
+
 // Macros
 #define MAX_SECONDS_IN_DAY (86400)
+
+
 
 //------------------------------------------------------------------------------
 // File paths: If boost can't be installed, this system will be used instead.
@@ -41,8 +54,9 @@ const std::string log_status_path = "../log_status.txt";
 
 //extern std::unique_ptr<Settings> project_file(new Settings{xml_path});
 extern std::unique_ptr<Settings> project_file;
+
 //------------------------------------------------------------------------------
-// Menu Functions and variables
+// Menu Function Declaration
 //------------------------------------------------------------------------------
 void sensor_tracking();
 void end_threads();
@@ -62,12 +76,19 @@ inline void check_pthread_creation(int &return_val, std::string &error_msg);
 void get_credentials();
 
 
-// Log used for the project.
-extern Log project_log;
+//------------------------------------------------------------------------------
+// SensorLog used for the project.
+//------------------------------------------------------------------------------
+extern SensorLog project_log;
+
+//------------------------------------------------------------------------------
+// Option Vectors
+//------------------------------------------------------------------------------
 extern const std::vector<std::string> main_menu_options;
 extern const std::vector<std::string> email_menu_options;
 extern const std::vector<std::string> search_log_options;
 extern const std::vector<std::string> test_sensor_menu_options;
+
 //------------------------------------------------------------------------------
 // Testing Functions: For debugging purposes.
 //------------------------------------------------------------------------------
@@ -75,12 +96,14 @@ void test_smtp();
 void test_pthread();
 void test_connection();
 void show_result_contents(pqxx::result &r);
+
 //------------------------------------------------------------------------------
 // Global Database variables:
 // Should only be used by Sensor_Tracking, Email Sending, and Database
 // Searching functions.
 //------------------------------------------------------------------------------
 static pqxx::connection db_connect;
+
 //------------------------------------------------------------------------------
 // Global Pthreads:
 // They are only to be used for the Sensor Tracking and Emailing Sending
@@ -104,14 +127,14 @@ static bool end_all_threads = false;
 class SensorDate;
 
 //------------------------------------------------------------------------------
-// Sensor Tracking functions
+// Sensor Tracking declaration
 //------------------------------------------------------------------------------
 
-bool read_alternative_sensor_values(Log *log,
+bool read_alternative_sensor_values(SensorLog *log,
 									std::mt19937 merse,
 									std::uniform_real_distribution<double> rain_values);
-void handle_sensor(Log &log, SensorDate &sensorDate);
-void send_email(Log &log, SensorDate &sensor_date);
+void handle_sensor(SensorLog &log, SensorDate &sensorDate);
+void send_email(SensorLog &log, SensorDate &sensor_date);
 void * pthread_handle_sensor(void *args_struct);
 
 // False: Disabled, True: Enabled
@@ -129,8 +152,8 @@ inline void check_pthread_creation(int &return_val, std::string &error_msg){
 // Structure to hold arguments for handle_sensor:
 //------------------------------------------------------------------------------
 struct Thread_Args {
-	Thread_Args(Log *l, SensorDate *sd) : log{l}, sensor_date{sd} { }
-	Log *log;
+	Thread_Args(SensorLog *l, SensorDate *sd) : log{l}, sensor_date{sd} { }
+	SensorLog *log;
 	SensorDate *sensor_date;
 };
 

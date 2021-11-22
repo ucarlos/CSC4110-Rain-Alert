@@ -34,19 +34,31 @@ void string_to_lower(std::string &str){
  * @param rain_values a number distribution of double values
  * @returns a boolean value representing if the operation succeeded or not.
  */
-bool read_alternative_sensor_values(Log& log,
+bool read_alternative_sensor_values(SensorLog& log,
 									std::mt19937 merse,
 									std::uniform_real_distribution<double> rain_values) {
+
+    DebugLog& debug_file = DebugLog::instance();
+    debug_file << DebugLevel::INFO
+               << ": read_alternative_sensor_values(): Checking rain and float sensors"
+               << std::endl;
 
 	bool check_rain_sensor = check_rain_connection();
 	bool check_float_sensor = get_float_sensor_readings();
 	bool check_sensors = check_rain_sensor && check_float_sensor;
 
+    debug_file << DebugLevel::INFO
+               << ": read_alternative_sensor_values(): attempting to store values."
+               << std::endl;
 	log.sensor_check["Rain Sensor"] = check_rain_sensor;
 	log.sensor_check["Float Sensor"] = static_cast<bool>(check_float_sensor);
 
 	// Done if sensor connection cannot be made.
 	if (!check_sensors) {
+
+        debug_file << DebugLevel::ERROR
+                   << ": read_alternative_sensor_values(): Cannot read sensors; Sending error message."
+                   << std::endl;
 		const char *comment = "<strong>Critical Error: Cannot read from the "
 							  "rain sensor. Please send a technician to inspect the system."
 							  "</strong>";
@@ -61,6 +73,9 @@ bool read_alternative_sensor_values(Log& log,
 														rain_values);
 
 	if (log.level["rain_level"] >= rain_limit) {
+        debug_file << DebugLevel::ERROR
+                   << ": read_alternative_sensor_values(): Rain level is greater than rain limit."
+                   << std::endl;
 		const char *comment = "<strong>Rain levels have exceeded the maximum limit. "
 							  "Please contact a technician to inspect the device.</strong>";
 		log.set_error(true);
@@ -81,7 +96,7 @@ void * pthread_handle_sensor(void *args_struct) {
         ;
     Thread_Args *arguments = static_cast<Thread_Args*>(args_struct);
 
-    Log *log = arguments->log;
+    SensorLog *log = arguments->log;
     SensorDate *sensor_date = arguments->sensor_date;
 
     handle_sensor(*log, *sensor_date);
@@ -92,15 +107,16 @@ void * pthread_handle_sensor(void *args_struct) {
  * \brief Function handled by the sensor thread that sends emails and reads sensor data.
  * Function that handles reading data from connected sensors and sending
  * an email at a specified date.
- * @param args_struct object containing a Log object that used to send emails
+ * @param args_struct object containing a SensorLog object that used to send emails
  * in the event of an error or for a daily update and a SensorDate object that
  * specifes when an daily email is to be sent.
  * @returns nullptr
  */
-void handle_sensor(Log &log, SensorDate &sensorDate) {
-    // Now convert the temp_log back to a Log
-    std::ofstream debug_file{"../Debug.txt", std::ios_base::out};
-    std::string error_message;
+void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
+    // Now convert the temp_log back to a SensorLog
+
+    DebugLog& debug_file = DebugLog::instance();
+
 	int email_thread_check;
 	bool read_check;
 	time_t current_time;
@@ -114,13 +130,20 @@ void handle_sensor(Log &log, SensorDate &sensorDate) {
 
     do {
 		current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        debug_file << "handle_sensor(): Current Time: " << current_time << std::endl;
+        debug_file << DebugLevel::INFO
+                   << ": handle_sensor(): Current Time: " << current_time
+                   << std::endl;
 		check = current_time % MAX_SECONDS_IN_DAY;
 
-        debug_file << "handle_sensor(): Current Time (Modulo) : " << check << std::endl;
+        debug_file << DebugLevel::DEBUG <<
+                   ": handle_sensor(): Current Time (Modulo) : " << check
+                   << std::endl;
+
 		// Send daily email report at the user provided time.
 		if (check == sensorDate.get_email_time().count()){
-            debug_file << "handle_sensor(): Sending Email..." << std::endl;
+            debug_file << DebugLevel::INFO
+                       << ": handle_sensor(): Sending Email..."
+                       << std::endl;
             email_thread = std::thread{send_email, std::ref(log), std::ref(sensorDate)};
 			email_thread.join();
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -129,13 +152,15 @@ void handle_sensor(Log &log, SensorDate &sensorDate) {
 
         {
             std::lock_guard<std::mutex> lock{main_mutex};
-            debug_file << "handle_sensor(): Reading from Alternative Sensors" << std::endl;
+            debug_file << DebugLevel::INFO
+                       << ": handle_sensor(): Reading from Alternative Sensors"
+                       << std::endl;
             read_check = read_alternative_sensor_values(log, merse, rain_values);
         }
 
 		// If read_check is false, create a email thread and wait for it to join.
 		if (!read_check){
-			error_message = log.get_error_message();
+			debug_file << log.get_error_message();
 			break;
 		}
 
@@ -143,21 +168,25 @@ void handle_sensor(Log &log, SensorDate &sensorDate) {
 		// do so.
         {
             std::lock_guard<std::mutex> lock{main_mutex};
-            debug_file << "handle_sensor(): Checking if Threads are disabled:" << std::endl;
+            debug_file << DebugLevel::INFO
+                       <<  ": handle_sensor(): Checking if Threads are disabled:"
+                       << std::endl;
             if (project_file->are_threads_disabled()) {
-                debug_file << "handle_sensor(): Threads are disabled; Returning." << std::endl;
+                debug_file << DebugLevel::INFO
+                           << ": handle_sensor(): Threads are disabled; Returning."
+                           << std::endl;
                 break;
             }
         }
 
 
 		// Now sleep for 1 second.
-        debug_file << "handle_sensor(): Sleeping for 500ms" << std::endl;
+        debug_file << DebugLevel::DEBUG << ": handle_sensor(): Sleeping for 500ms" << std::endl;
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     } while (true);
 
-    debug_file << "handle_sensor(): Now sending one last email.." << std::endl;
+    debug_file << DebugLevel::DEBUG << ": handle_sensor(): Now sending one last email.." << std::endl;
 
     std::lock_guard<std::mutex> lock(main_mutex);
     email_thread = std::thread{send_email, std::ref(log), std::ref(sensorDate)};
@@ -168,15 +197,17 @@ void handle_sensor(Log &log, SensorDate &sensorDate) {
 /**
  * \brief Thread function that handles sending an email.
  * @param args_struct Thread_Args object that contains a SensorDate and
- * Log pointer. This is used since pthread_create only accepts a single argument.
+ * SensorLog pointer. This is used since pthread_create only accepts a single argument.
  *
  * @returns nullptr
  */
-void send_email(Log &log, SensorDate &sensor_date) {
+void send_email(SensorLog &log, SensorDate &sensor_date) {
     std::lock_guard<std::mutex> lock{main_mutex};
 	time_t current_time;
 	std::ostringstream os;
 
+    DebugLog& debug_file = DebugLog::instance();
+    debug_file << DebugLevel::INFO << ": send_email(): Opening connection and preparing transaction.";
 	open_connection(db_connect);
 	pqxx::work transaction{db_connect};
 
@@ -197,14 +228,21 @@ void send_email(Log &log, SensorDate &sensor_date) {
 		message = log.get_error_message();
 
 	project_log = log;
+    debug_file << std::boolalpha;
 	// Update database
+    debug_file << DebugLevel::INFO << ": send_email(): Adding log to the database.";
 	add_log(transaction, project_log);
 
 	// Now send email (HTML or Plain Text)
-	if (project_file->get_email_type() == email_type::html)
-		send_log_as_HTML(project_log, message);
-	else
-		send_log_as_text(project_log, message);
+	if (project_file->get_email_type() == email_type::html) {
+        debug_file << DebugLevel::INFO << ": send_email(): Sending HTML email.";
+        send_log_as_HTML(project_log, message);
+    }
+	else {
+        debug_file << DebugLevel::INFO << ": send_email(): Sending Text-based email.";
+        send_log_as_text(project_log, message);
+
+    }
 
 	// Unlock the resources.
 

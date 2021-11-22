@@ -26,6 +26,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <stdexcept>
+#include "DebugLog.h"
 
 // Common Macros
 //#define MAX_SECONDS_IN_DAY (86400)

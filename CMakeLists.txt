@@ -45,7 +45,7 @@ set(CMAKE_CXX_STANDARD 17)
 # Add SMTP Library
 #add_library(SMTP ./smtp/SMTPMail.cpp ./smtp/smtp.c)
 add_library(Connection sql/PSQL_Connection.cc)
-add_library(Log log/Log.cc)
+add_library(Log log/SensorLog.cc)
 
 
 # Set as false if you can get output from the sensors.
@@ -67,14 +67,14 @@ set(NEWT_GUI FALSE)
 if (NEWT_GUI AND NEWT_CHECK)
     message("Using the Newt UI for the Project.")
     add_executable(CSC4110_Project Main.cc Newt_Menu.cc "Debug Functions.cc"
-            SensorDate.cc SensorTracking.cc log/Log.cc sql/PSQL_Connection.cc)
+            SensorDate.cc SensorTracking.cc log/SensorLog.cc sql/PSQL_Connection.cc)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq ssl crypto
             pthread Log Connection ncurses newt Sensors Configuration)
 else()
     message("Using the Default Basic Menu UI for the Project.")
-    add_executable(CSC4110_Project Main.cc Basic_Menu.cc SensorTracking.cc "Debug Functions.cc"
-            SensorDate.cc log/Log.cc sql/PSQL_Connection.cc)
+    add_executable(CSC4110_Project Main.cc DebugLog.cc Basic_Menu.cc SensorTracking.cc "Debug Functions.cc"
+            SensorDate.cc log/SensorLog.cc sql/PSQL_Connection.cc)
 
     target_link_libraries(CSC4110_Project PUBLIC curl m pqxx pq
             ssl crypto pthread Log Connection Sensors Configuration)

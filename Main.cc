@@ -29,8 +29,8 @@ const vector<string> main_menu_options = {"Sensor Tracking",
 	"Database Information",
 	"Email Options"};
 
-// Global Log File
-Log project_log{};
+// Global SensorLog File
+SensorLog project_log{};
 
 // Search log options
 const vector<string> search_log_options = {"By Date", "By Date Range"};
@@ -85,16 +85,21 @@ void get_credentials(){
  */
 void end_threads() {
     std::lock_guard<std::mutex> lock(main_mutex);
+    DebugLog& debug_file = DebugLog::instance();
 	if (project_file->is_tracking()) {
 		project_file->disable_threads();
 
-        cout << boolalpha;
-        cout << "Is Email Thread Joinable? " << email_thread.joinable() << endl;
+        debug_file << boolalpha;
+        debug_file << DebugLevel::DEBUG
+                   << ": end_threads(): Is Email Thread Joinable? "
+                   << email_thread.joinable() << endl;
         if (email_thread.joinable()) {
             email_thread.join();
         }
 
-        cout << "Is Sensor Thread Joinable? " << sensor_thread.joinable() << endl;
+        debug_file << DebugLevel::DEBUG
+                   << ": end_threads(): Is Sensor Thread Joinable? "
+                   << sensor_thread.joinable() << endl;
         if (sensor_thread.joinable())
             sensor_thread.join();
 

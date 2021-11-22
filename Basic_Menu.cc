@@ -105,7 +105,8 @@ void toggle_sensor_tracking(const SensorDate &s_d) {
  * @returns void
  */
 void sensor_tracking(){
-    ofstream example{"../BasicMenuDebug.txt", ios_base::app};
+
+    DebugLog& default_log = DebugLog::instance();
     SensorDate sd;
     read_user_time(sd);
     
@@ -119,12 +120,13 @@ void sensor_tracking(){
     }
 
     //Initialize the mutex first
-    Log temp_log;
+    SensorLog temp_log;
     Thread_Args args{&temp_log, &sd};
-    cout << "Creating sensor thread..." << endl;
+
+    default_log << DebugLevel::INFO << ": sensor_tracking(): Creating sensor thread..." << endl;
     sensor_thread = std::thread{handle_sensor, std::ref(project_log), std::ref(sd)};
     sensor_thread.detach();
-    example << "sensor_tracking(): is Sensor thread joinable?: " << sensor_thread.joinable() << std::endl;
+    default_log << DebugLevel::DEBUG << ": sensor_tracking(): is Sensor thread joinable?: " << sensor_thread.joinable() << std::endl;
     return_to_menu();
 }
 

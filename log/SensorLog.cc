@@ -3,28 +3,28 @@
  * Created by Ulysses Carlos on 04/05/2020 at 06:16 PM
  * 
  * log.cpp
- * Log class definitions, database log functions and smtp send functions are
+ * SensorLog class definitions, database log functions and smtp send functions are
  * contained in this file.
  * -----------------------------------------------------------------------------
  */
 
-#include "./Log.h"
+#include "./SensorLog.h"
 
 
 //------------------------------------------------------------------------------
-// Log Class Definitions
+// SensorLog Class Definitions
 //
 //
 //------------------------------------------------------------------------------
 
-Log::Log(std::map<std::string, bool> &sensor, std::map<std::string, double> &levl,
+SensorLog::SensorLog(std::map<std::string, bool> &sensor, std::map<std::string, double> &levl,
 	 std::string comm, std::string time_stamp) {
     // Maps should be the same size as default. Error otherwise.
     if ((this->sensor_check.size() != sensor.size()) ||
         (this->level.size() != levl.size())){
         std::ostringstream os;
         os << "Passed sensor and level arguments have different sizes"
-           << " from the default maps in Log. Aborting.";
+           << " from the default maps in SensorLog. Aborting.";
         throw std::runtime_error(os.str());
     }
     this->sensor_check = sensor;
@@ -35,13 +35,13 @@ Log::Log(std::map<std::string, bool> &sensor, std::map<std::string, double> &lev
 }
 
 // constructor
-Log::Log(pqxx::row &row){ // Extract the contents of row and fill the log.
+SensorLog::SensorLog(pqxx::row &row){ // Extract the contents of row and fill the log.
     raw_data = &row;
     this->extract_row();
 }
 
 // Copy Constructor
-Log::Log(const Log &l){
+SensorLog::SensorLog(const SensorLog &l){
     this->comment = l.comment;
     this->time_stamp = l.time_stamp;
     this->date = l.date;
@@ -52,10 +52,10 @@ Log::Log(const Log &l){
 }
 
 // Copy assignment
-Log& Log::operator=(const Log &l)= default;
+SensorLog& SensorLog::operator=(const SensorLog &l)= default;
 
 // Comparison Operator:
-bool Log::operator==(const Log &b){
+bool SensorLog::operator==(const SensorLog &b){
     return (comment == b.comment) && (time_stamp == b.time_stamp)
 	&& (date == b.date) && (sensor_check == b.sensor_check)
 	&& (level == b.level) && (raw_data == b.raw_data);
@@ -67,9 +67,9 @@ bool Log::operator==(const Log &b){
  * maps containing sensor data.
  * @returns A boolean determining whether the operation succeeded or not.
  */
-bool Log::extract_row() {
+bool SensorLog::extract_row() {
     if (!raw_data){ // Prevent access of empty raw_data
-	std::cerr << "Warning: Log does not point to any row.\n";
+	std::cerr << "Warning: SensorLog does not point to any row.\n";
         return false;
     }
 
@@ -105,10 +105,10 @@ bool Log::extract_row() {
 /**
  * Enables setting a psqxx::row object to a log object and then immediately
  * calls the log object's extract_row.
- * @param l An object of type Log.
+ * @param l An object of type SensorLog.
  * @param row An object of type row
  */
-void extract_row_to_log(Log &l, pqxx::row &row){
+void extract_row_to_log(SensorLog &l, pqxx::row &row){
     if (l.row() == row){
         l.extract_row();
         return;
@@ -126,7 +126,7 @@ void extract_row_to_log(Log &l, pqxx::row &row){
  * @param l A constant reference to a log object
  * @returns A reference to a ostream object.
  */
-std::ostream& operator<<(std::ostream &os, const Log &l){
+std::ostream& operator<<(std::ostream &os, const SensorLog &l){
     std::string html_break = "<br>";
     std::ostringstream o;
     o << "Date: " << l.date << html_break << std::endl;
@@ -163,7 +163,7 @@ std::ostream& operator<<(std::ostream &os, const Log &l){
  * @param trans An pqxx::transaction_base object that establishes a database connection.
  * @param l The log object whose sensor data will be inserted into a database.
  */
-void add_log(pqxx::transaction_base &trans, const Log &l){
+void add_log(pqxx::transaction_base &trans, const SensorLog &l){
     std::ostringstream os;
     os << std::boolalpha;
     
@@ -195,7 +195,7 @@ void add_log(pqxx::transaction_base &trans, const Log &l){
 
 
 //------------------------------------------------------------------------------
-// SMTP Log Functions
+// SMTP SensorLog Functions
 //
 //
 //------------------------------------------------------------------------------
@@ -326,7 +326,7 @@ passed.
 void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type) {
 	// Write the following to the file in text_file_path:
 	// * SMTP Header Specifying the appropriate information
-	// * Output of Log
+	// * Output of SensorLog
     std::ofstream ofs{text_file_path, std::ios_base::trunc};
     ofs << create_smtp_text_header(message_type);
     ofs << oss.str();
@@ -389,7 +389,7 @@ void send_text_through_SMTP(std::ostringstream &oss, std::string &message_type) 
 passed.
  * 
  */
-void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &message_type) {
+void send_html_through_SMTP(const SensorLog &l, std::ostringstream &oss, std::string &message_type) {
     
     struct curl_slist *recipients = nullptr;
     struct curl_slist *headers = nullptr;
@@ -485,7 +485,7 @@ void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &
 to be passed.
  * 
  */
-void send_log_as_HTML(const Log &l, std::string &message_type){
+void send_log_as_HTML(const SensorLog &l, std::string &message_type){
     // Open the html template, append the log in it
     // and then pass it to the header.
     std::string smtp_endl = "\r\n";
@@ -537,7 +537,7 @@ void send_log_as_HTML(const Log &l, std::string &message_type){
  * @param message_type A std::string object that specifies the type of message
 to be passed.
  */
-void send_log_as_text(const Log &l, std::string &message_type) {
+void send_log_as_text(const SensorLog &l, std::string &message_type) {
     std::ostringstream new_file{};
     new_file << l;
     send_text_through_SMTP(new_file, message_type);

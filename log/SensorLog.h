@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------------------
  * Created by Ulysses Carlos on 04/12/2020
  * 
- * Log.h
+ * SensorLog.h
  * Header.
  * -----------------------------------------------------------------------------
  */
 
 #pragma once
-#ifndef CSC4110_PROJECT_LOG_H
-#define CSC4110_PROJECT_LOG_H
+#ifndef CSC4110_PROJECT_SENSORLOG_H
+#define CSC4110_PROJECT_SENSORLOG_H
 
 // Include Project Base
 #include "../Project_Base.h"
@@ -57,7 +57,7 @@ const std::string html_template_path = "../log/html_template.html";
 
 
 //------------------------------------------------------------------------------
-// Log class
+// SensorLog class
 //------------------------------------------------------------------------------
 
 // Since each log contains id, time_stamp and other mic. columns,
@@ -66,20 +66,20 @@ const std::string html_template_path = "../log/html_template.html";
 constexpr int log_offset = 4;
 
 
-class Log{
+class SensorLog{
 public:
     // Default constructor
-    Log()=default;
-    explicit Log(pqxx::row &row);
+    SensorLog()=default;
+    explicit SensorLog(pqxx::row &row);
     // Copy constructor
-    Log (const Log &l);
+    SensorLog (const SensorLog &l);
     // Copy Assignment
-    Log& operator=(const Log &b);
+    SensorLog& operator=(const SensorLog &b);
     
-    Log(std::map<std::string, bool> &sensor, std::map<std::string, double> &levl,
+    SensorLog(std::map<std::string, bool> &sensor, std::map<std::string, double> &levl,
 	std::string comm, std::string time_stamp);
     // Comparision Operator:
-    bool operator==(const Log &b);
+    bool operator==(const SensorLog &b);
     
 
     
@@ -99,7 +99,7 @@ public:
 
     bool extract_row();
     void write_to_file(std::ofstream &ofs) { ofs << this; }
-    friend std::ostream& operator<<(std::ostream &os, const Log &l);
+    friend std::ostream& operator<<(std::ostream &os, const SensorLog &l);
 	void apply_raw_data(pqxx::row &r_data){ raw_data = &r_data; this->extract_row(); }
 
 	
@@ -113,10 +113,10 @@ private:
 	std::string error_message{};
 };
 
-void add_log(pqxx::transaction_base &trans, const Log &l);
-void send_html_through_SMTP(const Log &l, std::ostringstream &oss, std::string &message_type);
-void send_log_as_HTML(const Log &l, std::string &message_type);
-void send_log_as_text(const Log &l, std::string &message_type);
+void add_log(pqxx::transaction_base &trans, const SensorLog &l);
+void send_html_through_SMTP(const SensorLog &l, std::ostringstream &oss, std::string &message_type);
+void send_log_as_HTML(const SensorLog &l, std::string &message_type);
+void send_log_as_text(const SensorLog &l, std::string &message_type);
 std::vector<std::string> create_html_header(std::string &message_type);
 
 [[maybe_unused]] std::string system_call_to_string(const char* cmd);
@@ -132,4 +132,4 @@ bool verify_password(std::regex &test, const std::string &password);
 // Project_Settings.xml functions
 //------------------------------------------------------------------------------
 void get_smtp_info_from_xml(const std::map<std::string, std::string> &smtp_info);
-#endif //CSC4110_PROJECT_LOG_H
+#endif //CSC4110_PROJECT_SENSORLOG_H
