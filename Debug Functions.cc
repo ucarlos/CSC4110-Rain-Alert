@@ -54,10 +54,14 @@ dummy row specified in sql/db_populate.sql.
  */
 bool test_log_reading(pqxx::connection &c){
     // Make sure that there's a connection:
+    auto& debug_file{DebugLog::instance()};
+
     if (!c.is_open()){
-		std::cerr << "Warning: This connection is not open."
-				  << "Make sure that the connection is open before"
-				  << " testing log readings.\n";
+
+		debug_file << DebugLevel::WARNING
+                   << ": test_log_reading(): Warning: This connection is not open."
+                   << "Make sure that the connection is open before"
+                   << " testing log readings.\n";
 		return false;
     }
 
@@ -71,9 +75,10 @@ bool test_log_reading(pqxx::connection &c){
     pqxx::result result = trans.exec(query.str());
     // Now check is result is empty.
     if (result.empty()){
-		std::cerr << "Warning: No result was return after executing a query "
-				  << "for the first entry in the database. Please make sure that "
-				  << "you add the first entry.\n";
+        debug_file << DebugLevel::WARNING
+                   << ": Warning: No result was return after executing a query "
+                   << "for the first entry in the database. Please make sure that "
+                   << "you add the first entry.\n";
 		return false;
     }
     return true;
@@ -85,10 +90,12 @@ bool test_log_reading(pqxx::connection &c){
  *
  */
 void test_connection(){
-	std::cout << "Testing connection:" << std::endl;
+    auto& debug_file{DebugLog::instance()};
+	debug_file << DebugLevel::INFO << "test_connection(): Testing connection:" << std::endl;
     pqxx::connection connection;
     initialize_connection(connection);
     test_log_reading(connection);
+    debug_file << DebugLevel::INFO << "test_connection(): Closing Connection." << std::endl;
     close_connection(connection);
 
 }
@@ -98,7 +105,6 @@ void test_connection(){
  */
 void test_smtp(){
     SensorLog l;
-	std::ifstream ifs;
     l.comment = "<b>This is intended to be a test of the SMTP client."
 		"Please disregard it.</b>";
 
@@ -118,23 +124,21 @@ void test_smtp(){
 }
 
 
-void * pthread_function1(void *val){
+void pthread_function1(){
 	std::cout << "This is thread 1!" << std::endl;
 	std::cout << "Now, I'll make a basic loop for Thread 1:" << std::endl;
     for (int i = 0; i < 5; i++)
 		std::cout << "Message " << i << " in Thread 1!" << std::endl;
 
-    return nullptr;
 
 }
 
-void * pthread_function2(void *val){
+void pthread_function2(){
 	std::cout << "This is thread 2!" << std::endl;
 	std::cout << "Now, I'll make a basic loop for Thread 2:" << std::endl;
     for (int i = 0; i < 5; i++)
 		std::cout << "Message " << i << " in Thread 2!" << std::endl;
 
-    return nullptr;
 }
 
 
@@ -143,23 +147,9 @@ void * pthread_function2(void *val){
  */
 void test_pthread(){
     // First create a pthread_t
-    pthread_t thread1, thread2;
-    int whatever_arg;
-    int pthread_check = pthread_create(&thread1, nullptr, pthread_function1,
-									   static_cast<void *>(&whatever_arg));
+    std::thread thread{pthread_function1};
+    std::thread thread2{pthread_function2};
 
-	std::string error_message{"Could not create Pthread 1."};
-    check_pthread_creation(pthread_check, error_message);
-    
-    
-    pthread_check = pthread_create(&thread2, nullptr, pthread_function2,
-								   static_cast<void *>(nullptr));
-
-    error_message = "Could not create Pthread 2.";
-    check_pthread_creation(pthread_check, error_message);
-    
-    // Now join both
-    pthread_join(email, nullptr);
-    pthread_join(sensor, nullptr);
-
+    thread.join();
+    thread2.join();
 }

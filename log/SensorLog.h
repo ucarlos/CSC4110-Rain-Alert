@@ -107,6 +107,8 @@ public:
 	std::string get_error_message() { return error_message; }
 	bool has_error_ocurred() { return error_occurred; }
 	void set_error(bool b) { error_occurred = b; }
+
+    static SensorLog& instance() { static SensorLog log; return log; }
 private:
     pqxx::row *raw_data {nullptr};
 	bool error_occurred{false};

@@ -258,6 +258,7 @@ void search_logs() {
 				cout << "Invalid Selection. Try again." << endl;
 		}
 
+        this_thread::sleep_for(std::chrono::seconds(1));
 		system("clear");
 		cout << main_menu_options[2] << endl;
 		list_menu(search_log_options);
@@ -311,7 +312,8 @@ void test_sensors(){
 		default:
 			cout << "Invalid Selection. Try again." << endl;
 		}
-	
+
+        this_thread::sleep_for(std::chrono::seconds(2));
 		system("clear");	
 		cout << main_menu_options[3] << endl;
 		list_menu(test_sensor_menu_options);
@@ -334,15 +336,14 @@ void test_sensors(){
 void database_options(){
     cout << main_menu_options[4] << endl;
     // Lock project_file.
-	pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_lock(&temp_mutex);
+    {
+        std::lock_guard<std::mutex> lock{main_mutex};
+        cout << "You are currently connected to the database "
+             << project_file->get_database_info().at("psql_database")
+             << " on " << project_file->get_database_info().at("psql_ip")
+             << endl;
+    }
 
-    cout << "You are currently connected to the database "
-    	 << project_file->get_database_info().at("psql_database")
-    	 << " on " << project_file->get_database_info().at("psql_ip")
-    	 << endl;
-
-	pthread_mutex_unlock(&temp_mutex);
 	// Unlock project_file.
     cout << "Press any key to continue." << endl;
     char input;
@@ -363,10 +364,9 @@ void email_settings(){
     char input;
     string str;
     std::regex regex_test;
-    pthread_mutex_t temp_mutex = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_lock(&temp_mutex);
     int32_t val;
- 
+
+
     do {
 		cout << main_menu_options[5] << endl;
 		list_menu(email_menu_options);
@@ -374,6 +374,7 @@ void email_settings(){
 		cout << "\n";
 		cout << "Please choose an option." << endl;
 		cin >> input;
+        std::lock_guard<std::mutex> lock{main_mutex};
 		switch(input){
 		case 'a': // Change Recipient Email
 			cout << "Current email: " 
@@ -460,9 +461,10 @@ void email_settings(){
 
     } while (input != 'r');
 
-    pthread_mutex_unlock(&temp_mutex);
-    
-    project_file->save_file(xml_path);
+    {
+        std::lock_guard<std::mutex> lock{main_mutex};
+        project_file->save_file(xml_path);
+    }
     return_to_menu();
 }
 
