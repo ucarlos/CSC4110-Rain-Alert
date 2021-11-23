@@ -9,7 +9,7 @@
  * -----------------------------------------------------------------------------
  */
 
-#include "./Sensor.h"
+#include "./Alternative_Sensor.h"
 
 //--------------------------------------------------------------------------------
 // Functions for the Alternative System
@@ -28,9 +28,9 @@ bool check_rain_connection(){ return rain_sensor_status; }
 
 
 /**
- * Creates a distribution that gets random double values for the rain sensor.
+ * Creates a rain_distribution that gets random double values for the rain sensor.
  * @param merse A Mersenne Twister RNG to simulate sensor values.
- * @param dist A distribution of real numbers to be used by merse.
+ * @param dist A rain_distribution of real numbers to be used by merse.
  * 
  */
 void initialize_rain_sensor(std::mt19937 &merse,
@@ -53,7 +53,7 @@ void initialize_rain_sensor(std::mt19937 &merse,
 /**
  * Get a random value from a range of [Min_Rain_Amount : Max_Rain_Amount]
  * @param merse A Mersenne Twister RNG to simulate sensor values.
- * @param dist A distribution of real numbers to be used by merse.
+ * @param dist A rain_distribution of real numbers to be used by merse.
  */
 double get_rain_sensor_readings(std::mt19937 &merse,
 				std::uniform_real_distribution<double> &dist){
@@ -64,10 +64,10 @@ double get_rain_sensor_readings(std::mt19937 &merse,
 
 
 /**
- * Creates a distribution that get random int values for the float sensor (If
+ * Creates a rain_distribution that get random int values for the float sensor (If
 needed).
  * @param merse A Mersenne Twister RNG to simulate sensor values.
- * @param dist A distribution of integer numbers to be used by merse.
+ * @param dist A rain_distribution of integer numbers to be used by merse.
  */
 void initialize_float_sensor(std::mt19937 &merse,
 			     std::uniform_int_distribution<int> &dist){
@@ -89,7 +89,7 @@ int get_float_sensor_readings(){
  * Just returns a value between 0 and 1. Useful if you want to simulate a
  * sensor that works half of the time.
  * @param merse A Mersenne Twister RNG to simulate sensor values.
- * @param dist A distribution of integer numbers to be used by merse.
+ * @param dist A rain_distribution of integer numbers to be used by merse.
  */
 int get_float_sensor_readings(std::mt19937 &merse,
 			      std::uniform_int_distribution<int> &dist){

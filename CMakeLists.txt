@@ -54,9 +54,9 @@ add_library(Log log/SensorLog.cc)
 set(SENSORS_OUTPUT_IS_RNG TRUE)
 
 if (SENSORS_OUTPUT_IS_RNG)
-    add_library(Sensors ./sensors/Alternative_Sensor.cc)
+    add_library(Sensors ./sensors/DummySensor.cc)
 else()
-    add_library(Sensors ./sensors/Float_Sensor.cc ./sensors/Check_Sensors.cc ./sensors/Rain_Gauge.cc)
+    add_library(Sensors ./sensors/RealSensor.cc)
 endif()
 
 add_library(Configuration Settings.cc)

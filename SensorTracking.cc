@@ -10,7 +10,7 @@
  */
 
 #include "./Project.h"
-#include "sensors/Sensor.h"
+
 
 
 /**
@@ -31,20 +31,18 @@ void string_to_lower(std::string &str){
  *
  * @param log A log object that composes all information to send an email.
  * @param merse Random number generator used to create values.
- * @param rain_values a number distribution of double values
+ * @param rain_values a number rain_distribution of double values
  * @returns a boolean value representing if the operation succeeded or not.
  */
-bool read_alternative_sensor_values(SensorLog& log,
-									std::mt19937 merse,
-									std::uniform_real_distribution<double> rain_values) {
+bool read_alternative_sensor_values(SensorLog &log, AbstractSensor &sensors) {
 
     DebugLog& debug_file = DebugLog::instance();
     debug_file << DebugLevel::INFO
                << ": read_alternative_sensor_values(): Checking rain and float sensors"
                << std::endl;
 
-	bool check_rain_sensor = check_rain_connection();
-	bool check_float_sensor = get_float_sensor_readings();
+	bool check_rain_sensor = sensors.is_rain_sensor_active();
+	bool check_float_sensor = sensors.is_float_sensor_active();
 	bool check_sensors = check_rain_sensor && check_float_sensor;
 
     debug_file << DebugLevel::INFO
@@ -69,9 +67,8 @@ bool read_alternative_sensor_values(SensorLog& log,
 		return false;
 	}
 	// Read the temperature values
-	log.level["rain_level"] = get_rain_sensor_readings(merse,
-														rain_values);
-
+	log.level["rain_level"] = sensors.read_from_rain_sensor();
+    double rain_limit = sensors.get_max_rain_threshold_in_inches();
 	if (log.level["rain_level"] >= rain_limit) {
         debug_file << DebugLevel::ERROR
                    << ": read_alternative_sensor_values(): Rain level is greater than rain limit."
@@ -125,9 +122,7 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
 	std::ostringstream os;
 
 	// Set up RNG
-    std::mt19937 merse;
-    std::uniform_real_distribution<double> rain_values;
-    initialize_rain_sensor(merse, rain_values);
+    auto &dummy_sensor = DummySensor::instance();
 
     bool active;
     do {
@@ -157,7 +152,7 @@ void handle_sensor(SensorLog &log, SensorDate &sensorDate) {
             debug_file << DebugLevel::INFO
                        << ": handle_sensor(): Reading from Alternative Sensors"
                        << std::endl;
-            read_check = read_alternative_sensor_values(log, merse, rain_values);
+            read_check = read_alternative_sensor_values(log, dummy_sensor);
         }
 
 		// If read_check is false, create a email thread and wait for it to join.

@@ -25,6 +25,8 @@
 #include "./log/SensorLog.h"
 
 // Sensor Library
+
+#define SENSOR_READINGS_RNG (1)
 #include "./sensors/Sensor.h"
 
 // Connection Library
@@ -112,9 +114,6 @@ static pqxx::connection db_connect;
 
 static std::thread sensor_thread{};
 static std::thread email_thread{};
-
-static pthread_t sensor, email;
-
 
 static std::mutex main_mutex{};
 static bool end_all_threads = false;
