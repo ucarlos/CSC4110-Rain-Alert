@@ -1,10 +1,11 @@
 <map id="sql/PSQL_Connection.h" name="sql/PSQL_Connection.h">
-<area shape="rect" id="node2" href="$Project_8h.html" title="Project.h" alt="" coords="357,80,432,107"/>
-<area shape="rect" id="node9" href="$PSQL__Connection_8cc.html" title="sql/PSQL_Connection.cc" alt="" coords="457,80,626,107"/>
-<area shape="rect" id="node3" href="$Basic__Menu_8cc.html" title="Basic_Menu.cc" alt="" coords="5,155,117,181"/>
-<area shape="rect" id="node4" href="$Debug_01Functions_8cc.html" title="Debug Functions.cc" alt="" coords="141,155,280,181"/>
-<area shape="rect" id="node5" href="$Main_8cc.html" title="Main.cc" alt="" coords="305,155,373,181"/>
-<area shape="rect" id="node6" href="$Newt__Menu_8cc.html" title="Newt_Menu.cc" alt="" coords="397,155,507,181"/>
-<area shape="rect" id="node7" href="$Sensor__Date_8cc.html" title="SensorDate.cc" alt="" coords="531,155,647,181"/>
-<area shape="rect" id="node8" href="$Sensor__Tracking_8cc.html" title="Sensor_Tracking.cc" alt="" coords="672,155,811,181"/>
+<area shape="rect" id="node1" title=" " alt="" coords="387,5,549,32"/>
+<area shape="rect" id="node2" href="$Project_8h.html" title=" " alt="" coords="357,80,432,107"/>
+<area shape="rect" id="node9" href="$PSQL__Connection_8cc.html" title=" " alt="" coords="457,80,626,107"/>
+<area shape="rect" id="node3" href="$Basic__Menu_8cc.html" title=" " alt="" coords="5,155,117,181"/>
+<area shape="rect" id="node4" href="$Debug_01Functions_8cc.html" title=" " alt="" coords="141,155,280,181"/>
+<area shape="rect" id="node5" href="$Main_8cc.html" title=" " alt="" coords="305,155,373,181"/>
+<area shape="rect" id="node6" href="$Newt__Menu_8cc.html" title=" " alt="" coords="397,155,507,181"/>
+<area shape="rect" id="node7" href="$SensorDate_8cc.html" title=" " alt="" coords="532,155,641,181"/>
+<area shape="rect" id="node8" href="$SensorTracking_8cc.html" title=" " alt="" coords="665,155,796,181"/>
 </map>

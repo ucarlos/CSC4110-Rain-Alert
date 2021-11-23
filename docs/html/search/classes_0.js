@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['log',['Log',['../classLog.html',1,'']]]
+  ['abstractsensor_206',['AbstractSensor',['../classAbstractSensor.html',1,'']]]
 ];

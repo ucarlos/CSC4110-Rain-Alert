@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['email_5ftype',['email_type',['../XML__Configuration_8h.html#a6e650520c7e73e593d314e8633e8b050',1,'XML_Configuration.h']]]
+  ['debuglevel_406',['DebugLevel',['../DebugLog_8h.html#ab658e6d84759440dbf3c890446075395',1,'DebugLog.h']]]
 ];

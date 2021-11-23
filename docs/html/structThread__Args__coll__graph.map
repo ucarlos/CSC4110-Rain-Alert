@@ -1,6 +1,9 @@
 <map id="Thread_Args" name="Thread_Args">
-<area shape="rect" id="node2" href="$classLog.html" title="Log" alt="" coords="150,292,193,319"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="132,96,212,123"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="108,5,235,47"/>
-<area shape="rect" id="node7" href="$classSensor__Date.html" title="SensorDate" alt="" coords="217,292,316,319"/>
+<area shape="rect" id="node1" title=" " alt="" coords="180,381,276,408"/>
+<area shape="rect" id="node2" href="$classSensorLog.html" title=" " alt="" coords="130,292,214,319"/>
+<area shape="rect" id="node3" title=" " alt="" coords="99,187,245,228"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="132,96,212,123"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,187,416,228"/>
+<area shape="rect" id="node5" title="STL class." alt="" coords="109,5,235,47"/>
+<area shape="rect" id="node7" href="$classSensorDate.html" title=" " alt="" coords="239,292,329,319"/>
 </map>

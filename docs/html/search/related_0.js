@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['operator_3c_3c',['operator&lt;&lt;',['../classLog.html#aa68132f68c9ee7f1c073657b3a8e1ba5',1,'Log']]],
-  ['operator_3e_3e',['operator&gt;&gt;',['../classSensor__Date.html#a0b657c3eb3d9a10c004c389a74ef75f0',1,'Sensor_Date']]]
+  ['operator_3c_3c_414',['operator&lt;&lt;',['../classSensorLog.html#a00c15d53de57bdb86e747a467adf0b7a',1,'SensorLog']]],
+  ['operator_3e_3e_415',['operator&gt;&gt;',['../classSensorDate.html#aed85796ae364367831d3e8fbad869290',1,'SensorDate']]]
 ];

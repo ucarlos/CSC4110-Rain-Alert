@@ -1,13 +1,10 @@
 <map id="sensors/Sensor.h" name="sensors/Sensor.h">
-<area shape="rect" id="node2" href="$Project_8h.html" title="Project.h" alt="" coords="415,87,489,114"/>
-<area shape="rect" id="node8" href="$Sensor__Tracking_8cc.html" title="Sensor_Tracking.cc" alt="" coords="672,169,811,196"/>
-<area shape="rect" id="node9" href="$Alternative__Sensor_8cc.html" title="sensors/Alternative\l_Sensor.cc" alt="" coords="671,80,806,121"/>
-<area shape="rect" id="node10" href="$Check__Sensors_8cc.html" title="sensors/Check_Sensors.cc" alt="" coords="830,87,1013,114"/>
-<area shape="rect" id="node11" href="$Float__Sensor_8cc.html" title="sensors/Float_Sensor.cc" alt="" coords="1037,87,1203,114"/>
-<area shape="rect" id="node12" href="$Rain__Gauge_8cc.html" title="sensors/Rain_Gauge.cc" alt="" coords="1228,87,1391,114"/>
-<area shape="rect" id="node3" href="$Basic__Menu_8cc.html" title="Basic_Menu.cc" alt="" coords="5,169,117,196"/>
-<area shape="rect" id="node4" href="$Debug_01Functions_8cc.html" title="Debug Functions.cc" alt="" coords="141,169,280,196"/>
-<area shape="rect" id="node5" href="$Main_8cc.html" title="Main.cc" alt="" coords="305,169,373,196"/>
-<area shape="rect" id="node6" href="$Newt__Menu_8cc.html" title="Newt_Menu.cc" alt="" coords="397,169,507,196"/>
-<area shape="rect" id="node7" href="$Sensor__Date_8cc.html" title="SensorDate.cc" alt="" coords="531,169,647,196"/>
+<area shape="rect" id="node1" title=" " alt="" coords="333,5,456,32"/>
+<area shape="rect" id="node2" href="$Project_8h.html" title=" " alt="" coords="357,80,432,107"/>
+<area shape="rect" id="node3" href="$Basic__Menu_8cc.html" title=" " alt="" coords="5,155,117,181"/>
+<area shape="rect" id="node4" href="$Debug_01Functions_8cc.html" title=" " alt="" coords="141,155,280,181"/>
+<area shape="rect" id="node5" href="$Main_8cc.html" title=" " alt="" coords="305,155,373,181"/>
+<area shape="rect" id="node6" href="$Newt__Menu_8cc.html" title=" " alt="" coords="397,155,507,181"/>
+<area shape="rect" id="node7" href="$SensorDate_8cc.html" title=" " alt="" coords="532,155,641,181"/>
+<area shape="rect" id="node8" href="$SensorTracking_8cc.html" title=" " alt="" coords="665,155,796,181"/>
 </map>

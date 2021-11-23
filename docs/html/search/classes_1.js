@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['sensor_5fdate',['Sensor_Date',['../classSensor__Date.html',1,'']]],
-  ['settings_5ffile',['settings_file',['../classsettings__file.html',1,'']]]
+  ['debuglog_207',['DebugLog',['../classDebugLog.html',1,'']]],
+  ['dummysensor_208',['DummySensor',['../classDummySensor.html',1,'']]]
 ];

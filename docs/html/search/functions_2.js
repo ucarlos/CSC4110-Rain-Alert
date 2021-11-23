@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['database_5foptions',['database_options',['../Basic__Menu_8cc.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Basic_Menu.cc'],['../Newt__Menu_8cc.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Newt_Menu.cc'],['../Project_8h.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Basic_Menu.cc']]],
-  ['disable_5fthreads',['disable_threads',['../classsettings__file.html#a0e1fe78ba18cef8f9113d41269a908e6',1,'settings_file']]]
+  ['database_5foptions_251',['database_options',['../Basic__Menu_8cc.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Basic_Menu.cc'],['../Newt__Menu_8cc.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Newt_Menu.cc'],['../Project_8h.html#a2affb46ca0a0c808be3e68158c8ef097',1,'database_options():&#160;Basic_Menu.cc']]],
+  ['debuglog_252',['DebugLog',['../classDebugLog.html#a3555e325dc33d0adafb2fa4495fcd329',1,'DebugLog::DebugLog()'],['../classDebugLog.html#a8f027ec41bb5451ba68c6ff2baf2d74e',1,'DebugLog::DebugLog(const std::string &amp;file_path)']]],
+  ['disable_5ffloat_5fsensor_253',['disable_float_sensor',['../classDummySensor.html#aaa21d712921b20ad9bd4bec5436e0a1b',1,'DummySensor']]],
+  ['disable_5frain_5fsensor_254',['disable_rain_sensor',['../classDummySensor.html#a7860bde8ad2bd5a03657ad214ba54dc0',1,'DummySensor']]],
+  ['disable_5fthreads_255',['disable_threads',['../classSettings.html#a9b2fe726ca1c7c174dc2165bcfa76bb9',1,'Settings']]],
+  ['dummysensor_256',['DummySensor',['../classDummySensor.html#a9e9b7b1c6f1e4aeecb6d886ba0cd1dab',1,'DummySensor::DummySensor()=default'],['../classDummySensor.html#a8081b64ffc31bbd6cbcfb08752e448c7',1,'DummySensor::DummySensor(const std::mt19937 _merse, RealDistribution dist)'],['../classDummySensor.html#af050cbe4f40cda1da64f6c2235dec6cc',1,'DummySensor::DummySensor(double min_rain_inches, double max_rain_inches)'],['../classDummySensor.html#a7ef569ad385ceba1b2f505d6c30a25a7',1,'DummySensor::DummySensor(double min_rain_inches, double max_rain_inches, int32_t min_float_level, int32_t max_float_level)'],['../classDummySensor.html#a4c3206a582046efaae2f0d3516e2eb1f',1,'DummySensor::DummySensor(const std::mt19937 _merse, const RealDistribution _dist, const double _min_rain, const double _max_rain)']]]
 ];

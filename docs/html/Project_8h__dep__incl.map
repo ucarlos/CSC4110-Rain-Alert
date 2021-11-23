@@ -1,8 +1,9 @@
 <map id="Project.h" name="Project.h">
-<area shape="rect" id="node2" href="$Basic__Menu_8cc.html" title="Basic_Menu.cc" alt="" coords="5,80,117,107"/>
-<area shape="rect" id="node3" href="$Debug_01Functions_8cc.html" title="Debug Functions.cc" alt="" coords="141,80,280,107"/>
-<area shape="rect" id="node4" href="$Main_8cc.html" title="Main.cc" alt="" coords="305,80,373,107"/>
-<area shape="rect" id="node5" href="$Newt__Menu_8cc.html" title="Newt_Menu.cc" alt="" coords="397,80,507,107"/>
-<area shape="rect" id="node6" href="$Sensor__Date_8cc.html" title="SensorDate.cc" alt="" coords="531,80,647,107"/>
-<area shape="rect" id="node7" href="$Sensor__Tracking_8cc.html" title="Sensor_Tracking.cc" alt="" coords="672,80,811,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="357,5,432,32"/>
+<area shape="rect" id="node2" href="$Basic__Menu_8cc.html" title=" " alt="" coords="5,80,117,107"/>
+<area shape="rect" id="node3" href="$Debug_01Functions_8cc.html" title=" " alt="" coords="141,80,280,107"/>
+<area shape="rect" id="node4" href="$Main_8cc.html" title=" " alt="" coords="305,80,373,107"/>
+<area shape="rect" id="node5" href="$Newt__Menu_8cc.html" title=" " alt="" coords="397,80,507,107"/>
+<area shape="rect" id="node6" href="$SensorDate_8cc.html" title=" " alt="" coords="532,80,641,107"/>
+<area shape="rect" id="node7" href="$SensorTracking_8cc.html" title=" " alt="" coords="665,80,796,107"/>
 </map>

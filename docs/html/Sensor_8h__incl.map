@@ -1,2 +1,12 @@
 <map id="sensors/Sensor.h" name="sensors/Sensor.h">
+<area shape="rect" id="node1" title=" " alt="" coords="87,5,209,32"/>
+<area shape="rect" id="node2" href="$DummySensor_8h.html" title=" " alt="" coords="155,80,274,107"/>
+<area shape="rect" id="node10" href="$RealSensor_8h.html" title=" " alt="" coords="31,80,131,107"/>
+<area shape="rect" id="node3" href="$AbstractSensor_8h.html" title=" " alt="" coords="28,155,151,181"/>
+<area shape="rect" id="node9" title=" " alt="" coords="182,155,247,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,229,67,256"/>
+<area shape="rect" id="node5" href="$DebugLog_8h.html" title=" " alt="" coords="91,229,195,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="23,304,89,331"/>
+<area shape="rect" id="node7" title=" " alt="" coords="113,304,172,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="197,304,307,331"/>
 </map>

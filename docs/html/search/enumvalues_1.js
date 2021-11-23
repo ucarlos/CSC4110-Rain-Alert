@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['plain_5ftext',['plain_text',['../XML__Configuration_8h.html#a6e650520c7e73e593d314e8633e8b050a10504904240f7c7a24587ef9209b3f55',1,'XML_Configuration.h']]]
+  ['error_409',['ERROR',['../DebugLog_8h.html#ab658e6d84759440dbf3c890446075395abb1ca97ec761fc37101737ba0aa2e7c5',1,'DebugLog.h']]]
 ];

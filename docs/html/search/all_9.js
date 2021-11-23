@@ -1,11 +1,10 @@
 var searchData=
 [
-  ['level',['level',['../classLog.html#a9a79b978f8bba04e28f28b0377481a95',1,'Log']]],
-  ['list_5fmenu',['list_menu',['../Basic__Menu_8cc.html#a89c532aa638355d63de3b85fddeccb8c',1,'Basic_Menu.cc']]],
-  ['load_5ffile',['load_file',['../classsettings__file.html#ae00ca0d30754a8e60eca37cbb1179f80',1,'settings_file']]],
-  ['log',['Log',['../classLog.html',1,'Log'],['../structThread__Args.html#a561344e8cfe2f8c5d6b6ba2caa966a1c',1,'Thread_Args::log()'],['../classLog.html#a1dd0d9637abf037f9612c58dec58274d',1,'Log::Log()=default'],['../classLog.html#a2ae38c912c5007f46be094ac9ffb57ee',1,'Log::Log(pqxx::row &amp;row)'],['../classLog.html#a756aec21ec377fbc703f787e7f5fb832',1,'Log::Log(const Log &amp;l)'],['../classLog.html#ab203dd44ee3fc3af080fff33688da13d',1,'Log::Log(std::map&lt; std::string, bool &gt; &amp;sensor, std::map&lt; std::string, double &gt; &amp;levl, std::string comm, std::string time_stamp)']]],
-  ['log_2ecc',['Log.cc',['../Log_8cc.html',1,'']]],
-  ['log_2eh',['Log.h',['../Log_8h.html',1,'']]],
-  ['log_5foffset',['log_offset',['../Log_8h.html#ae7444ef017f82093e6df205b25613a8c',1,'Log.h']]],
-  ['log_5fstatus_5fpath',['log_status_path',['../Project_8h.html#afbfba37bfd6ee8d1810b793070b907cb',1,'Project.h']]]
+  ['main_94',['main',['../Main_8cc.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'Main.cc']]],
+  ['main_2ecc_95',['Main.cc',['../Main_8cc.html',1,'']]],
+  ['main_5fmenu_96',['main_menu',['../Newt__Menu_8cc.html#a21a331e2b54e863bfba7463047f76ec5',1,'Newt_Menu.cc']]],
+  ['main_5fmenu_5foptions_97',['main_menu_options',['../Main_8cc.html#ac23b8f97690f394d83b7b9a6f61777a2',1,'main_menu_options():&#160;Main.cc'],['../Project_8h.html#a43e600d924bfbe64d8a8ad642330fdc1',1,'main_menu_options():&#160;Main.cc']]],
+  ['max_5fseconds_5fin_5fday_98',['MAX_SECONDS_IN_DAY',['../Project_8h.html#a2b905cbd96bb008f9461b3477ac860a5',1,'MAX_SECONDS_IN_DAY():&#160;Project.h'],['../Project__Base_8h.html#af6b9f252137f6e2b050c851556fdf369',1,'MAX_SECONDS_IN_DAY():&#160;Project_Base.h']]],
+  ['menu_99',['menu',['../Basic__Menu_8cc.html#a2a0e843767aeea4f433a28b9c54f573a',1,'menu():&#160;Basic_Menu.cc'],['../Newt__Menu_8cc.html#a2a0e843767aeea4f433a28b9c54f573a',1,'menu():&#160;Newt_Menu.cc'],['../Project_8h.html#a2a0e843767aeea4f433a28b9c54f573a',1,'menu():&#160;Basic_Menu.cc']]],
+  ['menu_5fpointers_100',['menu_pointers',['../Newt__Menu_8cc.html#a26e05a3bde280678de36ae0b68cd19e8',1,'Newt_Menu.cc']]]
 ];
