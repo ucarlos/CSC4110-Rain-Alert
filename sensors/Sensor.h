@@ -8,7 +8,6 @@
 
 #ifdef SENSOR_READINGS_RNG
 #include "DummySensor.h"
-
 #else
 #include "RealSensor.h"
 #endif
